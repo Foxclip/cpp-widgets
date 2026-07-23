@@ -105,8 +105,17 @@ if(NOT TARGET clip)
     endif()
 endif()
 
+if(NOT TARGET logger)
+    if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/logger/CMakeLists.txt")
+        add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/logger")
+    else()
+        message(FATAL_ERROR "logger target not found and logger not available")
+    endif()
+endif()
+
 target_link_libraries(widgets_lib PUBLIC sfml-graphics sfml-system sfml-window)
 target_link_libraries(widgets_lib PUBLIC clip)
+target_link_libraries(widgets_lib PUBLIC logger)
 
 # Clip include directories (clip doesn't set PUBLIC include dirs, so consumers need explicit path)
 if(EXISTS "${CMAKE_SOURCE_DIR}/clip/")
