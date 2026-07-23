@@ -72,6 +72,9 @@ target_sources(widgets_lib PRIVATE
 
 target_include_directories(widgets_lib PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")
 
+# Reset BUILD_SHARED_LIBS so our libraries are built as static libraries
+set(BUILD_SHARED_LIBS OFF)
+
 # Handle dependencies: check if targets already exist (parent project) or fetch local submodules
 if(NOT TARGET sfml-graphics)
     if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/SFML/CMakeLists.txt")
