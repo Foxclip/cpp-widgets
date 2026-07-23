@@ -41,17 +41,17 @@ set(WIDGET_TESTS_SOURCE_FILES
     "src/widget_tests_widget_link.cpp"
     "src/widget_tests_window.cpp"
 )
-add_executable(widgets_tests ${WIDGET_TESTS_HEADER_FILES} ${WIDGET_TESTS_SOURCE_FILES})
+add_executable(widget_tests ${WIDGET_TESTS_HEADER_FILES} ${WIDGET_TESTS_SOURCE_FILES})
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR}/include PREFIX "Header Files" FILES ${WIDGET_TESTS_HEADER_FILES})
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} PREFIX "Source Files" FILES ${WIDGET_TESTS_SOURCE_FILES})
-set_property(TARGET widgets_tests PROPERTY FOLDER "tests")
+set_property(TARGET widget_tests PROPERTY FOLDER "tests")
 
-target_include_directories(widgets_tests PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../include")
-target_include_directories(widgets_tests PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")
-target_include_directories(widgets_tests PUBLIC "${CMAKE_SOURCE_DIR}")
-target_include_directories(widgets_tests PUBLIC "${INCLUDE_DIR}")
+target_include_directories(widget_tests PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../include")
+target_include_directories(widget_tests PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")
+target_include_directories(widget_tests PUBLIC "${CMAKE_SOURCE_DIR}")
+target_include_directories(widget_tests PUBLIC "${INCLUDE_DIR}")
 
-target_link_libraries(widgets_tests PUBLIC logger)
-target_link_libraries(widgets_tests PUBLIC test_lib)
-target_link_libraries(widgets_tests PUBLIC widgets_lib)
-set_property(TARGET widgets_tests PROPERTY VS_DEBUGGER_WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}")
+target_link_libraries(widget_tests PUBLIC logger)
+target_link_libraries(widget_tests PUBLIC test_lib)
+target_link_libraries(widget_tests PUBLIC widgets_lib)
+set_property(TARGET widget_tests PROPERTY VS_DEBUGGER_WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}")
