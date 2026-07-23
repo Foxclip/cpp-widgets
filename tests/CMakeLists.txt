@@ -46,6 +46,14 @@ source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR}/include PREFIX "Header Files" FILE
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} PREFIX "Source Files" FILES ${WIDGET_TESTS_SOURCE_FILES})
 set_property(TARGET widget_tests PROPERTY FOLDER "tests")
 
+if(NOT TARGET test_lib)
+    if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/test_lib/CMakeLists.txt")
+        add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/test_lib")
+    else()
+        message(FATAL_ERROR "test_lib target not found and test_lib not available")
+    endif()
+endif()
+
 target_include_directories(widget_tests PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../include")
 target_include_directories(widget_tests PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")
 target_include_directories(widget_tests PUBLIC "${CMAKE_SOURCE_DIR}")
