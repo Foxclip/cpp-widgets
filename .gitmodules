@@ -4,6 +4,6 @@
 [submodule "clip"]
 	path = clip
 	url = https://github.com/dacap/clip.git
-[submodule "test_lib"]
-	path = test_lib
+[submodule "tests/test_lib"]
+	path = tests/test_lib
 	url = https://github.com/Foxclip/cpp-test-lib.git
