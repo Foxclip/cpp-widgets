@@ -1,0 +1,3 @@
+build/
+.kilo/*
+!.kilo/rules/
