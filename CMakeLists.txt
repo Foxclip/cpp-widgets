@@ -121,7 +121,7 @@ target_link_libraries(widgets_lib PUBLIC logger)
 if(EXISTS "${CMAKE_SOURCE_DIR}/clip/")
     target_include_directories(widgets_lib PUBLIC "${CMAKE_SOURCE_DIR}")
 elseif(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/clip/")
-    target_include_directories(widgets_lib PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/third_party")
+    target_include_directories(widgets_lib PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/clip/")
 endif()
 
 add_subdirectory(tests)
