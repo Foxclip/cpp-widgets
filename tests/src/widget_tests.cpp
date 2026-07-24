@@ -84,7 +84,7 @@ std::string WidgetTests::cursorTypeToStr(sf::Cursor::Type type) {
         case sf::Cursor::Cross:                  return "Cross";
         case sf::Cursor::Help:                   return "Help";
         case sf::Cursor::NotAllowed:             return "NotAllowed";
-        default:                                 mAssert(false, "Unknown cursor type"); return "Unknown";
+        default:                                 wAssert(false, "Unknown cursor type"); return "Unknown";
     }
 }
 
@@ -108,7 +108,7 @@ std::string WidgetTests::anchorToStr(fw::Widget::Anchor anchor) {
         case fw::Widget::Anchor::BOTTOM_LEFT:   return "BOTTOM_LEFT";
         case fw::Widget::Anchor::BOTTOM_CENTER: return "BOTTOM_CENTER";
         case fw::Widget::Anchor::BOTTOM_RIGHT:  return "BOTTOM_RIGHT";
-        default:                                mAssert("Unknown anchor type"); return "Unknown";
+        default:                                wAssert("Unknown anchor type"); return "Unknown";
     }
 }
 
@@ -164,7 +164,7 @@ sf::Vector2f WidgetTests::getGrabPos(fw::WindowWidget* window, ResizePoint resiz
     } else if (resize_point == ResizePoint::BOTTOM_RIGHT) {
         grab_pos = window->getGlobalBottomRight() + sf::Vector2f(cursor_offset, cursor_offset);
     } else {
-        mAssert(false, "Unknown resize point");
+        wAssert(false, "Unknown resize point");
     }
     return grab_pos;
 }
