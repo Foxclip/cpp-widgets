@@ -16,7 +16,7 @@ namespace fw {
 	void _print_msg(bool value, const std::string& message);
 
 #define wAssert(value, ...) \
-	_print_msg(value, __VA_ARGS__); \
+	fw::_print_msg(value, __VA_ARGS__); \
 	assert(value);
 
 #else
