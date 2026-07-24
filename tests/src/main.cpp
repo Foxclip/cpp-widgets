@@ -4,8 +4,8 @@
 void run_tests() {
     test::TestModule root_module("Widget tests", nullptr);
     WidgetTests* widget_module = root_module.addModule<WidgetTests>("Widget", { });
-    root_module.print_summary_enabled = true;
     root_module.run();
+    root_module.printSummary();
 }
 
 int main() {
