@@ -1,3 +1,4 @@
 build/
 .kilo/*
 !.kilo/rules/
+shaders/combined/
