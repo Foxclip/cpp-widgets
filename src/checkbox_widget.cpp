@@ -21,27 +21,27 @@ namespace fw {
 		return checked;
 	}
 
-	const sf::Color& CheckboxWidget::getFillColor() const {
+	const glvx::Color& CheckboxWidget::getFillColor() const {
 		return background_fill_color;
 	}
 
-	const sf::Color& CheckboxWidget::getHighlightFillColor() const {
+	const glvx::Color& CheckboxWidget::getHighlightFillColor() const {
 		return highlight_fill_color;
 	}
 
-	const sf::Color& CheckboxWidget::getCheckFillColor() const {
+	const glvx::Color& CheckboxWidget::getCheckFillColor() const {
 		return check_fill_color;
 	}
 
-	void CheckboxWidget::setFillColor(const sf::Color& color) {
+	void CheckboxWidget::setFillColor(const glvx::Color& color) {
 		background_fill_color = color;
 	}
 
-	void CheckboxWidget::setHighlightFillColor(const sf::Color& color) {
+	void CheckboxWidget::setHighlightFillColor(const glvx::Color& color) {
 		highlight_fill_color = color;
 	}
 
-	void CheckboxWidget::setCheckFillColor(const sf::Color& color) {
+	void CheckboxWidget::setCheckFillColor(const glvx::Color& color) {
 		check_fill_color = color;
 	}
 
@@ -64,15 +64,15 @@ namespace fw {
 		return widget_list.duplicateWidget(this, with_children);
 	}
 
-	void CheckboxWidget::internalOnLeftPress(const sf::Vector2f& pos, bool became_focused) {
+	void CheckboxWidget::internalOnLeftPress(const glvx::Vector2f& pos, bool became_focused) {
 		toggleValue();
 	}
 
-	void CheckboxWidget::internalOnMouseEnter(const sf::Vector2f& pos) {
+	void CheckboxWidget::internalOnMouseEnter(const glvx::Vector2f& pos) {
 		RectangleWidget::setFillColor(highlight_fill_color);
 	}
 
-	void CheckboxWidget::internalOnMouseExit(const sf::Vector2f& pos) {
+	void CheckboxWidget::internalOnMouseExit(const glvx::Vector2f& pos) {
 		RectangleWidget::setFillColor(background_fill_color);
 	}
 

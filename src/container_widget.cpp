@@ -11,7 +11,7 @@ namespace fw {
 		setSizeYPolicy(SizePolicy::CHILDREN);
 	}
 
-	ContainerWidget::ContainerWidget(WidgetList& widget_list, const sf::Vector2f& size) 
+	ContainerWidget::ContainerWidget(WidgetList& widget_list, const glvx::Vector2f& size) 
 		: ContainerWidget(widget_list, size.x, size.y) { }
 
 	bool ContainerWidget::getHorizontal() const {
@@ -120,10 +120,10 @@ namespace fw {
 	}
 
 	void ContainerWidget::updateSizeX() {
-		sf::Vector2f new_pos = getPosition();
-		sf::Vector2f new_size = getSize();
+		glvx::Vector2f new_pos = getPosition();
+		glvx::Vector2f new_size = getSize();
 		if (size_policy_x == SizePolicy::CHILDREN) {
-			new_size.x = children_bounds.width + right_padding;
+			new_size.x = children_bounds.size.x + right_padding;
 		} else {
 			Widget::updateSizeX();
 			return;
@@ -133,10 +133,10 @@ namespace fw {
 	}
 
 	void ContainerWidget::updateSizeY() {
-		sf::Vector2f new_pos = getPosition();
-		sf::Vector2f new_size = getSize();
+		glvx::Vector2f new_pos = getPosition();
+		glvx::Vector2f new_size = getSize();
 		if (size_policy_y == SizePolicy::CHILDREN) {
-			new_size.y = children_bounds.height + bottom_padding;
+			new_size.y = children_bounds.size.y + bottom_padding;
 		} else {
 			Widget::updateSizeY();
 			return;
@@ -288,20 +288,20 @@ namespace fw {
 			set_size(widget, size_after_exp);
 		}
 		// setting child positions
-		children_bounds = sf::FloatRect();
+		children_bounds = glvx::FloatRect();
 		float next_pos = get_outer_padding_1();
 		for (size_t i = 0; i < children.size(); i++) {
 			Widget* child = children[i];
 			if (!child->isVisible()) {
 				continue;
 			}
-			sf::Vector2f child_pos =
+			glvx::Vector2f child_pos =
 				horizontal
-				? sf::Vector2f(next_pos, child->getPosition().y)
-				: sf::Vector2f(child->getPosition().x, next_pos);
+				? glvx::Vector2f(next_pos, child->getPosition().y)
+				: glvx::Vector2f(child->getPosition().x, next_pos);
 			child->setPosition(child_pos);
 			next_pos += get_size(child) + get_inner_padding();
-			sf::FloatRect child_bounds = child->getParentLocalBounds();
+			glvx::FloatRect child_bounds = child->getParentLocalBounds();
 			extend_bounds(children_bounds, child_bounds);
 		}
 	}
@@ -328,17 +328,17 @@ namespace fw {
 			}
 		}
 		// setting child positions
-		children_bounds = sf::FloatRect();
+		children_bounds = glvx::FloatRect();
 		float secondary_pos = get_secondary_outer_padding_1() + alignmentToOffset(get_alignment(), max_secondary_size);
 		for (size_t i = 0; i < children.size(); i++) {
 			Widget* child = children[i];
-			sf::Vector2f child_pos =
+			glvx::Vector2f child_pos =
 				horizontal
-				? sf::Vector2f(child->getPosition().x, secondary_pos)
-				: sf::Vector2f(secondary_pos, child->getPosition().y);
+				? glvx::Vector2f(child->getPosition().x, secondary_pos)
+				: glvx::Vector2f(secondary_pos, child->getPosition().y);
 			child->setPosition(child_pos);
 			child->setOrigin(alignmentToAnchor(get_alignment()));
-			sf::FloatRect child_bounds = child->getParentLocalBounds();
+			glvx::FloatRect child_bounds = child->getParentLocalBounds();
 			extend_bounds(children_bounds, child_bounds);
 		}
 	}

@@ -26,11 +26,11 @@ void WidgetTestsTreeView::treeviewWidgetBasicTest(test::Test& test) {
     application.init(test.name, 800, 600, 0, false);
     application.start(true);
     application.advance();
-    sf::Vector2f size(100.0f, 100.0f);
+    glvx::Vector2f size(100.0f, 100.0f);
     fw::TreeViewWidget* tree_view_widget = application.getWidgets().createTreeViewWidget(size);
     fw::Widget* root_widget = application.getWidgets().getRootWidget();
     T_ASSERT(T_CHECK(tree_view_widget));
-    sf::Vector2f position(100.0f, 100.0f);
+    glvx::Vector2f position(100.0f, 100.0f);
     tree_view_widget->setPosition(position);
 
     GenericWidgetTest gwt(application, test);
@@ -57,8 +57,8 @@ void WidgetTestsTreeView::treeviewWidgetBasicTest(test::Test& test) {
     gwt.clip_children = true;
     gwt.force_custom_cursor = false;
     gwt.parent = root_widget;
-    gwt.local_bounds = sf::FloatRect(sf::Vector2f(), size);
-    gwt.global_bounds = sf::FloatRect(position, size);
+    gwt.local_bounds = glvx::FloatRect(glvx::Vector2f(), size);
+    gwt.global_bounds = glvx::FloatRect(position, size);
     gwt.parent_local_bounds = gwt.global_bounds;
     gwt.visual_local_bounds = gwt.local_bounds;
     gwt.visual_global_bounds = gwt.global_bounds;
@@ -72,9 +72,9 @@ void WidgetTestsTreeView::treeviewWidgetEntriesTest(test::Test& test) {
     application.setDefaultFont(getFont());
     application.start(true);
     application.advance();
-    sf::Vector2f size(100.0f, 100.0f);
+    glvx::Vector2f size(100.0f, 100.0f);
     fw::TreeViewWidget* tree_view_widget = application.getWidgets().createTreeViewWidget(size);
-    sf::Vector2f position(100.0f, 100.0f);
+    glvx::Vector2f position(100.0f, 100.0f);
     tree_view_widget->setPosition(position);
 
     tree_view_widget->addEntry("Entry 1");
@@ -84,7 +84,7 @@ void WidgetTestsTreeView::treeviewWidgetEntriesTest(test::Test& test) {
     auto rect_to_str = &WidgetTests::floatRectToStr;
     auto rect_approx_cmp = &WidgetTests::rectApproxCmp;
     float treeview_height = calcTreeViewHeight(tree_view_widget);
-    sf::FloatRect local_bounds(0.0f, 0.0f, size.x, treeview_height);
+    glvx::FloatRect local_bounds(0.0f, 0.0f, size.x, treeview_height);
     T_COMPARE(tree_view_widget->getLocalBounds(), local_bounds, rect_to_str, rect_approx_cmp);
 }
 
@@ -94,9 +94,9 @@ void WidgetTestsTreeView::treeviewWidgetParent1Test(test::Test& test) {
     application.setDefaultFont(getFont());
     application.start(true);
     application.advance();
-    sf::Vector2f size(100.0f, 100.0f);
+    glvx::Vector2f size(100.0f, 100.0f);
     fw::TreeViewWidget* tree_view_widget = application.getWidgets().createTreeViewWidget(size);
-    sf::Vector2f position(100.0f, 100.0f);
+    glvx::Vector2f position(100.0f, 100.0f);
     tree_view_widget->setPosition(position);
 
     fw::TreeViewEntry* entry_1 = tree_view_widget->addEntry("Entry 1");
@@ -113,7 +113,7 @@ void WidgetTestsTreeView::treeviewWidgetParent1Test(test::Test& test) {
     auto rect_to_str = &WidgetTests::floatRectToStr;
     auto rect_approx_cmp = &WidgetTests::rectApproxCmp;
     float treeview_height = calcTreeViewHeight(tree_view_widget);
-    sf::FloatRect local_bounds(0.0f, 0.0f, size.x, treeview_height);
+    glvx::FloatRect local_bounds(0.0f, 0.0f, size.x, treeview_height);
     T_COMPARE(tree_view_widget->getLocalBounds(), local_bounds, rect_to_str, rect_approx_cmp);
 }
 
@@ -123,9 +123,9 @@ void WidgetTestsTreeView::treeviewWidgetParent2Test(test::Test& test) {
     application.setDefaultFont(getFont());
     application.start(true);
     application.advance();
-    sf::Vector2f size(100.0f, 100.0f);
+    glvx::Vector2f size(100.0f, 100.0f);
     fw::TreeViewWidget* tree_view_widget = application.getWidgets().createTreeViewWidget(size);
-    sf::Vector2f position(100.0f, 100.0f);
+    glvx::Vector2f position(100.0f, 100.0f);
     tree_view_widget->setPosition(position);
 
     fw::TreeViewEntry* entry_1 = tree_view_widget->addEntry("Entry 1");
@@ -138,7 +138,7 @@ void WidgetTestsTreeView::treeviewWidgetParent2Test(test::Test& test) {
     auto rect_to_str = &WidgetTests::floatRectToStr;
     auto rect_approx_cmp = &WidgetTests::rectApproxCmp;
     float treeview_height = calcTreeViewHeight(tree_view_widget);
-    sf::FloatRect local_bounds(0.0f, 0.0f, size.x, treeview_height);
+    glvx::FloatRect local_bounds(0.0f, 0.0f, size.x, treeview_height);
     T_COMPARE(tree_view_widget->getLocalBounds(), local_bounds, rect_to_str, rect_approx_cmp);
 }
 
@@ -148,34 +148,34 @@ void WidgetTestsTreeView::treeviewWidgetSelectTest(test::Test& test) {
     application.setDefaultFont(getFont());
     application.start(true);
     application.advance();
-    sf::Vector2f size(100.0f, 100.0f);
+    glvx::Vector2f size(100.0f, 100.0f);
     fw::TreeViewWidget* tree_view_widget = application.getWidgets().createTreeViewWidget(size);
-    sf::Vector2f position(100.0f, 100.0f);
+    glvx::Vector2f position(100.0f, 100.0f);
     tree_view_widget->setPosition(position);
 
     auto click_entry = [&](fw::TreeViewEntry* entry, bool shift = false, bool ctrl = false) {
-        sf::Vector2f entry_pos = entry->getRectangleWidget()->getGlobalCenter();
+        glvx::Vector2f entry_pos = entry->getRectangleWidget()->getGlobalCenter();
         application.mouseMove(entry_pos);
         if (shift) {
-            application.keyPress(sf::Keyboard::LShift);
+            application.keyPress(glvx::Key::LShift);
         }
         if (ctrl) {
-            application.keyPress(sf::Keyboard::LControl);
+            application.keyPress(glvx::Key::LControl);
         }
         application.mouseLeftPress();
         application.advance();
         application.mouseLeftRelease();
         application.advance();
         if (ctrl) {
-            application.keyRelease(sf::Keyboard::LControl);
+            application.keyRelease(glvx::Key::LControl);
         }
         if (shift) {
-            application.keyRelease(sf::Keyboard::LShift);
+            application.keyRelease(glvx::Key::LShift);
         }
         application.advance();
     };
     auto click_arrow = [&](fw::TreeViewEntry* entry) {
-        sf::Vector2f arrow_pos = entry->getArrowAreaWidget()->getGlobalCenter();
+        glvx::Vector2f arrow_pos = entry->getArrowAreaWidget()->getGlobalCenter();
         application.mouseMove(arrow_pos);
         application.mouseLeftPress();
         application.advance();
@@ -363,9 +363,9 @@ void WidgetTestsTreeView::treeviewWidgetReorderTest(test::Test& test) {
     application.setDefaultFont(getFont());
     application.start(true);
     application.advance();
-    sf::Vector2f size(200.0f, 100.0f);
+    glvx::Vector2f size(200.0f, 100.0f);
     fw::TreeViewWidget* tree_view_widget = application.getWidgets().createTreeViewWidget(size);
-    sf::Vector2f position(100.0f, 100.0f);
+    glvx::Vector2f position(100.0f, 100.0f);
     tree_view_widget->setPosition(position);
 
     fw::TreeViewEntry* entry_1 = tree_view_widget->addEntry("Entry 1");
@@ -430,9 +430,9 @@ void WidgetTestsTreeView::treeviewWidgetRemoveTest(test::Test& test) {
     application.setDefaultFont(getFont());
     application.start(true);
     application.advance();
-    sf::Vector2f size(200.0f, 100.0f);
+    glvx::Vector2f size(200.0f, 100.0f);
     fw::TreeViewWidget* tree_view_widget = application.getWidgets().createTreeViewWidget(size);
-    sf::Vector2f position(100.0f, 100.0f);
+    glvx::Vector2f position(100.0f, 100.0f);
     tree_view_widget->setPosition(position);
 
     fw::TreeViewEntry* entry_1 = tree_view_widget->addEntry("Entry 1");
@@ -565,9 +565,9 @@ void WidgetTestsTreeView::treeviewWidgetClearTest(test::Test& test) {
     application.setDefaultFont(getFont());
     application.start(true);
     application.advance();
-    sf::Vector2f size(200.0f, 100.0f);
+    glvx::Vector2f size(200.0f, 100.0f);
     fw::TreeViewWidget* tree_view_widget = application.getWidgets().createTreeViewWidget(size);
-    sf::Vector2f position(100.0f, 100.0f);
+    glvx::Vector2f position(100.0f, 100.0f);
     tree_view_widget->setPosition(position);
 
     fw::TreeViewEntry* entry_1 = tree_view_widget->addEntry("Entry 1");
@@ -614,9 +614,9 @@ void WidgetTestsTreeView::treeviewWidgetDrag1Test(test::Test& test) {
     application.setDefaultFont(getFont());
     application.start(true);
     application.advance();
-    sf::Vector2f size(200.0f, 100.0f);
+    glvx::Vector2f size(200.0f, 100.0f);
     fw::TreeViewWidget* tree_view_widget = application.getWidgets().createTreeViewWidget(size);
-    sf::Vector2f position(100.0f, 100.0f);
+    glvx::Vector2f position(100.0f, 100.0f);
     tree_view_widget->setPosition(position);
 
     fw::TreeViewEntry* entry_1 = tree_view_widget->addEntry("Entry 1");
@@ -630,15 +630,15 @@ void WidgetTestsTreeView::treeviewWidgetDrag1Test(test::Test& test) {
         checkEntries(test, entry, entries);
     };
 
-    sf::Vector2f center_offset = sf::Vector2f(0.0f, -2.0f);
+    glvx::Vector2f center_offset = glvx::Vector2f(0.0f, -2.0f);
     fw::Widget* entry_1_widget = entry_1->getWidget();
     fw::Widget* entry_2_widget = entry_2->getWidget();
 
     // drag to the right
-    sf::Vector2f entry_1_center = entry_1_widget->getGlobalCenter();
-    sf::Vector2f drag_offset_1 = sf::Vector2f(fw::TREEVIEW_ENTRY_DRAG_DISTANCE + 5.0f, 0.0f);
-    sf::Vector2f drag_start = entry_1_center + center_offset;
-    sf::Vector2f drag_pos_1 = drag_start + drag_offset_1;
+    glvx::Vector2f entry_1_center = entry_1_widget->getGlobalCenter();
+    glvx::Vector2f drag_offset_1 = glvx::Vector2f(fw::TREEVIEW_ENTRY_DRAG_DISTANCE + 5.0f, 0.0f);
+    glvx::Vector2f drag_start = entry_1_center + center_offset;
+    glvx::Vector2f drag_pos_1 = drag_start + drag_offset_1;
     application.mouseMove(drag_start);
     application.advance();
     application.mouseLeftPress();
@@ -655,22 +655,22 @@ void WidgetTestsTreeView::treeviewWidgetDrag1Test(test::Test& test) {
     T_CHECK(fw::TreeViewWidget::target_highlight.visible);
     T_VEC2_COMPARE(
         fw::TreeViewWidget::target_highlight.pos,
-        entry_1_widget->getGlobalPosition() - sf::Vector2f(0.0f, fw::TREEVIEW_CONTAINER_PADDING)
+        entry_1_widget->getGlobalPosition() - glvx::Vector2f(0.0f, fw::TREEVIEW_CONTAINER_PADDING)
     );
 
     // drag down
-    sf::Vector2f drag_pos_2 = drag_pos_1 + sf::Vector2f(0.0f, 50.0f);
+    glvx::Vector2f drag_pos_2 = drag_pos_1 + glvx::Vector2f(0.0f, 50.0f);
     application.mouseMove(drag_pos_2);
     application.advance();
     T_VEC2_COMPARE(fw::TreeViewWidget::target_highlight.pos, entry_2_widget->getGlobalBottomLeft());
 
     // drag up
-    sf::Vector2f drag_pos_3 = drag_pos_1 + sf::Vector2f(0.0f, -50.0f);
+    glvx::Vector2f drag_pos_3 = drag_pos_1 + glvx::Vector2f(0.0f, -50.0f);
     application.mouseMove(drag_pos_3);
     application.advance();
     T_VEC2_COMPARE(
         fw::TreeViewWidget::target_highlight.pos,
-        entry_1_widget->getGlobalPosition() - sf::Vector2f(0.0f, fw::TREEVIEW_CONTAINER_PADDING)
+        entry_1_widget->getGlobalPosition() - glvx::Vector2f(0.0f, fw::TREEVIEW_CONTAINER_PADDING)
     );
 
     // drop to the top
@@ -704,9 +704,9 @@ void WidgetTestsTreeView::treeviewWidgetDrag2Test(test::Test& test) {
     application.setDefaultFont(getFont());
     application.start(true);
     application.advance();
-    sf::Vector2f size(200.0f, 100.0f);
+    glvx::Vector2f size(200.0f, 100.0f);
     fw::TreeViewWidget* tree_view_widget = application.getWidgets().createTreeViewWidget(size);
-    sf::Vector2f position(100.0f, 100.0f);
+    glvx::Vector2f position(100.0f, 100.0f);
     tree_view_widget->setPosition(position);
 
     fw::TreeViewEntry* entry_1 = tree_view_widget->addEntry("Entry 1");
@@ -726,19 +726,19 @@ void WidgetTestsTreeView::treeviewWidgetDrag2Test(test::Test& test) {
         checkEntries(test, entry, entries);
     };
     auto get_bottom_drag_pos = [&]() {
-		return tree_view_widget->getBottom() + sf::Vector2f(0.0f, 50.0f);
+		return tree_view_widget->getBottom() + glvx::Vector2f(0.0f, 50.0f);
     };
-    auto drag_entry = [&](fw::TreeViewEntry* entry, const sf::Vector2f& pos, bool drop = false) {
+    auto drag_entry = [&](fw::TreeViewEntry* entry, const glvx::Vector2f& pos, bool drop = false) {
         dragEntry(application, entry, pos, drop);
     };
 
     // drop to the top
-    sf::Vector2f drag_top = tree_view_widget->getTop() + sf::Vector2f(0.0f, -50.0f);
+    glvx::Vector2f drag_top = tree_view_widget->getTop() + glvx::Vector2f(0.0f, -50.0f);
     drag_entry(entry_1, drag_top);
     application.advance();
     T_VEC2_COMPARE(
         fw::TreeViewWidget::target_highlight.pos,
-        entry_1_widget->getGlobalPosition() - sf::Vector2f(0.0f, fw::TREEVIEW_CONTAINER_PADDING)
+        entry_1_widget->getGlobalPosition() - glvx::Vector2f(0.0f, fw::TREEVIEW_CONTAINER_PADDING)
     );
     application.mouseLeftRelease();
     application.advance();
@@ -758,12 +758,12 @@ void WidgetTestsTreeView::treeviewWidgetDrag2Test(test::Test& test) {
     T_ASSERT_NO_ERRORS();
     entry_2->expand();
     application.advance();
-    sf::Vector2f drag_inside = entry_3_widget->getGlobalTop();
+    glvx::Vector2f drag_inside = entry_3_widget->getGlobalTop();
     drag_entry(entry_1, drag_inside);
     application.advance();
     T_VEC2_COMPARE(
         fw::TreeViewWidget::target_highlight.pos,
-        entry_3_widget->getGlobalPosition() - sf::Vector2f(0.0f, fw::TREEVIEW_CONTAINER_PADDING)
+        entry_3_widget->getGlobalPosition() - glvx::Vector2f(0.0f, fw::TREEVIEW_CONTAINER_PADDING)
     );
     application.mouseLeftRelease();
     application.advance();
@@ -807,11 +807,11 @@ void WidgetTestsTreeView::treeviewWidgetDrag2Test(test::Test& test) {
     // drop entry with a child to the bottom
     entry_3->setParent(entry_2);
     application.advance();
-    sf::Vector2f entry_2_rect_center = entry_2->getRectangleWidget()->getGlobalCenter();
+    glvx::Vector2f entry_2_rect_center = entry_2->getRectangleWidget()->getGlobalCenter();
     application.mouseMove(entry_2_rect_center);
     application.mouseLeftPress();
     application.advance();
-    sf::Vector2f bottom_drag_pos = get_bottom_drag_pos();
+    glvx::Vector2f bottom_drag_pos = get_bottom_drag_pos();
     application.mouseMove(bottom_drag_pos);
     application.advance();
     application.advance();
@@ -841,12 +841,12 @@ void WidgetTestsTreeView::treeviewWidgetDrag3Test(test::Test& test) {
     application.setDefaultFont(getFont());
     application.start(true);
     application.advance();
-    sf::Vector2f size(200.0f, 100.0f);
+    glvx::Vector2f size(200.0f, 100.0f);
     fw::TreeViewWidget* tree_view_widget = application.getWidgets().createTreeViewWidget(size);
-    sf::Vector2f position(100.0f, 100.0f);
+    glvx::Vector2f position(100.0f, 100.0f);
     tree_view_widget->setPosition(position);
 
-    auto drag_entry = [&](fw::TreeViewEntry* entry, const sf::Vector2f& pos, bool drop = false) {
+    auto drag_entry = [&](fw::TreeViewEntry* entry, const glvx::Vector2f& pos, bool drop = false) {
         dragEntry(application, entry, pos, drop);
     };
     auto check_top_entries = [&](const std::initializer_list<fw::TreeViewEntry*>& entries) {
@@ -882,7 +882,7 @@ void WidgetTestsTreeView::treeviewWidgetDrag3Test(test::Test& test) {
     T_WRAP_CONTAINER(check_entries(entry_6, { entry_6_1, entry_6_2 }));
 
     // drag entry 6 in between entry 4 and entry 5
-    sf::Vector2f drag_pos_1 = entry_5->getRectangleWidget()->getGlobalTop();
+    glvx::Vector2f drag_pos_1 = entry_5->getRectangleWidget()->getGlobalTop();
     drag_entry(entry_6, drag_pos_1, true);
     T_WRAP_CONTAINER(check_top_entries({ entry_1, entry_2, entry_3, entry_4, entry_6, entry_5 }));
     T_WRAP_CONTAINER(check_entries(entry_4, { entry_4_1, entry_4_2 }));
@@ -892,7 +892,7 @@ void WidgetTestsTreeView::treeviewWidgetDrag3Test(test::Test& test) {
     // drag entry 6 before the first child of entry 4
     entry_4->expand();
     application.advance();
-    sf::Vector2f drag_pos_2 = entry_4_1->getRectangleWidget()->getGlobalTop();
+    glvx::Vector2f drag_pos_2 = entry_4_1->getRectangleWidget()->getGlobalTop();
     drag_entry(entry_6, drag_pos_2, true);
     T_WRAP_CONTAINER(check_top_entries({ entry_1, entry_2, entry_3, entry_4, entry_5 }));
     T_WRAP_CONTAINER(check_entries(entry_4, { entry_6, entry_4_1, entry_4_2 }));
@@ -907,8 +907,8 @@ void WidgetTestsTreeView::treeviewWidgetDrag4Test(test::Test& test) {
     application.setDefaultFont(getFont());
     application.start(true);
     application.advance();
-    sf::Vector2f size(200.0f, 200.0f);
-    sf::Vector2f position(100.0f, 100.0f);
+    glvx::Vector2f size(200.0f, 200.0f);
+    glvx::Vector2f position(100.0f, 100.0f);
 	fw::ScrollAreaWidget* scroll_area_widget = application.getWidgets().createScrollAreaWidget(size);
     scroll_area_widget->setPosition(position);
     fw::TreeViewWidget* tree_view_widget = application.getWidgets().createTreeViewWidget(size);
@@ -916,7 +916,7 @@ void WidgetTestsTreeView::treeviewWidgetDrag4Test(test::Test& test) {
     tree_view_widget->setParent(scroll_area_widget);
     scroll_area_widget->setScrolledWidget(tree_view_widget);
 
-    auto drag_entry = [&](fw::TreeViewEntry* entry, const sf::Vector2f& pos, bool drop = false) {
+    auto drag_entry = [&](fw::TreeViewEntry* entry, const glvx::Vector2f& pos, bool drop = false) {
         dragEntry(application, entry, pos, drop);
     };
     auto check_top_entries = [&](const std::initializer_list<fw::TreeViewEntry*>& entries) {
@@ -952,7 +952,7 @@ void WidgetTestsTreeView::treeviewWidgetDrag4Test(test::Test& test) {
     T_WRAP_CONTAINER(check_entries(entry_6, { entry_6_1, entry_6_2 }));
 
     // drag entry 6 in between entry 4 and entry 5
-    sf::Vector2f drag_pos_1 = entry_5->getRectangleWidget()->getGlobalTop();
+    glvx::Vector2f drag_pos_1 = entry_5->getRectangleWidget()->getGlobalTop();
     drag_entry(entry_6, drag_pos_1, true);
     T_WRAP_CONTAINER(check_top_entries({ entry_1, entry_2, entry_3, entry_4, entry_6, entry_5 }));
     T_WRAP_CONTAINER(check_entries(entry_4, { entry_4_1, entry_4_2 }));
@@ -962,7 +962,7 @@ void WidgetTestsTreeView::treeviewWidgetDrag4Test(test::Test& test) {
     // drag entry 6 before the first child of entry 4
     entry_4->expand();
     application.advance();
-    sf::Vector2f drag_pos_2 = entry_4_1->getRectangleWidget()->getGlobalTop();
+    glvx::Vector2f drag_pos_2 = entry_4_1->getRectangleWidget()->getGlobalTop();
     drag_entry(entry_6, drag_pos_2, true);
     T_WRAP_CONTAINER(check_top_entries({ entry_1, entry_2, entry_3, entry_4, entry_5 }));
     T_WRAP_CONTAINER(check_entries(entry_4, { entry_6, entry_4_1, entry_4_2 }));
@@ -976,9 +976,9 @@ void WidgetTestsTreeView::treeviewWidgetDrag5Test(test::Test& test) {
     application.setDefaultFont(getFont());
     application.start(true);
     application.advance();
-    sf::Vector2f size(200.0f, 100.0f);
+    glvx::Vector2f size(200.0f, 100.0f);
     fw::TreeViewWidget* tree_view_widget = application.getWidgets().createTreeViewWidget(size);
-    sf::Vector2f position(100.0f, 100.0f);
+    glvx::Vector2f position(100.0f, 100.0f);
     tree_view_widget->setPosition(position);
 
     fw::TreeViewEntry* entry_1 = tree_view_widget->addEntry("Entry 1");
@@ -994,21 +994,21 @@ void WidgetTestsTreeView::treeviewWidgetDrag5Test(test::Test& test) {
     auto check_top_entries = [&](const std::initializer_list<fw::TreeViewEntry*>& entries) {
         checkTopEntries(test, tree_view_widget, entries);
     };
-    auto drag_entry = [&](fw::TreeViewEntry* entry, const sf::Vector2f& pos, bool drop = false) {
+    auto drag_entry = [&](fw::TreeViewEntry* entry, const glvx::Vector2f& pos, bool drop = false) {
         dragEntry(application, entry, pos, drop);
     };
 
     // drop entry 1 between entries 3 and 4
     // not using drag_entry because entries shift positions when entry 1 is taken
-    sf::Vector2f entry_1_center = entry_1_widget->getGlobalCenter();
+    glvx::Vector2f entry_1_center = entry_1_widget->getGlobalCenter();
     application.mouseMove(entry_1_center);
     application.mouseLeftPress();
     application.advance();
     // taking entry 1
-    application.mouseMove(entry_1_center + sf::Vector2f(fw::TREEVIEW_ENTRY_DRAG_DISTANCE + 1.0f, 0.0f));
+    application.mouseMove(entry_1_center + glvx::Vector2f(fw::TREEVIEW_ENTRY_DRAG_DISTANCE + 1.0f, 0.0f));
     application.advance();
     // dropping it to the current entry 4 top
-    sf::Vector2f entry_4_top = entry_4_widget->getGlobalTop();
+    glvx::Vector2f entry_4_top = entry_4_widget->getGlobalTop();
     application.mouseMove(entry_4_top);
     application.advance();
     application.advance();
@@ -1025,9 +1025,9 @@ void WidgetTestsTreeView::treeviewWidgetDragSelfTest(test::Test& test) {
     application.setDefaultFont(getFont());
     application.start(true);
     application.advance();
-    sf::Vector2f size(200.0f, 100.0f);
+    glvx::Vector2f size(200.0f, 100.0f);
     fw::TreeViewWidget* tree_view_widget = application.getWidgets().createTreeViewWidget(size);
-    sf::Vector2f position(100.0f, 100.0f);
+    glvx::Vector2f position(100.0f, 100.0f);
     tree_view_widget->setPosition(position);
 
     fw::TreeViewEntry* entry_1 = tree_view_widget->addEntry("Entry 1");
@@ -1052,13 +1052,13 @@ void WidgetTestsTreeView::treeviewWidgetDragSelfTest(test::Test& test) {
     T_WRAP_CONTAINER(check_top_entries({ entry_1 }));
     T_WRAP_CONTAINER(check_entries(entry_1, { entry_2 }));
 
-    sf::Vector2f drag_pos_1 = entry_2_widget->getGlobalTop();
+    glvx::Vector2f drag_pos_1 = entry_2_widget->getGlobalTop();
     dragEntry(application, entry_1, drag_pos_1, true);
 
     T_WRAP_CONTAINER(check_top_entries({ entry_1 }));
     T_WRAP_CONTAINER(check_entries(entry_1, { entry_2 }));
 
-    sf::Vector2f drag_pos_2 = entry_3_widget->getGlobalTop();
+    glvx::Vector2f drag_pos_2 = entry_3_widget->getGlobalTop();
     dragEntry(application, entry_1, drag_pos_2, true);
 
     T_WRAP_CONTAINER(check_top_entries({ entry_1 }));
@@ -1071,8 +1071,8 @@ void WidgetTestsTreeView::treeviewWidgetDragCancelTest(test::Test& test) {
     application.setDefaultFont(getFont());
     application.start(true);
     application.advance();
-    sf::Vector2f size(200.0f, 200.0f);
-    sf::Vector2f position(100.0f, 100.0f);
+    glvx::Vector2f size(200.0f, 200.0f);
+    glvx::Vector2f position(100.0f, 100.0f);
     fw::ScrollAreaWidget* scroll_area_widget = application.getWidgets().createScrollAreaWidget(size);
     scroll_area_widget->setPosition(position);
     fw::TreeViewWidget* tree_view_widget = application.getWidgets().createTreeViewWidget(size);
@@ -1080,7 +1080,7 @@ void WidgetTestsTreeView::treeviewWidgetDragCancelTest(test::Test& test) {
     tree_view_widget->setParent(scroll_area_widget);
     scroll_area_widget->setScrolledWidget(tree_view_widget);
 
-    auto drag_entry = [&](fw::TreeViewEntry* entry, const sf::Vector2f& pos, bool drop = false) {
+    auto drag_entry = [&](fw::TreeViewEntry* entry, const glvx::Vector2f& pos, bool drop = false) {
         dragEntry(application, entry, pos, drop);
     };
     auto check_top_entries = [&](const std::initializer_list<fw::TreeViewEntry*>& entries) {
@@ -1116,7 +1116,7 @@ void WidgetTestsTreeView::treeviewWidgetDragCancelTest(test::Test& test) {
     T_WRAP_CONTAINER(check_entries(entry_6, { entry_6_1, entry_6_2 }));
 
     // drag entry 1
-    sf::Vector2f drag_pos_1 = tree_view_widget->getGlobalTop();
+    glvx::Vector2f drag_pos_1 = tree_view_widget->getGlobalTop();
     drag_entry(entry_1, drag_pos_1, false);
     T_WRAP_CONTAINER(check_top_entries({ entry_1, entry_2, entry_3, entry_4, entry_5, entry_6 }));
     T_WRAP_CONTAINER(check_entries(entry_4, { entry_4_1, entry_4_2 }));
@@ -1124,7 +1124,7 @@ void WidgetTestsTreeView::treeviewWidgetDragCancelTest(test::Test& test) {
     T_WRAP_CONTAINER(check_entries(entry_6, { entry_6_1, entry_6_2 }));
 
     // cancel dragging
-    TAP_KEY(sf::Keyboard::Escape);
+    TAP_KEY(glvx::Key::Escape);
     T_WRAP_CONTAINER(check_top_entries({ entry_1, entry_2, entry_3, entry_4, entry_5, entry_6 }));
     T_WRAP_CONTAINER(check_entries(entry_4, { entry_4_1, entry_4_2 }));
     T_WRAP_CONTAINER(check_entries(entry_5, { entry_5_1, entry_5_2 }));
@@ -1193,8 +1193,8 @@ void WidgetTestsTreeView::checkEntries(test::Test& test, fw::TreeViewEntry* entr
     }
 }
 
-void WidgetTestsTreeView::dragEntry(fw::Application& application, fw::TreeViewEntry* entry, const sf::Vector2f& pos, bool drop) {
-	sf::Vector2f entry_rect_center = entry->getRectangleWidget()->getGlobalCenter();
+void WidgetTestsTreeView::dragEntry(fw::Application& application, fw::TreeViewEntry* entry, const glvx::Vector2f& pos, bool drop) {
+	glvx::Vector2f entry_rect_center = entry->getRectangleWidget()->getGlobalCenter();
 	application.mouseMove(entry_rect_center);
 	application.mouseLeftPress();
 	application.advance();

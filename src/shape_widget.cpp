@@ -5,24 +5,23 @@ namespace fw {
 
 	ShapeWidget::ShapeWidget(WidgetList& widget_list) : Widget(widget_list) { }
 
-	sf::FloatRect ShapeWidget::getLocalBounds() const {
-		return getShape().getLocalBounds();
+	const glvx::Color& ShapeWidget::getFillColor() const {
+		return fill_color;
 	}
 
-	const sf::Color& ShapeWidget::getFillColor() const {
-		return getShape().getFillColor();
+	void ShapeWidget::setFillColor(const glvx::Color& color) {
+		fill_color = color;
+		getShape().setColor(color);
 	}
 
-	void ShapeWidget::setFillColor(const sf::Color& color) {
-		getShape().setFillColor(color);
-	}
-
-	void ShapeWidget::setOutlineColor(const sf::Color& color) {
-		getShape().setOutlineColor(color);
+	void ShapeWidget::setOutlineColor(const glvx::Color& color) {
+		// no-op: GLVX shapes have no outline support
+		outline_color = color;
 	}
 
 	void ShapeWidget::setOutlineThickness(float thickness) {
-		getShape().setOutlineThickness(thickness);
+		// no-op: GLVX shapes have no outline support
+		outline_thickness = thickness;
 	}
 
 }

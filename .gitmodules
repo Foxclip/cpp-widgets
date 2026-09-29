@@ -10,3 +10,6 @@
 [submodule "logger"]
 	path = logger
 	url = https://github.com/Foxclip/cpp-logger.git
+[submodule "GLVX"]
+	path = GLVX
+	url = https://github.com/Foxclip/GLVX.git

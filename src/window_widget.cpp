@@ -24,7 +24,7 @@ namespace fw {
 		header_widget->setName("header");
 		header_widget->setSizeXPolicy(SizePolicy::PARENT);
 		header_size = getSize();
-		header_widget->OnLeftPress += [&](const sf::Vector2f& pos) {
+		header_widget->OnLeftPress += [&](const glvx::Vector2f& pos) {
 			is_grabbed = true;
 			header_click_offset = getGlobalPosition() - pos;
 			widget_list.addPostAction([this](WidgetList& widget_list) {
@@ -32,25 +32,25 @@ namespace fw {
 				moveToTop();
 			}, PostActionStage::MOVE);
 		};
-		header_widget->OnProcessMouse += [&](const sf::Vector2f& pos) {
+		header_widget->OnProcessMouse += [&](const glvx::Vector2f& pos) {
 			if (is_grabbed) {
-				sf::Vector2f parent_local_pos = parent->toLocal(pos);
-				sf::Vector2f new_pos = parent_local_pos + header_click_offset;
-				sf::FloatRect parent_local_bounds = header_widget->getParentLocalBounds();
-				sf::Vector2f parent_size = parent->getSize();
+				glvx::Vector2f parent_local_pos = parent->toLocal(pos);
+				glvx::Vector2f new_pos = parent_local_pos + header_click_offset;
+				glvx::FloatRect parent_local_bounds = header_widget->getParentLocalBounds();
+				glvx::Vector2f parent_size = parent->getSize();
 				new_pos.x = std::clamp(
 					new_pos.x,
-					WINDOW_ONSCREEN_MARGIN - parent_local_bounds.width,
+					WINDOW_ONSCREEN_MARGIN - parent_local_bounds.size.x,
 					parent_size.x - WINDOW_ONSCREEN_MARGIN
 				);
 				new_pos.y = std::clamp(new_pos.y,
-					WINDOW_ONSCREEN_MARGIN - parent_local_bounds.height,
+					WINDOW_ONSCREEN_MARGIN - parent_local_bounds.size.y,
 					parent_size.y - WINDOW_ONSCREEN_MARGIN
 				);
 				setTransformPosition(new_pos);
 			}
 		};
-		header_widget->OnGlobalLeftRelease += [&](const sf::Vector2f& pos) {
+		header_widget->OnGlobalLeftRelease += [&](const glvx::Vector2f& pos) {
 			is_grabbed = false;
 		};
 		header_widget->setParent(this);
@@ -78,7 +78,7 @@ namespace fw {
 		main_widget->setParent(this);
 		main_widget->setParentLocalRenderLayer(static_cast<size_t>(WindowRenderLayers::WINDOW));
 		// resize widget
-		sf::Vector2f resize_size(width + WINDOW_RESIZE_MARGIN * 2, WINDOW_HEADER_HEIGHT + height + WINDOW_RESIZE_MARGIN * 2);
+		glvx::Vector2f resize_size(width + WINDOW_RESIZE_MARGIN * 2, WINDOW_HEADER_HEIGHT + height + WINDOW_RESIZE_MARGIN * 2);
 		resize_widget = widget_list.createEmptyWidget();
 		resize_widget->setName("resize");
 		resize_widget->setSize(resize_size);
@@ -89,20 +89,20 @@ namespace fw {
 		resize_widget->GetCursorType = [&]() {
 			Resizing resizing_type = getResizingType();
 			switch (resizing_type) {
-				case Resizing::NONE: return sf::Cursor::Arrow;
-				case Resizing::TOP_LEFT: return sf::Cursor::SizeTopLeft;
-				case Resizing::TOP: return sf::Cursor::SizeTop;
-				case Resizing::TOP_RIGHT: return sf::Cursor::SizeTopRight;
-				case Resizing::LEFT: return sf::Cursor::SizeLeft;
-				case Resizing::RIGHT: return sf::Cursor::SizeRight;
-				case Resizing::BOTTOM_LEFT: return sf::Cursor::SizeBottomLeft;
-				case Resizing::BOTTOM: return sf::Cursor::SizeBottom;
-				case Resizing::BOTTOM_RIGHT: return sf::Cursor::SizeBottomRight;
-				default: return sf::Cursor::Arrow;
+				case Resizing::NONE: return CursorType::Arrow;
+				case Resizing::TOP_LEFT: return CursorType::SizeTopLeft;
+				case Resizing::TOP: return CursorType::SizeTop;
+				case Resizing::TOP_RIGHT: return CursorType::SizeTopRight;
+				case Resizing::LEFT: return CursorType::SizeLeft;
+				case Resizing::RIGHT: return CursorType::SizeRight;
+				case Resizing::BOTTOM_LEFT: return CursorType::SizeBottomLeft;
+				case Resizing::BOTTOM: return CursorType::SizeBottom;
+				case Resizing::BOTTOM_RIGHT: return CursorType::SizeBottomRight;
+				default: return CursorType::Arrow;
 			}
 		};
-		resize_widget->OnLeftPress += [&](const sf::Vector2f& pos) {
-			sf::Vector2f parent_local_pos = parent->toLocal(pos);
+		resize_widget->OnLeftPress += [&](const glvx::Vector2f& pos) {
+			glvx::Vector2f parent_local_pos = parent->toLocal(pos);
 			active_resizing_type = getResizingType();
 			if (active_resizing_type == Resizing::NONE) {
 				// skip
@@ -136,13 +136,13 @@ namespace fw {
 				moveToTop();
 			}, PostActionStage::MOVE);
 		};
-		resize_widget->OnProcessMouse += [&](const sf::Vector2f& pos) {
+		resize_widget->OnProcessMouse += [&](const glvx::Vector2f& pos) {
 			if (active_resizing_type == Resizing::NONE) {
 				return;
 			}
-			sf::Vector2f global_mouse_pos = widget_list.getMousePosf();
-			sf::Vector2f anchored_pos = global_mouse_pos - resizing_cursor_offset;
-			sf::Vector2f mouse_pos = parent->toLocal(anchored_pos);
+			glvx::Vector2f global_mouse_pos = widget_list.getMousePosf();
+			glvx::Vector2f anchored_pos = global_mouse_pos - resizing_cursor_offset;
+			glvx::Vector2f mouse_pos = parent->toLocal(anchored_pos);
 			float x_min = std::min(mouse_pos.x, resizing_anchor.x - WINDOW_MIN_SIZE.x);
 			float x_max = std::max(mouse_pos.x, resizing_anchor.x + WINDOW_MIN_SIZE.x);
 			float y_min = std::min(mouse_pos.y, resizing_anchor.y - WINDOW_MIN_SIZE.y - WINDOW_HEADER_HEIGHT);
@@ -185,7 +185,7 @@ namespace fw {
 				setSizeKeepPos(width_max, height_max + header_widget->getHeight());
 			}
 		};
-		resize_widget->OnGlobalLeftRelease += [&](const sf::Vector2f& pos) {
+		resize_widget->OnGlobalLeftRelease += [&](const glvx::Vector2f& pos) {
 			active_resizing_type = Resizing::NONE;
 		};
 		resize_widget->setParent(this);
@@ -194,10 +194,10 @@ namespace fw {
 		outline_widget = widget_list.createRectangleWidget(width, height + WINDOW_HEADER_HEIGHT);
 		outline_widget->setName("outline");
 		outline_widget->setSize(width, WINDOW_HEADER_HEIGHT + height);
-		outline_widget->setFillColor(sf::Color::Transparent);
+		outline_widget->setFillColor(glvx::Color::Transparent);
 		outline_widget->setSizePolicy(SizePolicy::PARENT);
-		outline_widget->OnAfterRender += [&](sf::RenderTarget& target) {
-			sf::FloatRect quantized_bounds = quantize_rect(
+		outline_widget->OnAfterRender += [&](glvx::RenderTarget& target) {
+			glvx::FloatRect quantized_bounds = quantize_rect(
 				outline_widget->getLocalBounds(),
 				QUANTIZE_MODE_FLOOR_SUBTRACT
 			);
@@ -209,7 +209,7 @@ namespace fw {
 		lockChildren();
 	}
 
-	WindowWidget::WindowWidget(WidgetList& widget_list, const sf::Vector2f& size) : WindowWidget(widget_list, size.x, size.y) { }
+	WindowWidget::WindowWidget(WidgetList& widget_list, const glvx::Vector2f& size) : WindowWidget(widget_list, size.x, size.y) { }
 
 	bool WindowWidget::getHeaderVisible() const {
 		return isVisible();
@@ -219,11 +219,11 @@ namespace fw {
 		getFillColor();
 	}
 
-	const sf::String& WindowWidget::getHeaderText() const {
+	const std::string& WindowWidget::getHeaderText() const {
 		return header_text_widget->getString();
 	}
 
-	const sf::Color& WindowWidget::getHeaderTextColor() const {
+	const glvx::Color& WindowWidget::getHeaderTextColor() const {
 		return header_text_widget->getFillColor();
 	}
 
@@ -235,7 +235,7 @@ namespace fw {
 		return header_text_widget->getCharacterSize();
 	}
 
-	const sf::Color& WindowWidget::getOutlineColor() const {
+	const glvx::Color& WindowWidget::getOutlineColor() const {
 		return outline_color;
 	}
 
@@ -266,19 +266,19 @@ namespace fw {
 		} else {
 			header_widget->setVisible(false);
 			header_size = header_widget->getSize();
-			header_widget->setSize(sf::Vector2f());
+			header_widget->setSize(glvx::Vector2f());
 		}
 	}
 
-	void WindowWidget::setHeaderColor(const sf::Color& color) {
+	void WindowWidget::setHeaderColor(const glvx::Color& color) {
 		header_widget->setFillColor(color);
 	}
 
-	void WindowWidget::setHeaderText(const sf::String& text) {
+	void WindowWidget::setHeaderText(const std::string& text) {
 		header_text_widget->setString(text);
 	}
 
-	void WindowWidget::setHeaderTextColor(const sf::Color& color) {
+	void WindowWidget::setHeaderTextColor(const glvx::Color& color) {
 		header_text_widget->setFillColor(color);
 	}
 
@@ -299,7 +299,7 @@ namespace fw {
 		);
 	}
 
-	void WindowWidget::setOutlineColor(const sf::Color& color) {
+	void WindowWidget::setOutlineColor(const glvx::Color& color) {
 		this->outline_color = color;
 	}
 
@@ -318,7 +318,7 @@ namespace fw {
 	WindowWidget::Resizing WindowWidget::getResizingType() const {
 		float r_width = resize_widget->getWidth();
 		float r_height = resize_widget->getHeight();
-		sf::Vector2f mpos = widget_list.getMousePosf() - resize_widget->getGlobalPosition();
+		glvx::Vector2f mpos = widget_list.getMousePosf() - resize_widget->getGlobalPosition();
 		bool x_left = mpos.x < WINDOW_RESIZE_MARGIN;
 		bool x_center = mpos.x >= WINDOW_RESIZE_MARGIN && mpos.x < r_width - WINDOW_RESIZE_MARGIN;
 		bool x_right = mpos.x >= r_width - WINDOW_RESIZE_MARGIN;

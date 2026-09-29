@@ -10,7 +10,7 @@ namespace fw {
 		updateColors();
 	}
 
-	ButtonWidget::ButtonWidget(WidgetList& widget_list, const sf::Vector2f& size)
+	ButtonWidget::ButtonWidget(WidgetList& widget_list, const glvx::Vector2f& size)
 		: RectangleWidget(widget_list, size.x, size.y) { }
 
 	bool ButtonWidget::isPressed() const {
@@ -21,23 +21,23 @@ namespace fw {
 		return widget_list.duplicateWidget(this, with_children);
 	}
 
-	void ButtonWidget::setNormalColor(const sf::Color& color) {
+	void ButtonWidget::setNormalColor(const glvx::Color& color) {
 		normal_color = color;
 		updateColors();
 	}
 
-	void ButtonWidget::setPressedColor(const sf::Color& color) {
+	void ButtonWidget::setPressedColor(const glvx::Color& color) {
 		pressed_color = color;
 		updateColors();
 	}
 
-	void ButtonWidget::internalOnLeftPress(const sf::Vector2f& pos, bool became_focused) {
+	void ButtonWidget::internalOnLeftPress(const glvx::Vector2f& pos, bool became_focused) {
 		pressed = true;
 		updateColors();
 		OnPress();
 	}
 
-	void ButtonWidget::internalOnGlobalLeftRelease(const sf::Vector2f& pos) {
+	void ButtonWidget::internalOnGlobalLeftRelease(const glvx::Vector2f& pos) {
 		pressed = false;
 		updateColors();
 		OnRelease();

@@ -23,8 +23,8 @@ private:
 	void checkPixels(
 		test::Test& test,
 		fw::Application& application,
-		const sf::Vector2u& size,
-		const std::function<void(test::Test&, const sf::Image&, unsigned int x, unsigned int y)> func
+		const glvx::Vector2u& size,
+		const std::function<void(test::Test&, const glvx::Image&, unsigned int x, unsigned int y)> func
 	) const;
 
 };

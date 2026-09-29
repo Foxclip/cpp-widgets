@@ -26,7 +26,7 @@ namespace fw {
 
 	WidgetList::WidgetList(Application& application) : application(application) {
 		root_widget = createEmptyWidget();
-		root_widget->setFillColor(sf::Color::Transparent);
+		root_widget->setFillColor(glvx::Color::Transparent);
 		root_widget->setClickThrough(false);
 		root_widget->setClipChildren(true);
 		root_widget->setName("root");
@@ -122,10 +122,10 @@ namespace fw {
 		return result;
 	}
 
-	bool WidgetList::getCurrentCursorType(sf::Cursor::Type& result) const {
+	bool WidgetList::getCurrentCursorType(CursorType& result) const {
 		bool blocked;
 		CompVector<Widget*> cursor_widgets = getWidgetsUnderCursor(true, blocked);
-		sf::Cursor::Type cursor_type = sf::Cursor::Arrow;
+		CursorType cursor_type = CursorType::Arrow;
 		for (size_t i = 0; i < cursor_widgets.size(); i++) {
 			if (cursor_widgets[i]->getForceCustomCursor()) {
 				result = cursor_widgets[i]->GetCursorType();
@@ -143,11 +143,11 @@ namespace fw {
 		return application.getRightGestureSource();
 	}
 
-	sf::Vector2f WidgetList::getMousePosf() const {
+	glvx::Vector2f WidgetList::getMousePosf() const {
 		return application.getMousePosf();
 	}
 
-	sf::Vector2u WidgetList::getWindowSize() const {
+	glvx::Vector2u WidgetList::getWindowSize() const {
 		return application.getWindowSize();
 	}
 
@@ -195,7 +195,7 @@ namespace fw {
 		return rectangle_widget;
 	}
 
-	RectangleWidget* WidgetList::createRectangleWidget(const sf::Vector2f& size) {
+	RectangleWidget* WidgetList::createRectangleWidget(const glvx::Vector2f& size) {
 		RectangleWidget* rectangle_widget = createRectangleWidget(size.x, size.y);
 		return rectangle_widget;
 	}
@@ -205,7 +205,7 @@ namespace fw {
 		return text_widget;
 	}
 
-	PolygonWidget* WidgetList::createPolygonWidget(const std::vector<sf::Vector2f>& vertices) {
+	PolygonWidget* WidgetList::createPolygonWidget(const std::vector<glvx::Vector2f>& vertices) {
 		PolygonWidget* polygon_widget = createWidget<PolygonWidget>(vertices);
 		return polygon_widget;
 	}
@@ -220,7 +220,7 @@ namespace fw {
 		return container_widget;
 	}
 
-	ContainerWidget* WidgetList::createContainerWidget(const sf::Vector2f& size) {
+	ContainerWidget* WidgetList::createContainerWidget(const glvx::Vector2f& size) {
 		ContainerWidget* container_widget = createContainerWidget(size.x, size.y);
 		return container_widget;
 	}
@@ -240,7 +240,7 @@ namespace fw {
 		return textbox_widget;
 	}
 
-	TextBoxWidget* WidgetList::createTextBoxWidget(const sf::Vector2f& size) {
+	TextBoxWidget* WidgetList::createTextBoxWidget(const glvx::Vector2f& size) {
 		TextBoxWidget* textbox_widget = createTextBoxWidget(size.x, size.y);
 		return textbox_widget;
 	}
@@ -260,7 +260,7 @@ namespace fw {
 		return canvas_widget;
 	}
 
-	CanvasWidget* WidgetList::createCanvasWidget(const sf::Vector2f& size, const sf::Vector2u& texture_size) {
+	CanvasWidget* WidgetList::createCanvasWidget(const glvx::Vector2f& size, const glvx::Vector2u& texture_size) {
 		CanvasWidget* canvas_widget = createCanvasWidget(size.x, size.y, texture_size.x, texture_size.y);
 		return canvas_widget;
 	}
@@ -270,7 +270,7 @@ namespace fw {
 		return window_widget;
 	}
 
-	WindowWidget* WidgetList::createWindowWidget(const sf::Vector2f& size) {
+	WindowWidget* WidgetList::createWindowWidget(const glvx::Vector2f& size) {
 		WindowWidget* window_widget = createWindowWidget(size.x, size.y);
 		return window_widget;
 	}
@@ -280,7 +280,7 @@ namespace fw {
 		return scroll_area_widget;
 	}
 
-	ScrollAreaWidget* WidgetList::createScrollAreaWidget(const sf::Vector2f& size) {
+	ScrollAreaWidget* WidgetList::createScrollAreaWidget(const glvx::Vector2f& size) {
 		ScrollAreaWidget* scroll_area_widget = createScrollAreaWidget(size.x, size.y);
 		return scroll_area_widget;
 	}
@@ -290,7 +290,7 @@ namespace fw {
 		return tree_view_widget;
 	}
 
-	TreeViewWidget* WidgetList::createTreeViewWidget(const sf::Vector2f& size) {
+	TreeViewWidget* WidgetList::createTreeViewWidget(const glvx::Vector2f& size) {
 		TreeViewWidget* tree_view_widget = createTreeViewWidget(size.x, size.y);
 		return tree_view_widget;
 	}
@@ -300,7 +300,7 @@ namespace fw {
 		return button_widget;
 	}
 
-	ButtonWidget* WidgetList::createButtonWidget(const sf::Vector2f& size) {
+	ButtonWidget* WidgetList::createButtonWidget(const glvx::Vector2f& size) {
 		ButtonWidget* button_widget = createButtonWidget(size.x, size.y);
 		return button_widget;
 	}
@@ -321,7 +321,7 @@ namespace fw {
 
 	void WidgetList::processBeforeInput() { }
 
-	void WidgetList::processLeftPress(const sf::Vector2f pos) {
+	void WidgetList::processLeftPress(const glvx::Vector2f pos) {
 		wAssert(!isLocked());
 		CompVector<Widget*> widgets = getWidgetsUnderCursor(true, click_blocked);
 		bool modal_focus = focused_widget && focused_widget->getFocusableType() == Widget::FocusableType::MODAL;
@@ -354,7 +354,7 @@ namespace fw {
 		}
 	}
 
-	void WidgetList::processRightPress(const sf::Vector2f pos) {
+	void WidgetList::processRightPress(const glvx::Vector2f pos) {
 		wAssert(!isLocked());
 		CompVector<Widget*> widgets = getWidgetsUnderCursor(true, click_blocked);
 		for (size_t i = 0; i < widgets.size(); i++) {
@@ -363,7 +363,7 @@ namespace fw {
 		}
 	}
 
-	void WidgetList::processLeftRelease(const sf::Vector2f pos) {
+	void WidgetList::processLeftRelease(const glvx::Vector2f pos) {
 		wAssert(!isLocked());
 		bool blocked_discard;
 		CompVector<Widget*> widgets = getWidgetsUnderCursor(true, blocked_discard);
@@ -374,7 +374,7 @@ namespace fw {
 		root_widget->processGlobalLeftRelease(pos);
 	}
 
-	void WidgetList::processRightRelease(const sf::Vector2f pos) {
+	void WidgetList::processRightRelease(const glvx::Vector2f pos) {
 		wAssert(!isLocked());
 		bool blocked_discard;
 		CompVector<Widget*> widgets = getWidgetsUnderCursor(true, blocked_discard);
@@ -385,12 +385,12 @@ namespace fw {
 		root_widget->processGlobalRightRelease(pos);
 	}
 
-	void WidgetList::processMouseMove(const sf::Vector2f pos) {
+	void WidgetList::processMouseMove(const glvx::Vector2f pos) {
 		wAssert(!isLocked());
 		root_widget->processMouseMove(pos);
 	}
 
-	void WidgetList::processScrollX(const sf::Vector2f pos, float delta) {
+	void WidgetList::processScrollX(const glvx::Vector2f pos, float delta) {
 		wAssert(!isLocked());
 		CompVector<Widget*> widgets = getWidgetsUnderCursor(true, click_blocked);
 		for (size_t i = 0; i < widgets.size(); i++) {
@@ -399,7 +399,7 @@ namespace fw {
 		}
 	}
 
-	void WidgetList::processScrollY(const sf::Vector2f pos, float delta) {
+	void WidgetList::processScrollY(const glvx::Vector2f pos, float delta) {
 		wAssert(!isLocked());
 		CompVector<Widget*> widgets = getWidgetsUnderCursor(true, click_blocked);
 		for (size_t i = 0; i < widgets.size(); i++) {
@@ -408,13 +408,13 @@ namespace fw {
 		}
 	}
 
-	void WidgetList::processMouse(const sf::Vector2f pos) {
+	void WidgetList::processMouse(const glvx::Vector2f pos) {
 		wAssert(!isLocked());
 		root_widget->processMouse(pos);
 	}
 
-	void WidgetList::processWindowEvent(const sf::Event& event) {
-		if (event.type == sf::Event::Resized) {
+	void WidgetList::processWindowEvent(const glvx::Event& event) {
+		if (event.type == glvx::EventType::Resized) {
 			for (RenderQueueLayer layer : render_queue.get()) {
 				for (Widget* widget : layer.widgets) {
 					widget->OnWindowResized(
@@ -426,14 +426,14 @@ namespace fw {
 		}
 	}
 
-	void WidgetList::processKeyboardEvent(const sf::Event& event) {
+	void WidgetList::processKeyboardEvent(const glvx::Event& event) {
 		wAssert(!isLocked());
 		if (focused_widget) {
 			focused_widget->processKeyboardEvent(event);
 		}
-		if (event.type == sf::Event::KeyPressed) {
+		if (event.type == glvx::EventType::KeyPressed) {
 			OnKeyPressed(event.key.code);
-		} else if (event.type == sf::Event::KeyReleased) {
+		} else if (event.type == glvx::EventType::KeyReleased) {
 			OnKeyReleased(event.key.code);
 		}
 	}
@@ -513,7 +513,7 @@ namespace fw {
 		print_update_queue = true;
 	}
 
-	void WidgetList::render(sf::RenderTarget& target) {
+	void WidgetList::render(glvx::RenderTarget& target) {
 		wAssert(isLocked());
 		root_widget->unclipped_region.invalidate();
 #ifndef NDEBUG
@@ -529,8 +529,8 @@ namespace fw {
 			}
 		}
 		if (TreeViewWidget::target_highlight.visible) {
-			sf::Vector2f pos = TreeViewWidget::target_highlight.pos;
-			sf::Vector2f size = TreeViewWidget::target_highlight.size;
+			glvx::Vector2f pos = TreeViewWidget::target_highlight.pos;
+			glvx::Vector2f size = TreeViewWidget::target_highlight.size;
 			draw_rect(target, pos, size, TREEVIEW_TARGET_HIGHLIGHT_COLOR);
 		}
 		if (debug_render) {
@@ -555,17 +555,17 @@ namespace fw {
 		}
 		if (debug_mouse) {
 			if (mouse_debug_trace.getVertexCount() < DEBUG_RENDER_MOUSE_TRACE_MAX_LENGTH) {
-				mouse_debug_trace.append(getMousePosf());
+				mouse_debug_trace.append(glvx::Vertex{getMousePosf(), glvx::Color::White, glvx::Vector2f(0.0f, 0.0f)});
 			} else {
 				for (ptrdiff_t i = 0; i < (ptrdiff_t)mouse_debug_trace.getVertexCount() - 1; i++) {
 					mouse_debug_trace[i] = mouse_debug_trace[i + 1];
 				}
-				mouse_debug_trace[mouse_debug_trace.getVertexCount() - 1] = getMousePosf();
+				mouse_debug_trace[mouse_debug_trace.getVertexCount() - 1] = glvx::Vertex{getMousePosf(), glvx::Color::White, glvx::Vector2f(0.0f, 0.0f)};
 			}
 			for (size_t i = 0; i < mouse_debug_trace.getVertexCount(); i++) {
 				float alpha = (float)i / ((float)mouse_debug_trace.getVertexCount() - 1);
 				mouse_debug_trace[i].color = DEBUG_RENDER_MOUSE_TRACE_COLOR;
-				mouse_debug_trace[i].color.a = (sf::Uint8)(alpha * 255.0f);
+				mouse_debug_trace[i].color.a = (uint8_t)(alpha * 255.0f);
 			}
 			target.draw(mouse_debug_trace);
 
@@ -573,38 +573,38 @@ namespace fw {
 			float offset_inner = 2.0f;
 			float mouse_rect_offset_inner = 2.0f;
 			float middle_mouse_rect_offset = 8.0f;
-			sf::Vector2f hoffset_outer = sf::Vector2f(offset_outer, 0.0f);
-			sf::Vector2f hoffset_inner = sf::Vector2f(offset_inner, 0.0f);
-			sf::Vector2f voffset_outer = sf::Vector2f(0.0f, offset_outer);
-			sf::Vector2f voffset_inner = sf::Vector2f(0.0f, offset_inner);
-			sf::Vector2f mouse_pos = getMousePosf();
+			glvx::Vector2f hoffset_outer = glvx::Vector2f(offset_outer, 0.0f);
+			glvx::Vector2f hoffset_inner = glvx::Vector2f(offset_inner, 0.0f);
+			glvx::Vector2f voffset_outer = glvx::Vector2f(0.0f, offset_outer);
+			glvx::Vector2f voffset_inner = glvx::Vector2f(0.0f, offset_inner);
+			glvx::Vector2f mouse_pos = getMousePosf();
 			if (isLeftButtonPressed()) {
 				draw_rect(
 					target,
-					sf::Vector2f(mouse_pos.x - offset_outer, mouse_pos.y - offset_outer),
-					sf::Vector2f(mouse_pos.x - offset_outer, mouse_pos.y + offset_outer + 1.0f),
-					sf::Vector2f(mouse_pos.x - mouse_rect_offset_inner, mouse_pos.y - offset_outer),
-					sf::Vector2f(mouse_pos.x - mouse_rect_offset_inner, mouse_pos.y + offset_outer + 1.0f),
+					glvx::Vector2f(mouse_pos.x - offset_outer, mouse_pos.y - offset_outer),
+					glvx::Vector2f(mouse_pos.x - offset_outer, mouse_pos.y + offset_outer + 1.0f),
+					glvx::Vector2f(mouse_pos.x - mouse_rect_offset_inner, mouse_pos.y - offset_outer),
+					glvx::Vector2f(mouse_pos.x - mouse_rect_offset_inner, mouse_pos.y + offset_outer + 1.0f),
 					DEBUG_RENDER_MOUSE_LEFT_RECT_COLOR
 				);
 			}
 			if (isRightButtonPressed()) {
 				draw_rect(
 					target,
-					sf::Vector2f(mouse_pos.x + mouse_rect_offset_inner + 1.0f, mouse_pos.y - offset_outer),
-					sf::Vector2f(mouse_pos.x + mouse_rect_offset_inner + 1.0f, mouse_pos.y + offset_outer + 1.0f),
-					sf::Vector2f(mouse_pos.x + offset_outer + 1.0f, mouse_pos.y - offset_outer),
-					sf::Vector2f(mouse_pos.x + offset_outer + 1.0f, mouse_pos.y + offset_outer + 1.0f),
+					glvx::Vector2f(mouse_pos.x + mouse_rect_offset_inner + 1.0f, mouse_pos.y - offset_outer),
+					glvx::Vector2f(mouse_pos.x + mouse_rect_offset_inner + 1.0f, mouse_pos.y + offset_outer + 1.0f),
+					glvx::Vector2f(mouse_pos.x + offset_outer + 1.0f, mouse_pos.y - offset_outer),
+					glvx::Vector2f(mouse_pos.x + offset_outer + 1.0f, mouse_pos.y + offset_outer + 1.0f),
 					DEBUG_RENDER_MOUSE_RIGHT_RECT_COLOR
 				);
 			}
 			if (isMiddleButtonPressed()) {
 				draw_rect(
 					target,
-					sf::Vector2f(mouse_pos.x - middle_mouse_rect_offset, mouse_pos.y - middle_mouse_rect_offset),
-					sf::Vector2f(mouse_pos.x - middle_mouse_rect_offset, mouse_pos.y + middle_mouse_rect_offset + 1.0f),
-					sf::Vector2f(mouse_pos.x + middle_mouse_rect_offset + 1.0f, mouse_pos.y - middle_mouse_rect_offset),
-					sf::Vector2f(mouse_pos.x + middle_mouse_rect_offset + 1.0f, mouse_pos.y + middle_mouse_rect_offset + 1.0f),
+					glvx::Vector2f(mouse_pos.x - middle_mouse_rect_offset, mouse_pos.y - middle_mouse_rect_offset),
+					glvx::Vector2f(mouse_pos.x - middle_mouse_rect_offset, mouse_pos.y + middle_mouse_rect_offset + 1.0f),
+					glvx::Vector2f(mouse_pos.x + middle_mouse_rect_offset + 1.0f, mouse_pos.y - middle_mouse_rect_offset),
+					glvx::Vector2f(mouse_pos.x + middle_mouse_rect_offset + 1.0f, mouse_pos.y + middle_mouse_rect_offset + 1.0f),
 					DEBUG_RENDER_MOUSE_MIDDLE_RECT_COLOR
 				);
 			}
@@ -615,7 +615,7 @@ namespace fw {
 		}
 	}
 
-	void WidgetList::reset(const sf::Vector2f& root_size, const sf::Vector2f& mouse_pos) {
+	void WidgetList::reset(const glvx::Vector2f& root_size, const glvx::Vector2f& mouse_pos) {
 		wAssert(!isLocked());
 		root_widget->setSize(root_size);
 		root_widget->updateMouseState(mouse_pos);

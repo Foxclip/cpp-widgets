@@ -15,8 +15,8 @@ void WidgetTestsCheckbox::checkboxWidgetBasicTest(test::Test& test) {
     fw::CheckboxWidget* checkbox_widget = application.getWidgets().createCheckboxWidget();
     fw::Widget* root_widget = application.getWidgets().getRootWidget();
     T_ASSERT(T_CHECK(checkbox_widget));
-    sf::Vector2f position(100.0f, 100.0f);
-    sf::Vector2f size(20.0f, 20.0f);
+    glvx::Vector2f position(100.0f, 100.0f);
+    glvx::Vector2f size(20.0f, 20.0f);
     checkbox_widget->setPosition(position);
     checkbox_widget->setSize(size);
 
@@ -44,8 +44,8 @@ void WidgetTestsCheckbox::checkboxWidgetBasicTest(test::Test& test) {
     gwt.clip_children = false;
     gwt.force_custom_cursor = false;
     gwt.parent = root_widget;
-    gwt.local_bounds = sf::FloatRect(sf::Vector2f(), size);
-    gwt.global_bounds = sf::FloatRect(position, size);
+    gwt.local_bounds = glvx::FloatRect(glvx::Vector2f(), size);
+    gwt.global_bounds = glvx::FloatRect(position, size);
     gwt.parent_local_bounds = gwt.global_bounds;
     gwt.visual_local_bounds = gwt.local_bounds;
     gwt.visual_global_bounds = gwt.global_bounds;
@@ -58,7 +58,7 @@ void WidgetTestsCheckbox::checkboxWidgetBasicTest(test::Test& test) {
         T_COMPARE(check_widget->getParentAnchor(), fw::Widget::Anchor::CENTER, &WidgetTests::anchorToStr);
     }
 
-    T_COMPARE(checkbox_widget->getFillColor(), sf::Color(50, 50, 50), &WidgetTests::colorToStr);
+    T_COMPARE(checkbox_widget->getFillColor(), glvx::Color(50, 50, 50), &WidgetTests::colorToStr);
 }
 
 void WidgetTestsCheckbox::checkboxWidgetToggleTest(test::Test& test) {

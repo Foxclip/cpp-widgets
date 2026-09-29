@@ -1,31 +1,50 @@
+#define GLFW_EXPOSE_NATIVE_WIN32
 #include "widgets/application.h"
+#include <GLFW/glfw3native.h>
 #include <Windows.h>
 #include <winuser.h>
 
 namespace fw {
 
-    Application::Application() : window(internal_window) { }
+    Application::Application() : window(internal_window) {
+        arrow_cursor.loadFromSystem(glvx::Cursor::Type::Arrow);
+        text_cursor.loadFromSystem(glvx::Cursor::Type::Text);
+        size_top_left_cursor.loadFromSystem(glvx::Cursor::Type::SizeTopLeftBottomRight);
+        size_top_cursor.loadFromSystem(glvx::Cursor::Type::SizeVertical);
+        size_top_right_cursor.loadFromSystem(glvx::Cursor::Type::SizeBottomLeftTopRight);
+        size_left_cursor.loadFromSystem(glvx::Cursor::Type::SizeHorizontal);
+        size_right_cursor.loadFromSystem(glvx::Cursor::Type::SizeHorizontal);
+        size_bottom_left_cursor.loadFromSystem(glvx::Cursor::Type::SizeBottomLeftTopRight);
+        size_bottom_cursor.loadFromSystem(glvx::Cursor::Type::SizeVertical);
+        size_bottom_right_cursor.loadFromSystem(glvx::Cursor::Type::SizeTopLeftBottomRight);
+    }
 
-    Application::Application(sf::RenderWindow& window) : window(window) {
+    Application::Application(glvx::Window& window) : window(window) {
+        arrow_cursor.loadFromSystem(glvx::Cursor::Type::Arrow);
+        text_cursor.loadFromSystem(glvx::Cursor::Type::Text);
+        size_top_left_cursor.loadFromSystem(glvx::Cursor::Type::SizeTopLeftBottomRight);
+        size_top_cursor.loadFromSystem(glvx::Cursor::Type::SizeVertical);
+        size_top_right_cursor.loadFromSystem(glvx::Cursor::Type::SizeBottomLeftTopRight);
+        size_left_cursor.loadFromSystem(glvx::Cursor::Type::SizeHorizontal);
+        size_right_cursor.loadFromSystem(glvx::Cursor::Type::SizeHorizontal);
+        size_bottom_left_cursor.loadFromSystem(glvx::Cursor::Type::SizeBottomLeftTopRight);
+        size_bottom_cursor.loadFromSystem(glvx::Cursor::Type::SizeVertical);
+        size_bottom_right_cursor.loadFromSystem(glvx::Cursor::Type::SizeTopLeftBottomRight);
         external_window = true;
     }
 
     void Application::init(
-        const sf::String& window_title,
+        const std::string& window_title,
         unsigned int window_width,
         unsigned int window_height,
         unsigned int antialiasing,
         bool vsync
     ) {
-        loadDefaultFragmentShader(default_shader, "default");
-        loadShader(premultiply, sf::Shader::Fragment, "shaders/premultiply.frag");
-        sf::ContextSettings cs_window;
-        cs_window.antialiasingLevel = antialiasing;
         if (external_window) {
-            window.setSize(sf::Vector2u(window_width, window_height));
+            window.setSize((int)window_width, (int)window_height);
             window.setTitle(window_title);
         } else {
-            window.create(sf::VideoMode(window_width, window_height), window_title, sf::Style::Default, cs_window);
+            window.create((int)window_width, (int)window_height, window_title.c_str(), (int)antialiasing);
         }
         window.setVerticalSyncEnabled(vsync);
         onInit();
@@ -62,12 +81,12 @@ namespace fw {
     }
 
     void Application::maximizeWindow() const {
-        sf::WindowHandle windowHandle = window.getSystemHandle();
+        HWND windowHandle = glfwGetWin32Window(window.getWindowHandle());
         ShowWindow(windowHandle, SW_MAXIMIZE);
     }
 
-    sf::Vector2u Application::getWindowSize() const {
-        return window.getSize();
+    glvx::Vector2u Application::getWindowSize() const {
+        return glvx::Vector2u(window.getSize());
     }
 
     const fw::Font& Application::getDefaultFont() const {
@@ -94,41 +113,39 @@ namespace fw {
         }
     }
 
-    const sf::RenderTexture& Application::getRenderTexture() const {
+    const glvx::RenderTexture& Application::getRenderTexture() const {
         return render_texture;
     }
 
-    sf::Image Application::getRenderedImage() const {
-        const sf::Texture& texture = render_texture.getTexture();
-        sf::Image image = texture.copyToImage();
-		return image;
+    glvx::Image Application::getRenderedImage() const {
+        return render_texture.readPixels();
     }
 
     void Application::setWindowSize(unsigned int width, unsigned int height) {
-        window.setSize(sf::Vector2u(width, height));
+        window.setSize((int)width, (int)height);
         if (external_control) {
-            sf::Event event;
-            event.type = sf::Event::Resized;
+            glvx::Event event;
+            event.type = glvx::EventType::Resized;
             event.size.width = width;
             event.size.height = height;
             addExternalEvent(event);
         }
     }
 
-    void Application::setWindowSize(const sf::Vector2u& size) {
-        window.setSize(size);
+    void Application::setWindowSize(const glvx::Vector2u& size) {
+        window.setSize((int)size.x, (int)size.y);
     }
 
-    void Application::addExternalEvent(const sf::Event& event) {
+    void Application::addExternalEvent(const glvx::Event& event) {
         wAssert(external_control);
         external_event_queue.push(event);
     }
 
     void Application::mouseMove(int x, int y) {
         wAssert(external_control);
-        external_mouse_pos = sf::Vector2i(x, y);
-        sf::Event event;
-        event.type = sf::Event::MouseMoved;
+        external_mouse_pos = glvx::Vector2i(x, y);
+        glvx::Event event;
+        event.type = glvx::EventType::MouseMoved;
         event.mouseMove.x = x;
         event.mouseMove.y = y;
         addExternalEvent(event);
@@ -142,19 +159,19 @@ namespace fw {
         mouseMove((int)x, (int)y);
     }
 
-    void Application::mouseMove(const sf::Vector2i& pos) {
+    void Application::mouseMove(const glvx::Vector2i& pos) {
         mouseMove(pos.x, pos.y);
     }
 
-    void Application::mouseMove(const sf::Vector2f& pos) {
+    void Application::mouseMove(const glvx::Vector2f& pos) {
         mouseMove(pos.x, pos.y);
     }
 
     void Application::mouseLeftPress() {
         wAssert(external_control);
-        sf::Event event;
-        event.type = sf::Event::MouseButtonPressed;
-        event.mouseButton.button = sf::Mouse::Left;
+        glvx::Event event;
+        event.type = glvx::EventType::MouseButtonPressed;
+        event.mouseButton.button = glvx::Mouse::Button::Left;
         event.mouseButton.x = external_mouse_pos.x;
         event.mouseButton.y = external_mouse_pos.y;
         addExternalEvent(event);
@@ -162,9 +179,9 @@ namespace fw {
 
     void Application::mouseRightPress() {
         wAssert(external_control);
-        sf::Event event;
-        event.type = sf::Event::MouseButtonPressed;
-        event.mouseButton.button = sf::Mouse::Right;
+        glvx::Event event;
+        event.type = glvx::EventType::MouseButtonPressed;
+        event.mouseButton.button = glvx::Mouse::Button::Right;
         event.mouseButton.x = external_mouse_pos.x;
         event.mouseButton.y = external_mouse_pos.y;
         addExternalEvent(event);
@@ -172,9 +189,9 @@ namespace fw {
 
     void Application::mouseLeftRelease() {
         wAssert(external_control);
-        sf::Event event;
-        event.type = sf::Event::MouseButtonReleased;
-        event.mouseButton.button = sf::Mouse::Left;
+        glvx::Event event;
+        event.type = glvx::EventType::MouseButtonReleased;
+        event.mouseButton.button = glvx::Mouse::Button::Left;
         event.mouseButton.x = external_mouse_pos.x;
         event.mouseButton.y = external_mouse_pos.y;
         addExternalEvent(event);
@@ -182,9 +199,9 @@ namespace fw {
 
     void Application::mouseRightRelease() {
         wAssert(external_control);
-        sf::Event event;
-        event.type = sf::Event::MouseButtonReleased;
-        event.mouseButton.button = sf::Mouse::Right;
+        glvx::Event event;
+        event.type = glvx::EventType::MouseButtonReleased;
+        event.mouseButton.button = glvx::Mouse::Button::Right;
         event.mouseButton.x = external_mouse_pos.x;
         event.mouseButton.y = external_mouse_pos.y;
         addExternalEvent(event);
@@ -204,72 +221,72 @@ namespace fw {
         advance();
     }
 
-    void Application::mouseLeftClick(const sf::Vector2f& pos) {
+    void Application::mouseLeftClick(const glvx::Vector2f& pos) {
         mouseMove(pos);
         mouseLeftClick();
     }
 
-    void Application::mouseRightClick(const sf::Vector2f& pos) {
+    void Application::mouseRightClick(const glvx::Vector2f& pos) {
         mouseMove(pos);
         mouseRightClick();
     }
 
     void Application::mouseScrollX(float delta) {
         wAssert(external_control);
-        sf::Event event;
-        event.type = sf::Event::MouseWheelScrolled;
-        event.mouseWheelScroll.wheel = sf::Mouse::HorizontalWheel;
-        event.mouseWheelScroll.delta = delta;
-        event.mouseWheelScroll.x = external_mouse_pos.x;
-        event.mouseWheelScroll.y = external_mouse_pos.y;
+        glvx::Event event;
+        event.type = glvx::EventType::MouseWheelScrolled;
+        event.mouseWheel.delta = delta;
+        event.mouseWheel.x = external_mouse_pos.x;
+        event.mouseWheel.y = external_mouse_pos.y;
         addExternalEvent(event);
+        external_wheel_axis_queue.push(0);
     }
 
     void Application::mouseScrollY(float delta) {
         wAssert(external_control);
-        sf::Event event;
-        event.type = sf::Event::MouseWheelScrolled;
-        event.mouseWheelScroll.wheel = sf::Mouse::VerticalWheel;
-        event.mouseWheelScroll.delta = delta;
-        event.mouseWheelScroll.x = external_mouse_pos.x;
-        event.mouseWheelScroll.y = external_mouse_pos.y;
+        glvx::Event event;
+        event.type = glvx::EventType::MouseWheelScrolled;
+        event.mouseWheel.delta = delta;
+        event.mouseWheel.x = external_mouse_pos.x;
+        event.mouseWheel.y = external_mouse_pos.y;
         addExternalEvent(event);
+        external_wheel_axis_queue.push(1);
     }
 
-    void Application::keyPress(sf::Keyboard::Key key) {
+    void Application::keyPress(glvx::Key key) {
         wAssert(external_control);
-        if (key == sf::Keyboard::LControl) {
+        if (key == glvx::Key::LControl) {
             external_lctrl_pressed = true;
-        } else if (key == sf::Keyboard::LAlt) {
+        } else if (key == glvx::Key::LAlt) {
             external_lalt_pressed = true;
-        } else if (key == sf::Keyboard::LShift) {
+        } else if (key == glvx::Key::LShift) {
             external_lshift_pressed = true;
         }
-        sf::Event event;
-        event.type = sf::Event::KeyPressed;
+        glvx::Event event;
+        event.type = glvx::EventType::KeyPressed;
         event.key.code = key;
         addExternalEvent(event);
     }
 
-    void Application::keyRelease(sf::Keyboard::Key key) {
+    void Application::keyRelease(glvx::Key key) {
         wAssert(external_control);
-        if (key == sf::Keyboard::LControl) {
+        if (key == glvx::Key::LControl) {
             external_lctrl_pressed = false;
-        } else if (key == sf::Keyboard::LAlt) {
+        } else if (key == glvx::Key::LAlt) {
             external_lalt_pressed = false;
-        } else if (key == sf::Keyboard::LShift) {
+        } else if (key == glvx::Key::LShift) {
             external_lshift_pressed = false;
         }
-        sf::Event event;
-        event.type = sf::Event::KeyReleased;
+        glvx::Event event;
+        event.type = glvx::EventType::KeyReleased;
         event.key.code = key;
         addExternalEvent(event);
     }
 
-    void Application::textEntered(sf::Uint32 code) {
+    void Application::textEntered(uint32_t code) {
         wAssert(external_control);
-        sf::Event event;
-        event.type = sf::Event::TextEntered;
+        glvx::Event event;
+        event.type = glvx::EventType::TextEntered;
         event.text.unicode = code;
         addExternalEvent(event);
     }
@@ -290,7 +307,7 @@ namespace fw {
         if (external_control) {
             return external_lctrl_pressed;
         } else {
-            return sf::Keyboard::isKeyPressed(sf::Keyboard::LControl);
+            return glvx::Keyboard::isKeyPressed(glvx::Key::LControl);
         }
     }
 
@@ -298,7 +315,7 @@ namespace fw {
         if (external_control) {
             return external_lalt_pressed;
         } else {
-            return sf::Keyboard::isKeyPressed(sf::Keyboard::LAlt);
+            return glvx::Keyboard::isKeyPressed(glvx::Key::LAlt);
         }
     }
 
@@ -306,11 +323,11 @@ namespace fw {
         if (external_control) {
             return external_lshift_pressed;
         } else {
-            return sf::Keyboard::isKeyPressed(sf::Keyboard::LShift);
+            return glvx::Keyboard::isKeyPressed(glvx::Key::LShift);
         }
     }
 
-    sf::Vector2i Application::getMousePos() const {
+    glvx::Vector2i Application::getMousePos() const {
         if (external_control) {
             return external_mouse_pos;
         } else {
@@ -318,16 +335,16 @@ namespace fw {
         }
     }
 
-    sf::Vector2f Application::getMousePosf() const {
+    glvx::Vector2f Application::getMousePosf() const {
         return to2f(getMousePos());
     }
 
-    const sf::Vector2f& Application::getMousePressPosf() const {
+    const glvx::Vector2f& Application::getMousePressPosf() const {
         return mousePressPosf;
     }
 
-    sf::Vector2f Application::getWindowCenter() const {
-        sf::Vector2f center = to2f(window.getSize()) / 2.0f;
+    glvx::Vector2f Application::getWindowCenter() const {
+        glvx::Vector2f center = to2f(window.getSize()) / 2.0f;
 		return center;
     }
 
@@ -335,7 +352,7 @@ namespace fw {
         return widgets;
     }
 
-    void Application::setBackgroundColor(const sf::Color& color) {
+    void Application::setBackgroundColor(const glvx::Color& color) {
         background_color = color;
     }
 
@@ -362,9 +379,9 @@ namespace fw {
 
     void Application::onProcessWidgets() { }
 
-    void Application::onProcessWindowEvent(const sf::Event& event) { }
+    void Application::onProcessWindowEvent(const glvx::Event& event) { }
 
-    void Application::onProcessKeyboardEvent(const sf::Event& event) { }
+    void Application::onProcessKeyboardEvent(const glvx::Event& event) { }
 
     void Application::onProcessLeftPress() { }
 
@@ -396,7 +413,7 @@ namespace fw {
 
     void Application::startMoveGesture(Widget* source) {
         LoggerTag tag_mouse_gesture("mouseGesture");
-        mouse_gesture_left = MouseGesture(source, MouseGesture::MOVE, getMousePosf(), sf::Mouse::Left);
+        mouse_gesture_left = MouseGesture(source, MouseGesture::MOVE, getMousePosf(), glvx::Mouse::Button::Left);
         std::string source_str = source->getFullName();
         std::string type_str = "move";
         logger << "Start gesture: \n";
@@ -418,41 +435,6 @@ namespace fw {
         logger << "End gesture\n";
     }
 
-    void Application::loadShader(sf::Shader& shader, sf::Shader::Type type, const std::filesystem::path& path) {
-        if (!shader.loadFromFile(path.string(), type)) {
-            throw std::runtime_error("Shader loading error: " + path.string());
-        }
-    }
-
-    void Application::loadDefaultFragmentShader(sf::Shader& shader, const std::string& name) {
-        loadFragmentShaderParts(shader, "default", { });
-    }
-
-    void Application::loadFragmentShaderPart(sf::Shader& shader, const std::filesystem::path& path) {
-        loadFragmentShaderParts(shader, path.stem().string(), { path });
-    }
-
-    void Application::loadFragmentShaderParts(sf::Shader& shader, const std::string& name, const std::vector<std::filesystem::path>& paths) {
-        std::string combined_shader_string = getCombinedShaderString(paths, "shaders/combined_template.frag");
-        std::string path_str;
-#ifndef NDEBUG
-        std::filesystem::create_directory("shaders/combined/");
-        std::filesystem::path combined_path = "shaders/combined/" + name + "_combined.frag";
-        str_to_file(combined_shader_string, combined_path);
-        if (!shader.loadFromMemory(combined_shader_string, sf::Shader::Fragment)) {
-            throw std::runtime_error("Fragment shader compilation error: " + combined_path.string());
-        }
-#else
-        if (!shader.loadFromMemory(combined_shader_string, sf::Shader::Fragment)) {
-            for (size_t i = 0; i < paths.size(); i++) {
-                path_str += "    " + paths[i].string() + "\n";
-            }
-            throw std::runtime_error("Fragment shader compilation error. Files in shader:\n" + path_str);
-        }
-#endif // NDEBUG
-
-    }
-
     void Application::mainLoop() {
         wAssert(!external_window);
         while (window.isOpen() && running) {
@@ -462,24 +444,24 @@ namespace fw {
     }
 
     void Application::processWidgets() {
-        widgets.reset(sf::Vector2f((float)window.getSize().x, (float)window.getSize().y), getMousePosf());
+        widgets.reset(glvx::Vector2f((float)window.getSize().x, (float)window.getSize().y), getMousePosf());
         onProcessWidgets();
     }
 
     void Application::processBeforeInput() {
-        internal_mouse_pos = sf::Mouse::getPosition(window);
+        internal_mouse_pos = glvx::Mouse::getPosition(window);
         widgets.processBeforeInput();
     }
 
     void Application::processInput() {
         if (external_control) {
             while (!external_event_queue.empty()) {
-                sf::Event event = external_event_queue.front();
+                glvx::Event event = external_event_queue.front();
                 external_event_queue.pop();
                 processEvent(event);
             }
         } else {
-            sf::Event event;
+            glvx::Event event;
             while (window.pollEvent(event)) {
                 processEvent(event);
             }
@@ -493,82 +475,92 @@ namespace fw {
         widgets.processAfterInput();
     }
 
-    void Application::processEvent(const sf::Event& event) {
+    void Application::processEvent(const glvx::Event& event) {
         processWindowEvent(event);
         processKeyboardEvent(event);
         processMouseEvent(event);
     }
 
-    void Application::processWindowEvent(const sf::Event& event) {
+    void Application::processWindowEvent(const glvx::Event& event) {
         widgets.processWindowEvent(event);
         onProcessWindowEvent(event);
     }
 
-    void Application::processKeyboardEvent(const sf::Event& event) {
+    void Application::processKeyboardEvent(const glvx::Event& event) {
         widgets.processKeyboardEvent(event);
         if (!widgets.getFocusedWidget()) {
             onProcessKeyboardEvent(event);
         }
     }
 
-    void Application::processMouseEvent(const sf::Event& event) {
-        if (event.type == sf::Event::MouseButtonPressed) {
+    void Application::processMouseEvent(const glvx::Event& event) {
+        if (event.type == glvx::EventType::MouseButtonPressed) {
             switch (event.mouseButton.button) {
-                case sf::Mouse::Left:
+                case glvx::Mouse::Button::Left:
                     leftButtonPressed = true;
                     mousePressPosf = getMousePosf();
                     processLeftPress();
                     break;
-                case sf::Mouse::Right:
+                case glvx::Mouse::Button::Right:
                     rightButtonPressed = true;
-                    mousePrevPos = sf::Vector2i(event.mouseButton.x, event.mouseButton.y);
+                    mousePrevPos = glvx::Vector2i(event.mouseButton.x, event.mouseButton.y);
                     processRightPress();
                     break;
-                case sf::Mouse::Middle:
+                case glvx::Mouse::Button::Middle:
                     middleButtonPressed = true;
 					processMiddlePress();
 					break;
             }
-        } else if (event.type == sf::Event::MouseButtonReleased) {
+        } else if (event.type == glvx::EventType::MouseButtonReleased) {
             switch (event.mouseButton.button) {
-                case sf::Mouse::Left:
+                case glvx::Mouse::Button::Left:
                     leftButtonPressed = false;
                     processLeftRelease();
                     break;
-                case sf::Mouse::Right:
+                case glvx::Mouse::Button::Right:
                     rightButtonPressed = false;
                     processRightRelease();
                     break;
-				case sf::Mouse::Middle:
+				case glvx::Mouse::Button::Middle:
 					middleButtonPressed = false;
 					processMiddleRelease();
 					break;
             }
-        } else if (event.type == sf::Event::MouseMoved) {
+        } else if (event.type == glvx::EventType::MouseMoved) {
             processMouseMove();
-        } else if (event.type == sf::Event::MouseWheelScrolled) {
-            if (event.mouseWheelScroll.wheel == sf::Mouse::HorizontalWheel) {
-                processScrollX(event.mouseWheelScroll.delta);
-            } else if (event.mouseWheelScroll.wheel == sf::Mouse::VerticalWheel) {
-                processScrollY(event.mouseWheelScroll.delta);
+        } else if (event.type == glvx::EventType::MouseWheelScrolled) {
+            // GLVX wheel events are Y-only; simulated X scrolls carry an axis hint
+            if (external_control && !external_wheel_axis_queue.empty()) {
+                int axis = external_wheel_axis_queue.front();
+                external_wheel_axis_queue.pop();
+                if (axis == 0) {
+                    processScrollX(event.mouseWheel.delta);
+                } else {
+                    processScrollY(event.mouseWheel.delta);
+                }
+            } else {
+                processScrollY(event.mouseWheel.delta);
             }
         }
     }
 
-    void Application::startNormalGesture(Widget* source, sf::Mouse::Button button) {
+    void Application::startNormalGesture(Widget* source, glvx::Mouse::Button button) {
+        if (!source) {
+            return;
+        }
         LoggerTag tag_mouse_gesture("mouseGesture");
-        if (button == sf::Mouse::Left) {
+        if (button == glvx::Mouse::Button::Left) {
             mouse_gesture_left = MouseGesture(source, MouseGesture::NORMAL, getMousePosf(), button);
-        } else if (button == sf::Mouse::Right) {
+        } else if (button == glvx::Mouse::Button::Right) {
             mouse_gesture_right = MouseGesture(source, MouseGesture::NORMAL, getMousePosf(), button);
         }
         std::string source_str = source->getFullName();
         std::string type_str = "normal";
         std::string button_str;
         switch (button) {
-            case sf::Mouse::Left: button_str = "left"; break;
-            case sf::Mouse::Right: button_str = "right"; break;
-            case sf::Mouse::Middle: button_str = "middle"; break;
+            case glvx::Mouse::Button::Left: button_str = "left"; break;
+            case glvx::Mouse::Button::Right: button_str = "right"; break;
+            case glvx::Mouse::Button::Middle: button_str = "middle"; break;
             default: button_str = "other"; break;
         }
         logger << "Start gesture: \n";
@@ -590,7 +582,7 @@ namespace fw {
             widgets.processLeftPress(getMousePosf());
             onProcessLeftPress();
             Widget* blocking_widget = widgets.getBlockingWidget();
-            startNormalGesture(blocking_widget, sf::Mouse::Left);
+            startNormalGesture(blocking_widget, glvx::Mouse::Button::Left);
         }
     }
 
@@ -601,7 +593,7 @@ namespace fw {
             widgets.processRightPress(getMousePosf());
             onProcessRightPress();
             Widget* blocking_widget = widgets.getBlockingWidget();
-            startNormalGesture(blocking_widget, sf::Mouse::Right);
+            startNormalGesture(blocking_widget, glvx::Mouse::Button::Right);
         }
     }
 
@@ -651,18 +643,18 @@ namespace fw {
     }
 
     void Application::processMouse() {
-        sf::Vector2f mousePosf = getMousePosf();
+        glvx::Vector2f mousePosf = getMousePosf();
         widgets.processMouse(mousePosf);
         Widget* gesture_source_left = getLeftGestureSource();
         Widget* gesture_source_right = getRightGestureSource();
         onProcessMouse();
         if (mouse_gesture_left.active && mouse_gesture_left.type == MouseGesture::NORMAL && gesture_source_left) {
-            gesture_source_left->OnProcessDragGesture(sf::Mouse::Left, mousePosf);
+            gesture_source_left->OnProcessDragGesture(glvx::Mouse::Button::Left, mousePosf);
         }
         if (mouse_gesture_right.active && mouse_gesture_right.type == MouseGesture::NORMAL && gesture_source_right) {
-            gesture_source_right->OnProcessDragGesture(sf::Mouse::Right, mousePosf);
+            gesture_source_right->OnProcessDragGesture(glvx::Mouse::Button::Right, mousePosf);
         }
-        sf::Cursor::Type cursor_type = sf::Cursor::Arrow;
+        CursorType cursor_type = CursorType::Arrow;
         widgets.getCurrentCursorType(cursor_type);
         setCursorType(cursor_type);
         mousePrevPos = getMousePos();
@@ -677,110 +669,48 @@ namespace fw {
     void Application::render() {
         widgets.updateRenderQueue();
         widgets.lock();
-        window_view.setCenter(window.getSize().x / 2.0f, window.getSize().y / 2.0f);
-        window_view.setSize((float)window.getSize().x, (float)window.getSize().y);
+        glvx::Vector2i window_size = window.getSize();
+        window_view.setPosition(to2f(window_size) / 2.0f);
         window.setView(window_view);
         onRender();
-        if (window.getSize() != render_texture.getSize()) {
-			render_texture.create(window.getSize().x, window.getSize().y);
+        if (window_size.x != (int)render_texture.getWidth() || window_size.y != (int)render_texture.getHeight()) {
+			render_texture.create(window_size.x, window_size.y);
         }
+        glvx::View rt_view;
+        rt_view.setPosition(to2f(window_size) / 2.0f);
+        render_texture.setView(rt_view);
         render_texture.clear(background_color);
         widgets.render(render_texture);
         render_texture.display();
-		sf::Sprite sprite(render_texture.getTexture(), sf::IntRect(0, 0, window.getSize().x, window.getSize().y));
-		window.draw(sprite);
+        draw_texture_rect(
+            window,
+            render_texture,
+            glvx::Vector2f(0.0f, 0.0f),
+            to2f(window_size),
+            glvx::Color::White
+        );
         window.display();
         widgets.unlock();
     }
 
-    void Application::setCursorType(sf::Cursor::Type type) {
+    void Application::setCursorType(CursorType type) {
         if (type == current_cursor_type) {
             return;
         }
         current_cursor_type = type;
         switch (type) {
-            case sf::Cursor::Arrow: window.setMouseCursor(arrow_cursor); break;
-            case sf::Cursor::Text: window.setMouseCursor(text_cursor); break;
-            case sf::Cursor::SizeTopLeft: window.setMouseCursor(size_top_left_cursor); break;
-            case sf::Cursor::SizeTop: window.setMouseCursor(size_top_cursor); break;
-            case sf::Cursor::SizeTopRight: window.setMouseCursor(size_top_right_cursor); break;
-            case sf::Cursor::SizeLeft: window.setMouseCursor(size_left_cursor); break;
-            case sf::Cursor::SizeRight: window.setMouseCursor(size_right_cursor); break;
-            case sf::Cursor::SizeBottomLeft: window.setMouseCursor(size_bottom_left_cursor); break;
-            case sf::Cursor::SizeBottom: window.setMouseCursor(size_bottom_cursor); break;
-            case sf::Cursor::SizeBottomRight: window.setMouseCursor(size_bottom_right_cursor); break;
+            case CursorType::Arrow: window.setMouseCursor(arrow_cursor); break;
+            case CursorType::Text: window.setMouseCursor(text_cursor); break;
+            case CursorType::SizeTopLeft: window.setMouseCursor(size_top_left_cursor); break;
+            case CursorType::SizeTop: window.setMouseCursor(size_top_cursor); break;
+            case CursorType::SizeTopRight: window.setMouseCursor(size_top_right_cursor); break;
+            case CursorType::SizeLeft: window.setMouseCursor(size_left_cursor); break;
+            case CursorType::SizeRight: window.setMouseCursor(size_right_cursor); break;
+            case CursorType::SizeBottomLeft: window.setMouseCursor(size_bottom_left_cursor); break;
+            case CursorType::SizeBottom: window.setMouseCursor(size_bottom_cursor); break;
+            case CursorType::SizeBottomRight: window.setMouseCursor(size_bottom_right_cursor); break;
             default: window.setMouseCursor(arrow_cursor); break;
         }
-    }
-
-    std::string Application::getCombinedShaderString(const std::vector<std::filesystem::path>& shaders, const std::filesystem::path& combined_template) {
-        std::vector<std::string> combined_lines = read_file_lines(combined_template);
-        ptrdiff_t include_line_index = -1;
-        ptrdiff_t apply_line_index = -1;
-        for (size_t i = 0; i < combined_lines.size(); i++) {
-            std::string& line = combined_lines[i];
-            std::string trimmed_line = trim(line);
-            if (trimmed_line == "%INCLUDE%") {
-                include_line_index = i;
-            } else if (trimmed_line == "%APPLY%") {
-				apply_line_index = i;
-            }
-        }
-        if (include_line_index == -1) {
-            throw std::runtime_error("Unable to find %INCLUDE% in " + combined_template.string());
-        }
-        if (apply_line_index == -1) {
-			throw std::runtime_error("Unable to find %APPLY% in " + combined_template.string());
-		}
-
-        if (shaders.size() == 0) {
-            combined_lines[include_line_index] = "// No shaders here";
-        } else {
-            combined_lines.erase(combined_lines.begin() + include_line_index);
-            size_t current_line_index = include_line_index;
-            std::string equal_signs;
-            const int equal_signs_amount = 32;
-            for (size_t i = 0; i < equal_signs_amount; i++) {
-                equal_signs += "=";
-            }
-            for (size_t i = 0; i < shaders.size(); i++) {
-                const std::filesystem::path& shader = shaders[i];
-                std::vector<std::string> shader_lines = read_file_lines(shader);
-                shader_lines.insert(shader_lines.begin(), "// " + equal_signs + " BEGIN " + shader.filename().string() + " " + equal_signs);
-                shader_lines.insert(shader_lines.end(), "// " + equal_signs + " END " + shader.filename().string() + " " + equal_signs);
-                if (i < shaders.size() - 1) {
-                    shader_lines.insert(shader_lines.end(), "");
-                }
-                combined_lines.insert(combined_lines.begin() + current_line_index, shader_lines.begin(), shader_lines.end());
-                current_line_index += shader_lines.size();
-                apply_line_index += shader_lines.size();
-            }
-            apply_line_index--; // to account for removed %INCLUDE% line
-        }
-
-        if (shaders.size() == 0) {
-            combined_lines[apply_line_index] = "    // No shaders here";
-        } else {
-            combined_lines.erase(combined_lines.begin() + apply_line_index);
-            size_t current_apply_line_index = apply_line_index;
-            for (size_t i = 0; i < shaders.size(); i++) {
-                const std::filesystem::path& shader = shaders[i];
-                combined_lines.insert(
-                    combined_lines.begin() + current_apply_line_index,
-                    "    color = " + shader.stem().string() + "_apply(color);"
-                );
-                current_apply_line_index++;
-            }
-        }
-
-        std::string result;
-        for (size_t i = 0; i < combined_lines.size(); i++) {
-            if (i != 0) {
-                result += "\n";
-            }
-            result += combined_lines[i];
-        }
-		return result;
     }
 
     MouseGesture::MouseGesture() { }
@@ -788,8 +718,8 @@ namespace fw {
     MouseGesture::MouseGesture(
         Widget* source,
         MouseGestureType type,
-        sf::Vector2f startPos,
-        sf::Mouse::Button button
+        glvx::Vector2f startPos,
+        glvx::Mouse::Button button
     ) {
         this->source = source;
         this->type = type;

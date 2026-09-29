@@ -7,7 +7,7 @@
 
 namespace fw {
 
-	TreeViewEntry::TreeViewEntry(TreeViewWidget& treeview, const sf::String& name) : treeview(treeview) {
+	TreeViewEntry::TreeViewEntry(TreeViewWidget& treeview, const std::string& name) : treeview(treeview) {
 #ifndef NDEBUG
 		this->debug_name = name;
 #endif
@@ -100,18 +100,18 @@ namespace fw {
 		return entry_widget->children_widget;
 	}
 
-	void TreeViewEntry::processMouseMove(const sf::Vector2f& pos) {
+	void TreeViewEntry::processMouseMove(const glvx::Vector2f& pos) {
 		if (pressed && !grabbed) {
-			sf::Vector2f rel_pos = entry_widget->getRelativeMousePos() - grab_offset;
-			if (length(rel_pos) >= TREEVIEW_ENTRY_DRAG_DISTANCE) {
+			glvx::Vector2f rel_pos = entry_widget->getRelativeMousePos() - grab_offset;
+			if (fw::length(rel_pos) >= TREEVIEW_ENTRY_DRAG_DISTANCE) {
 				take();
 			}
 		}
 	}
 
-	void TreeViewEntry::processMouse(const sf::Vector2f& pos) {
+	void TreeViewEntry::processMouse(const glvx::Vector2f& pos) {
 		if (grabbed) {
-			sf::Vector2f new_pos = pos - grab_offset;
+			glvx::Vector2f new_pos = pos - grab_offset;
 			treeview.grabbed_widget->setGlobalPosition(new_pos);
 			if (!grab_begin) {
 				treeview.putTargetHighlight();
@@ -120,18 +120,18 @@ namespace fw {
 		grab_begin = false;
 	}
 
-	void TreeViewEntry::processLeftPress(const sf::Vector2f& pos) {
+	void TreeViewEntry::processLeftPress(const glvx::Vector2f& pos) {
 		pressed = true;
 		grab_offset = entry_widget->getRelativeMousePos();
 	}
 
-	void TreeViewEntry::processLeftClick(const sf::Vector2f& pos) {
+	void TreeViewEntry::processLeftClick(const glvx::Vector2f& pos) {
 		if (!grabbed) {
 			click();
 		}
 	}
 
-	void TreeViewEntry::processLeftRelease(const sf::Vector2f& pos) {
+	void TreeViewEntry::processLeftRelease(const glvx::Vector2f& pos) {
 		if (grabbed) {
 			if (treeview.highlighted_entry) {
 				TreeViewEntry* highlighted_entry_parent = treeview.highlighted_entry->getParent();
@@ -143,7 +143,7 @@ namespace fw {
 		}
 	}
 
-	void TreeViewEntry::processGlobalLeftRelease(const sf::Vector2f& pos) {
+	void TreeViewEntry::processGlobalLeftRelease(const glvx::Vector2f& pos) {
 		pressed = false;
 	}
 

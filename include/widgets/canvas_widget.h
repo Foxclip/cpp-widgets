@@ -10,33 +10,27 @@ namespace fw {
 	class CanvasWidget : public RectangleWidget {
 	public:
 		CanvasWidget(WidgetList& widget_list, float width, float height, unsigned int texture_width, unsigned int texture_height);
-		CanvasWidget(WidgetList& widget_list, const sf::Vector2f& size, const sf::Vector2u& texture_size);
+		CanvasWidget(WidgetList& widget_list, const glvx::Vector2f& size, const glvx::Vector2u& texture_size);
 		CanvasWidget(const CanvasWidget& widget);
-		sf::RenderTexture& getRenderTexture();
-		sf::Vector2f getTextureSize() const;
-		const sf::View& getView() const;
+		glvx::RenderTexture& getRenderTexture();
+		glvx::Vector2f getTextureSize() const;
+		const glvx::View& getView() const;
 		void setTextureSize(unsigned int width, unsigned int height);
-		void setView(const sf::View& view);
+		void setView(const glvx::View& view);
 		void setViewCenter(float x, float y);
-		void setViewCenter(const sf::Vector2f& center);
+		void setViewCenter(const glvx::Vector2f& center);
 		void setViewSize(float width, float height);
-		void setViewSize(const sf::Vector2f& size);
+		void setViewSize(const glvx::Vector2f& size);
 		void resetView();
-		void clear(const sf::Color& color = sf::Color::Black);
-		void draw(const sf::Drawable& drawable, ColorType color_type, const sf::RenderStates& states = sf::RenderStates::Default);
-		void draw(const sf::VertexArray& varray, const sf::RenderStates& states = sf::RenderStates::Default);
-		void draw(const sf::Shape& shape, const sf::RenderStates& states = sf::RenderStates::Default);
-		void draw(const sf::Text& text, const sf::RenderStates& states = sf::RenderStates::Default);
+		void clear(const glvx::Color& color = glvx::Color::Black);
+		void draw(const glvx::Drawable& drawable, const glvx::RenderStates& states = glvx::RenderStates());
 		void display();
 		void saveToFile(std::filesystem::path path);
 		CanvasWidget* clone(bool with_children = true) override;
 
 	protected:
-		sf::RenderTexture texture;
-		sf::View view;
-
-	private:
-		void intenalDraw(const sf::Drawable& drawable, ColorType color_type, const sf::RenderStates& states);
+		glvx::RenderTexture texture;
+		glvx::View view;
 
 	};
 

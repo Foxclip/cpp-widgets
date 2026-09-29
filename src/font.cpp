@@ -5,19 +5,13 @@ namespace fw {
 
 	Font::Font() { }
 
-	Font::Font(const sf::Font& font, bool double_render, bool smooth) {
-		this->font = font;
-		this->double_render = double_render;
-		this->font.setSmooth(smooth);
-		loaded = true;
-	}
-
 	Font::Font(const std::string& filename, bool double_render, bool smooth) {
-		if (!font.loadFromFile(filename)) {
-			throw std::runtime_error("Font loading error (" + filename + ")");
+		if (!std::filesystem::exists(filename)) {
+			throw std::runtime_error("Font loading error (file not found: " + filename + ")");
 		}
+		this->filename = filename;
 		this->double_render = double_render;
-		this->font.setSmooth(smooth);
+		this->smooth = smooth;
 		loaded = true;
 	}
 
@@ -29,9 +23,16 @@ namespace fw {
 		return double_render;
 	}
 
-	const sf::Font& Font::getSfmlFont() const {
+	glvx::Font& Font::getFont(unsigned int size) const {
 		wAssert(isLoaded());
-		return font;
+		auto it = fonts.find(size);
+		if (it != fonts.end()) {
+			return *it->second;
+		}
+		auto font_ptr = std::make_shared<glvx::Font>(filename, false);
+		glvx::Font& font_ref = *font_ptr;
+		fonts.emplace(size, std::move(font_ptr));
+		return font_ref;
 	}
 
 }

@@ -38,8 +38,7 @@ WidgetTests::WidgetTests(const std::string& name, test::TestModule* parent, cons
 }
 
 void WidgetTests::beforeRunModule() {
-    sf::ContextSettings cs_window;
-    window.create(sf::VideoMode(800, 600), "Widget tests", sf::Style::Default, cs_window);
+    window.create(800, 600, "Widget tests");
     textbox_font = fw::Font("fonts/verdana.ttf");
     fw::WidgetList::debug_mouse = true;
 }
@@ -49,50 +48,39 @@ void WidgetTests::afterRunModule() {
     fw::WidgetList::debug_mouse = false;
 }
 
-std::string WidgetTests::sfVec2fToStr(const sf::Vector2f& vec) {
+std::string WidgetTests::sfVec2fToStr(const glvx::Vector2f& vec) {
     return "(" + fw::vec_to_str(vec) + ")";
 }
 
-std::string WidgetTests::sfVec2iToStr(const sf::Vector2i& vec) {
+std::string WidgetTests::sfVec2iToStr(const glvx::Vector2i& vec) {
     return "(" + fw::vec_to_str(vec) + ")";
 }
 
-std::string WidgetTests::sfVec2uToStr(const sf::Vector2u& vec) {
+std::string WidgetTests::sfVec2uToStr(const glvx::Vector2u& vec) {
     return "(" + fw::vec_to_str(vec) + ")";
 }
 
-std::string WidgetTests::cursorTypeToStr(sf::Cursor::Type type) {
+std::string WidgetTests::cursorTypeToStr(fw::CursorType type) {
     switch (type) {
-        case sf::Cursor::Arrow:                  return "Arrow";
-        case sf::Cursor::ArrowWait:              return "ArrowWait";
-        case sf::Cursor::Wait:                   return "Wait";
-        case sf::Cursor::Text:                   return "Text";
-        case sf::Cursor::Hand:                   return "Hand";
-        case sf::Cursor::SizeHorizontal:         return "SizeHorizontal";
-        case sf::Cursor::SizeVertical:           return "SizeVertical";
-        case sf::Cursor::SizeTopLeftBottomRight: return "SizeTopLeftBottomRight";
-        case sf::Cursor::SizeBottomLeftTopRight: return "SizeBottomLeftTopRight";
-        case sf::Cursor::SizeLeft:               return "SizeLeft";
-        case sf::Cursor::SizeRight:              return "SizeRight";
-        case sf::Cursor::SizeTop:                return "SizeTop";
-        case sf::Cursor::SizeBottom:             return "SizeBottom";
-        case sf::Cursor::SizeTopLeft:            return "SizeTopLeft";
-        case sf::Cursor::SizeBottomRight:        return "SizeBottomRight";
-        case sf::Cursor::SizeBottomLeft:         return "SizeBottomLeft";
-        case sf::Cursor::SizeTopRight:           return "SizeTopRight";
-        case sf::Cursor::SizeAll:                return "SizeAll";
-        case sf::Cursor::Cross:                  return "Cross";
-        case sf::Cursor::Help:                   return "Help";
-        case sf::Cursor::NotAllowed:             return "NotAllowed";
-        default:                                 wAssert(false, "Unknown cursor type"); return "Unknown";
+        case fw::CursorType::Arrow:           return "Arrow";
+        case fw::CursorType::Text:            return "Text";
+        case fw::CursorType::SizeTopLeft:     return "SizeTopLeft";
+        case fw::CursorType::SizeTop:         return "SizeTop";
+        case fw::CursorType::SizeTopRight:    return "SizeTopRight";
+        case fw::CursorType::SizeLeft:        return "SizeLeft";
+        case fw::CursorType::SizeRight:       return "SizeRight";
+        case fw::CursorType::SizeBottomLeft:  return "SizeBottomLeft";
+        case fw::CursorType::SizeBottom:      return "SizeBottom";
+        case fw::CursorType::SizeBottomRight: return "SizeBottomRight";
+        default:                          wAssert(false, "Unknown cursor type"); return "Unknown";
     }
 }
 
-std::string WidgetTests::floatRectToStr(const sf::FloatRect& rect) {
-    return "pos: " + sfVec2fToStr(rect.getPosition()) + " size: " + sfVec2fToStr(rect.getSize());
+std::string WidgetTests::floatRectToStr(const glvx::FloatRect& rect) {
+    return "pos: " + sfVec2fToStr(rect.position) + " size: " + sfVec2fToStr(rect.size);
 }
 
-std::string WidgetTests::colorToStr(const sf::Color& color) {
+std::string WidgetTests::colorToStr(const glvx::Color& color) {
     return "(" + fw::color_to_str(color) + ")";
 }
 
@@ -112,18 +100,18 @@ std::string WidgetTests::anchorToStr(fw::Widget::Anchor anchor) {
     }
 }
 
-bool WidgetTests::rectApproxCmp(const sf::FloatRect& left, const sf::FloatRect& right) {
+bool WidgetTests::rectApproxCmp(const glvx::FloatRect& left, const glvx::FloatRect& right) {
     float epsilon = 0.0001f;
-    if (abs(left.left - right.left) >= epsilon) {
+    if (abs(left.position.x - right.position.x) >= epsilon) {
         return false;
     }
-    if (abs(left.top - right.top) >= epsilon) {
+    if (abs(left.position.y - right.position.y) >= epsilon) {
         return false;
     }
-    if (abs(left.width - right.width) >= epsilon) {
+    if (abs(left.size.x - right.size.x) >= epsilon) {
         return false;
     }
-    if (abs(left.height - right.height) >= epsilon) {
+    if (abs(left.size.y - right.size.y) >= epsilon) {
         return false;
     }
     return true;
@@ -131,8 +119,8 @@ bool WidgetTests::rectApproxCmp(const sf::FloatRect& left, const sf::FloatRect& 
 
 void WidgetTests::mouseDragGesture(
     fw::Application& application,
-    const sf::Vector2f& begin_pos,
-    const sf::Vector2f& offset
+    const glvx::Vector2f& begin_pos,
+    const glvx::Vector2f& offset
 ) {
     application.mouseMove(begin_pos);
     application.advance();
@@ -144,38 +132,38 @@ void WidgetTests::mouseDragGesture(
     application.advance();
 }
 
-sf::Vector2f WidgetTests::getGrabPos(fw::WindowWidget* window, ResizePoint resize_point) {
+glvx::Vector2f WidgetTests::getGrabPos(fw::WindowWidget* window, ResizePoint resize_point) {
     float cursor_offset = fw::WINDOW_RESIZE_MARGIN / 2.0f;
-    sf::Vector2f grab_pos;
+    glvx::Vector2f grab_pos;
     if (resize_point == ResizePoint::TOP_LEFT) {
-        grab_pos = window->getGlobalTopLeft() + sf::Vector2f(-cursor_offset, -cursor_offset);
+        grab_pos = window->getGlobalTopLeft() + glvx::Vector2f(-cursor_offset, -cursor_offset);
     } else if (resize_point == ResizePoint::TOP) {
-        grab_pos = window->getGlobalTop() + sf::Vector2f(0.0f, -cursor_offset);
+        grab_pos = window->getGlobalTop() + glvx::Vector2f(0.0f, -cursor_offset);
     } else if (resize_point == ResizePoint::TOP_RIGHT) {
-        grab_pos = window->getGlobalTopRight() + sf::Vector2f(cursor_offset, -cursor_offset);
+        grab_pos = window->getGlobalTopRight() + glvx::Vector2f(cursor_offset, -cursor_offset);
     } else if (resize_point == ResizePoint::LEFT) {
-        grab_pos = window->getGlobalLeft() + sf::Vector2f(-cursor_offset, 0.0f);
+        grab_pos = window->getGlobalLeft() + glvx::Vector2f(-cursor_offset, 0.0f);
     } else if (resize_point == ResizePoint::RIGHT) {
-        grab_pos = window->getGlobalRight() + sf::Vector2f(cursor_offset, 0.0f);
+        grab_pos = window->getGlobalRight() + glvx::Vector2f(cursor_offset, 0.0f);
     } else if (resize_point == ResizePoint::BOTTOM_LEFT) {
-        grab_pos = window->getGlobalBottomLeft() + sf::Vector2f(-cursor_offset, cursor_offset);
+        grab_pos = window->getGlobalBottomLeft() + glvx::Vector2f(-cursor_offset, cursor_offset);
     } else if (resize_point == ResizePoint::BOTTOM) {
-        grab_pos = window->getGlobalBottom() + sf::Vector2f(0.0f, cursor_offset);
+        grab_pos = window->getGlobalBottom() + glvx::Vector2f(0.0f, cursor_offset);
     } else if (resize_point == ResizePoint::BOTTOM_RIGHT) {
-        grab_pos = window->getGlobalBottomRight() + sf::Vector2f(cursor_offset, cursor_offset);
+        grab_pos = window->getGlobalBottomRight() + glvx::Vector2f(cursor_offset, cursor_offset);
     } else {
         wAssert(false, "Unknown resize point");
     }
     return grab_pos;
 }
 
-void WidgetTests::resizeWindow(fw::WindowWidget* window, ResizePoint resize_point, const sf::Vector2f offset) {
-    sf::Vector2f grab_pos = getGrabPos(window, resize_point);
+void WidgetTests::resizeWindow(fw::WindowWidget* window, ResizePoint resize_point, const glvx::Vector2f offset) {
+    glvx::Vector2f grab_pos = getGrabPos(window, resize_point);
     mouseDragGesture(window->getWidgetList().getApplication(), grab_pos, offset);
 }
 
-void WidgetTests::dragWindow(fw::Application& application, fw::WindowWidget* window, const sf::Vector2f& offset) {
-    sf::Vector2f header_center = window->getHeaderWidget()->getGlobalCenter();
+void WidgetTests::dragWindow(fw::Application& application, fw::WindowWidget* window, const glvx::Vector2f& offset) {
+    glvx::Vector2f header_center = window->getHeaderWidget()->getGlobalCenter();
     application.mouseMove(header_center);
     application.advance();
     application.mouseLeftPress();
@@ -220,28 +208,28 @@ void WidgetTests::genericWidgetTest(const GenericWidgetTest& gwt) {
     T_COMPARE(widget->getVisualParentLocalBounds(), gwt.visual_parent_local_bounds, rect_to_str, rect_approx_cmp);
     T_COMPARE(widget->getVisualGlobalBounds(), gwt.visual_global_bounds, rect_to_str, rect_approx_cmp);
     T_COMPARE(widget->getUnclippedRegion(), gwt.visual_global_bounds, rect_to_str, rect_approx_cmp);
-    sf::FloatRect quantized = gwt.visual_global_bounds;
-    quantized.left = floor(quantized.left);
-    quantized.top = floor(quantized.top);
-    quantized.width = floor(quantized.width);
-    quantized.height = floor(quantized.height);
+    glvx::FloatRect quantized = gwt.visual_global_bounds;
+    quantized.position.x = floor(quantized.position.x);
+    quantized.position.y = floor(quantized.position.y);
+    quantized.size.x = floor(quantized.size.x);
+    quantized.size.y = floor(quantized.size.y);
     T_COMPARE(widget->getQuantizedUnclippedRegion(), quantized, rect_to_str, rect_approx_cmp);
-    T_COMPARE(widget->getWidth(), gwt.parent_local_bounds.width);
-    T_APPROX_COMPARE(widget->getHeight(), gwt.parent_local_bounds.height);
-    T_APPROX_COMPARE(widget->getGlobalWidth(), gwt.parent_local_bounds.width);
-    T_APPROX_COMPARE(widget->getGlobalHeight(), gwt.parent_local_bounds.height);
-    T_VEC2_APPROX_COMPARE(widget->getSize(), gwt.local_bounds.getSize());
-    auto get_corners = [&](const sf::FloatRect& bounds) {
-        std::vector<sf::Vector2f> corners(4);
-        corners[0] = bounds.getPosition();
-        corners[1] = bounds.getPosition() + sf::Vector2f(gwt.local_bounds.width, 0.0f);
-        corners[2] = bounds.getPosition() + sf::Vector2f(0.0f, bounds.height);
-        corners[3] = bounds.getPosition() + bounds.getSize();
+    T_COMPARE(widget->getWidth(), gwt.parent_local_bounds.size.x);
+    T_APPROX_COMPARE(widget->getHeight(), gwt.parent_local_bounds.size.y);
+    T_APPROX_COMPARE(widget->getGlobalWidth(), gwt.parent_local_bounds.size.x);
+    T_APPROX_COMPARE(widget->getGlobalHeight(), gwt.parent_local_bounds.size.y);
+    T_VEC2_APPROX_COMPARE(widget->getSize(), gwt.local_bounds.size);
+    auto get_corners = [&](const glvx::FloatRect& bounds) {
+        std::vector<glvx::Vector2f> corners(4);
+        corners[0] = bounds.position;
+        corners[1] = bounds.position + glvx::Vector2f(gwt.local_bounds.size.x, 0.0f);
+        corners[2] = bounds.position + glvx::Vector2f(0.0f, bounds.size.y);
+        corners[3] = bounds.position + bounds.size;
         return corners;
     };
-    std::vector<sf::Vector2f> parent_local_corners = get_corners(gwt.parent_local_bounds);
-    std::vector<sf::Vector2f> global_corners = get_corners(gwt.global_bounds);
-    std::vector<sf::Vector2f> visual_global_corners = get_corners(gwt.visual_global_bounds);
+    std::vector<glvx::Vector2f> parent_local_corners = get_corners(gwt.parent_local_bounds);
+    std::vector<glvx::Vector2f> global_corners = get_corners(gwt.global_bounds);
+    std::vector<glvx::Vector2f> visual_global_corners = get_corners(gwt.visual_global_bounds);
     T_VEC2_APPROX_COMPARE(widget->getTopLeft(), parent_local_corners[0]);
     T_VEC2_APPROX_COMPARE(widget->getTopRight(), parent_local_corners[1]);
     T_VEC2_APPROX_COMPARE(widget->getBottomLeft(), parent_local_corners[2]);

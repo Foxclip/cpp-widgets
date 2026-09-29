@@ -10,16 +10,16 @@ namespace fw {
 		setName(name + " entry");
 		setHorizontal(false);
 		setInnerPaddingY(TREEVIEW_CONTAINER_PADDING);
-		setFillColor(sf::Color::Transparent);
+		setFillColor(glvx::Color::Transparent);
 		setSizeXPolicy(Widget::SizePolicy::PARENT);
 		setParent(&entry.treeview);
-		OnMouseMoved += [&](const sf::Vector2f& pos) {
+		OnMouseMoved += [&](const glvx::Vector2f& pos) {
 			entry.processMouseMove(pos);
 		};
-		OnProcessMouse += [&](const sf::Vector2f& pos) {
+		OnProcessMouse += [&](const glvx::Vector2f& pos) {
 			entry.processMouse(pos);
 		};
-		OnGlobalLeftRelease += [&](const sf::Vector2f& pos) {
+		OnGlobalLeftRelease += [&](const glvx::Vector2f& pos) {
 			entry.processLeftRelease(pos);
 		};
 		// rectangle
@@ -28,13 +28,13 @@ namespace fw {
 		rectangle_widget->setClipChildren(true);
 		rectangle_widget->setClickThrough(false);
 		rectangle_widget->setSizeXPolicy(Widget::SizePolicy::PARENT);
-		rectangle_widget->OnLeftPress += [&](const sf::Vector2f& pos) {
+		rectangle_widget->OnLeftPress += [&](const glvx::Vector2f& pos) {
 			entry.processLeftPress(pos);
 		};
-		rectangle_widget->OnGlobalLeftRelease += [&](const sf::Vector2f& pos) {
+		rectangle_widget->OnGlobalLeftRelease += [&](const glvx::Vector2f& pos) {
 			entry.processGlobalLeftRelease(pos);
 		};
-		rectangle_widget->OnLeftClick += [&](const sf::Vector2f& pos) {
+		rectangle_widget->OnLeftClick += [&](const glvx::Vector2f& pos) {
 			entry.processLeftClick(pos);
 		};
 		rectangle_widget->setParent(this);
@@ -45,15 +45,15 @@ namespace fw {
 		arrow_area_widget->setSizeYPolicy(Widget::SizePolicy::PARENT);
 		arrow_area_widget->setFillColor(TREEVIEW_ENTRY_ARROW_AREA_COLOR);
 		arrow_area_widget->setClickThrough(false);
-		arrow_area_widget->OnLeftPress += [&](const sf::Vector2f& pos) {
+		arrow_area_widget->OnLeftPress += [&](const glvx::Vector2f& pos) {
 			entry.toggle();
 		};
 		arrow_area_widget->setParent(rectangle_widget);
 		// arrow
-		std::vector<sf::Vector2f> vertices = {
-			sf::Vector2f(5.0, 0.0f),
-			sf::Vector2f(-3.0, 5.0f),
-			sf::Vector2f(-3.0, -5.0f),
+		std::vector<glvx::Vector2f> vertices = {
+			glvx::Vector2f(5.0, 0.0f),
+			glvx::Vector2f(-3.0, 5.0f),
+			glvx::Vector2f(-3.0, -5.0f),
 		};
 		arrow_widget = entry.treeview.widget_list.createPolygonWidget(vertices);
 		arrow_widget->setName("arrow");
