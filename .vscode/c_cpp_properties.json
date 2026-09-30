@@ -4,6 +4,16 @@
             "name": "Win32",
             "includePath": [
                 "${workspaceFolder}/**",
+                "${workspaceFolder}/include",
+                "${workspaceFolder}/tests/include",
+                "${workspaceFolder}/GLVX/include",
+                "${workspaceFolder}/GLVX/glfw/include",
+                "${workspaceFolder}/GLVX/glm",
+                "${workspaceFolder}/GLVX/freetype/include",
+                "${workspaceFolder}/GLVX/glad/include",
+                "${workspaceFolder}/logger/include",
+                "${workspaceFolder}/clip",
+                "${workspaceFolder}/tests/test_lib/include",
                 "${vcpkgRoot}/x64-windows/include"
             ],
             "defines": [
