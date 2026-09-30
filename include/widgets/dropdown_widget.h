@@ -1,10 +1,10 @@
 #pragma once
 
-#include "container_widget.h"
-#include "empty_widget.h"
-#include "rectangle_widget.h"
-#include "text_widget.h"
-#include "polygon_widget.h"
+#include "widgets/container_widget.h"
+#include "widgets/empty_widget.h"
+#include "widgets/rectangle_widget.h"
+#include "widgets/text_widget.h"
+#include "widgets/polygon_widget.h"
 
 namespace fw {
 

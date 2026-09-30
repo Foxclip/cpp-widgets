@@ -1,8 +1,8 @@
 #pragma once
 
-#include "empty_widget.h"
-#include "rectangle_widget.h"
-#include "text_widget.h"
+#include "widgets/empty_widget.h"
+#include "widgets/rectangle_widget.h"
+#include "widgets/text_widget.h"
 
 namespace fw {
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "rectangle_widget.h"
+#include "widgets/rectangle_widget.h"
 
 namespace fw {
 

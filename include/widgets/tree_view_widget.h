@@ -1,6 +1,6 @@
 #pragma once
 
-#include "container_widget.h"
+#include "widgets/container_widget.h"
 #include "widgets/tree_view_entry.h"
 
 namespace fw {

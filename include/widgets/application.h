@@ -14,7 +14,7 @@
 #include <glvx/cursor.h>
 #include <glvx/keyboard.h>
 #include <glvx/mouse.h>
-#include "widget_list.h"
+#include "widgets/widget_list.h"
 #include <queue>
 
 namespace fw {

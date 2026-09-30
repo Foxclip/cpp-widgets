@@ -1,7 +1,7 @@
 #pragma once
 
-#include "empty_widget.h"
-#include "container_widget.h"
+#include "widgets/empty_widget.h"
+#include "widgets/container_widget.h"
 
 namespace fw {
 

@@ -1,9 +1,9 @@
 #pragma once
 
-#include "widget.h"
-#include "empty_widget.h"
-#include "widget_update_queue.h"
-#include "widget_render_queue.h"
+#include "widgets/widget.h"
+#include "widgets/empty_widget.h"
+#include "widgets/widget_update_queue.h"
+#include "widgets/widget_render_queue.h"
 
 namespace fw {
 

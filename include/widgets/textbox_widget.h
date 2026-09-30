@@ -1,7 +1,7 @@
 #pragma once
 
-#include "rectangle_widget.h"
-#include "text_widget.h"
+#include "widgets/rectangle_widget.h"
+#include "widgets/text_widget.h"
 #include "clip/clip.h"
 #include "common/history.h"
 #include <chrono>

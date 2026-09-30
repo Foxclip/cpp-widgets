@@ -1,6 +1,6 @@
 #pragma once
 
-#include "shape_widget.h"
+#include "widgets/shape_widget.h"
 
 namespace fw {
 
