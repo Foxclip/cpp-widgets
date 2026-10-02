@@ -38,7 +38,7 @@ WidgetTests::WidgetTests(const std::string& name, test::TestModule* parent, cons
 }
 
 void WidgetTests::beforeRunModule() {
-    window.create(800, 600, "Widget tests");
+    window.create(800, 600, "Widget tests", 0, minimized);
     textbox_font = fw::Font("fonts/verdana.ttf");
     fw::WidgetList::debug_mouse = true;
 }

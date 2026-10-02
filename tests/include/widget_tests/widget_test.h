@@ -17,6 +17,10 @@
 #include "widgets/font.h"
 #include "test_lib/test.h"
 
+// set by the --minimized command-line parameter;
+// when true, the test window is created minimized
+extern bool minimized;
+
 class WidgetTest : public test::TestModule {
 public:
 	WidgetTest(const std::string& name, test::TestModule* parent, const std::vector<TestNode*>& required_nodes = { });

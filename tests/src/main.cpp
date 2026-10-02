@@ -1,3 +1,5 @@
+#include <cstring>
+#include "widget_tests/widget_test.h"
 #include "widget_tests/widget_tests.h"
 #include "logger/logger.h"
 
@@ -30,8 +32,14 @@ void run_tests() {
 }
 
 int main(int argc, char* argv[]) {
-    const bool unattended =
-        argc > 1 && std::strcmp(argv[1], "--no-crt-dialog") == 0;
+    bool unattended = false;
+    for (int i = 1; i < argc; i++) {
+        if (std::strcmp(argv[i], "--no-crt-dialog") == 0) {
+            unattended = true;
+        } else if (std::strcmp(argv[i], "--minimized") == 0) {
+            minimized = true;
+        }
+    }
     if (unattended) {
         enable_no_crt_dialogs();
     }
