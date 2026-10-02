@@ -678,6 +678,7 @@ namespace fw {
         }
         glvx::View rt_view;
         rt_view.setPosition(to2f(window_size) / 2.0f);
+        rt_view.setScale(1.0f, -1.0f);
         render_texture.setView(rt_view);
         render_texture.clear(background_color);
         widgets.render(render_texture);
