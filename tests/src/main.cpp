@@ -24,27 +24,34 @@ void enable_no_crt_dialogs() {
     std::abort();
 }
 
-void run_tests() {
+void run_tests(const std::string& test_path) {
     test::TestModule root_module("Widget tests", nullptr);
     WidgetTests* widget_module = root_module.addModule<WidgetTests>("Widget", { });
-    root_module.run();
+    if (test_path.empty()) {
+        root_module.run();
+    } else {
+        root_module.run(test_path);
+    }
     root_module.printSummary();
 }
 
 int main(int argc, char* argv[]) {
     bool unattended = false;
+    std::string test_path;
     for (int i = 1; i < argc; i++) {
         if (std::strcmp(argv[i], "--no-crt-dialog") == 0) {
             unattended = true;
         } else if (std::strcmp(argv[i], "--minimized") == 0) {
             minimized = true;
+        } else if (test_path.empty() && argv[i][0] != '-') {
+            test_path = argv[i];
         }
     }
     if (unattended) {
         enable_no_crt_dialogs();
     }
     try {
-        run_tests();
+        run_tests(test_path);
     } catch (const std::exception& e) {
         if (unattended) {
             report_and_abort("std::exception", e.what());
