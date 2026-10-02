@@ -1,15 +1,28 @@
 #pragma once
 
-#include <SFML/Graphics.hpp>
+#include <glvx/window.h>
+#include <glvx/event.h>
+#include <glvx/text.h>
+#include <glvx/font.h>
+#include <glvx/vertex.h>
+#include <glvx/vertex_array.h>
+#include <glvx/render_texture.h>
+#include <glvx/render_states.h>
+#include <glvx/shape.h>
+#include <glvx/rectangle.h>
+#include <glvx/image.h>
+#include <glvx/cursor.h>
+#include <glvx/keyboard.h>
+#include <glvx/mouse.h>
 #include <functional>
-#include "widgets_common.h"
-#include "drawing.h"
-#include "render_texture.h"
-#include "widget_transform.h"
-#include "widget_update_queue.h"
-#include "widget_render_queue.h"
-#include "widget_unclipped_region.h"
-#include "widget_parent_chain.h"
+#include "widgets/widgets_common.h"
+#include "widgets/drawing.h"
+#include "widgets/render_texture.h"
+#include "widgets/widget_transform.h"
+#include "widgets/widget_update_queue.h"
+#include "widgets/widget_render_queue.h"
+#include "widgets/widget_unclipped_region.h"
+#include "widgets/widget_parent_chain.h"
 #include "common/compvector.h"
 #include "common/searchindex.h"
 #include "common/event.h"
@@ -92,31 +105,31 @@ namespace fw {
 		};
 		ptrdiff_t debug_id = -1;
 
-		Event<const sf::Vector2f&> OnLeftPress;
-		Event<const sf::Vector2f&> OnRightPress;
-		Event<const sf::Vector2f&> OnGlobalLeftRelease;
-		Event<const sf::Vector2f&> OnBlockableLeftRelease;
-		Event<const sf::Vector2f&> OnGlobalRightRelease;
-		Event<const sf::Vector2f&> OnBlockableRightRelease;
-		Event<const sf::Vector2f&> OnLeftClick;
-		Event<const sf::Vector2f&> OnRightClick;
-		Event<const sf::Vector2f&, float> OnScrollX;
-		Event<const sf::Vector2f&, float> OnScrollY;
-		Event<const sf::Vector2f&> OnMouseMoved;
-		Event<const sf::Vector2f&> OnMouseEnter;
-		Event<const sf::Vector2f&> OnMouseExit;
-		Event<const sf::Vector2f&> OnProcessMouse;
-		Event<sf::Mouse::Button, const sf::Vector2f&> OnProcessDragGesture;
+		Event<const glvx::Vector2f&> OnLeftPress;
+		Event<const glvx::Vector2f&> OnRightPress;
+		Event<const glvx::Vector2f&> OnGlobalLeftRelease;
+		Event<const glvx::Vector2f&> OnBlockableLeftRelease;
+		Event<const glvx::Vector2f&> OnGlobalRightRelease;
+		Event<const glvx::Vector2f&> OnBlockableRightRelease;
+		Event<const glvx::Vector2f&> OnLeftClick;
+		Event<const glvx::Vector2f&> OnRightClick;
+		Event<const glvx::Vector2f&, float> OnScrollX;
+		Event<const glvx::Vector2f&, float> OnScrollY;
+		Event<const glvx::Vector2f&> OnMouseMoved;
+		Event<const glvx::Vector2f&> OnMouseEnter;
+		Event<const glvx::Vector2f&> OnMouseExit;
+		Event<const glvx::Vector2f&> OnProcessMouse;
+		Event<glvx::Mouse::Button, const glvx::Vector2f&> OnProcessDragGesture;
 		Event<> OnFocused;
 		Event<> OnFocusLost;
 		Event<> OnPreUpdate;
 		Event<> OnPostUpdate;
-		Event<sf::RenderTarget&> OnBeforeGlobalRender;
-		Event<sf::RenderTarget&> OnBeforeRender;
-		Event<sf::RenderTarget&> OnAfterRender;
-		Event<sf::RenderTarget&> OnAfterGlobalRender;
+		Event<glvx::RenderTarget&> OnBeforeGlobalRender;
+		Event<glvx::RenderTarget&> OnBeforeRender;
+		Event<glvx::RenderTarget&> OnAfterRender;
+		Event<glvx::RenderTarget&> OnAfterGlobalRender;
 		Event<unsigned int, unsigned int> OnWindowResized;
-		std::function<sf::Cursor::Type()> GetCursorType = []() { return sf::Cursor::Arrow; };
+		std::function<CursorType()> GetCursorType = []() { return CursorType::Arrow; };
 
 		Widget(WidgetList& list);
 		Widget(const Widget& other);
@@ -124,26 +137,26 @@ namespace fw {
 		WidgetType getType() const;
 		bool isContainer() const;
 		bool isMouseOver() const;
-		void updateMouseState(const sf::Vector2f& mouse_pos);
-		sf::Vector2f getRelativeMousePos() const;
+		void updateMouseState(const glvx::Vector2f& mouse_pos);
+		glvx::Vector2f getRelativeMousePos() const;
 		virtual bool isVisualPositionQuantized() const;
 		bool isRenderable() const;
 		bool isVisible() const;
 		bool isClickThrough() const;
 		bool getChildrenLocked() const;
 		WidgetVisibility checkVisibility() const;
-		bool containsPoint(const sf::Vector2f& point, bool include_upper_bound = false) const;
-		bool unclippedRegionContainsPoint(const sf::Vector2f& point, bool include_upper_bound = false) const;
-		void processLeftPress(const sf::Vector2f& pos, bool became_focused);
-		void processRightPress(const sf::Vector2f& pos);
-		void processGlobalLeftRelease(const sf::Vector2f& pos);
-		void processBlockableLeftRelease(const sf::Vector2f& pos);
-		void processGlobalRightRelease(const sf::Vector2f& pos);
-		void processBlockableRightRelease(const sf::Vector2f& pos);
-		void processMouseMove(const sf::Vector2f& pos);
-		void processScrollX(const sf::Vector2f pos, float delta);
-		void processScrollY(const sf::Vector2f pos, float delta);
-		void processMouse(const sf::Vector2f& pos);
+		bool containsPoint(const glvx::Vector2f& point, bool include_upper_bound = false) const;
+		bool unclippedRegionContainsPoint(const glvx::Vector2f& point, bool include_upper_bound = false) const;
+		void processLeftPress(const glvx::Vector2f& pos, bool became_focused);
+		void processRightPress(const glvx::Vector2f& pos);
+		void processGlobalLeftRelease(const glvx::Vector2f& pos);
+		void processBlockableLeftRelease(const glvx::Vector2f& pos);
+		void processGlobalRightRelease(const glvx::Vector2f& pos);
+		void processBlockableRightRelease(const glvx::Vector2f& pos);
+		void processMouseMove(const glvx::Vector2f& pos);
+		void processScrollX(const glvx::Vector2f pos, float delta);
+		void processScrollY(const glvx::Vector2f pos, float delta);
+		void processMouse(const glvx::Vector2f& pos);
 		WidgetList& getWidgetList() const;
 		FocusableType getFocusableType() const;
 		bool isFocused() const;
@@ -155,7 +168,7 @@ namespace fw {
 		size_t getLocalRenderLayer() const;
 		size_t getParentLocalRenderLayer() const;
 		bool getQuantizeRenderedPosition() const;
-		sf::Shader* getShader() const;
+		glvx::Shader* getShader() const;
 		Widget* getParent() const;
 		const CompVector<Widget*>& getParentChain() const;
 		const CompVector<Widget*>& getChildren() const;
@@ -165,28 +178,28 @@ namespace fw {
 		Widget* tryFind(const std::string& name) const;
 		Widget* find(const std::string& name) const;
 		CompVector<Widget*> getRenderQueue() const;
-		virtual sf::FloatRect getLocalBounds() const = 0;
-		sf::FloatRect getParentLocalBounds() const;
-		sf::FloatRect getGlobalBounds() const;
-		virtual sf::FloatRect getVisualLocalBounds() const;
-		sf::FloatRect getVisualParentLocalBounds() const;
-		sf::FloatRect getVisualGlobalBounds() const;
-		const sf::FloatRect& getUnclippedRegion() const;
-		const sf::FloatRect& getQuantizedUnclippedRegion() const;
-		sf::RenderTexture& getRenderTexture();
-		sf::Vector2f toGlobal(const sf::Vector2f& pos) const;
-		sf::Vector2f toLocal(const sf::Vector2f& pos) const;
-		sf::Vector2f getSize() const;
+		virtual glvx::FloatRect getLocalBounds() const = 0;
+		glvx::FloatRect getParentLocalBounds() const;
+		glvx::FloatRect getGlobalBounds() const;
+		virtual glvx::FloatRect getVisualLocalBounds() const;
+		glvx::FloatRect getVisualParentLocalBounds() const;
+		glvx::FloatRect getVisualGlobalBounds() const;
+		const glvx::FloatRect& getUnclippedRegion() const;
+		const glvx::FloatRect& getQuantizedUnclippedRegion() const;
+		glvx::RenderTexture& getRenderTexture();
+		glvx::Vector2f toGlobal(const glvx::Vector2f& pos) const;
+		glvx::Vector2f toLocal(const glvx::Vector2f& pos) const;
+		glvx::Vector2f getSize() const;
 		float getWidth() const;
 		float getHeight() const;
 		float getGlobalWidth() const;
 		float getGlobalHeight() const;
 		Anchor getParentAnchor() const;
-		sf::Vector2f getAnchorOffset() const;
+		glvx::Vector2f getAnchorOffset() const;
 		SizePolicy getSizeXPolicy() const;
 		SizePolicy getSizeYPolicy() const;
-		const sf::Vector2f& getMinSize() const;
-		const sf::Vector2f& getMaxSize() const;
+		const glvx::Vector2f& getMinSize() const;
+		const glvx::Vector2f& getMaxSize() const;
 		// adding new targets:
 		// add removeSocket to WidgetList::removeWidget method
 		WidgetUpdateSocket* getPosXTarget();
@@ -196,77 +209,77 @@ namespace fw {
 		WidgetUpdateSocket* getChildrenXTarget();
 		WidgetUpdateSocket* getChildrenYTarget();
 		const CompVector<WidgetLink*>& getLinks() const;
-		const sf::Transform& getTransform() const;
-		const sf::Transform& getInverseTransform() const;
-		const sf::Transform& getGlobalTransform() const;
-		const sf::Transform& getParentGlobalTransform() const;
-		const sf::Transform& getInverseGlobalTransform() const;
-		const sf::Transform& getInverseParentGlobalTransform() const;
-		const sf::Vector2f& getOrigin() const;
+		const glvx::Transform& getTransform() const;
+		const glvx::Transform& getInverseTransform() const;
+		const glvx::Transform& getGlobalTransform() const;
+		const glvx::Transform& getParentGlobalTransform() const;
+		const glvx::Transform& getInverseGlobalTransform() const;
+		const glvx::Transform& getInverseParentGlobalTransform() const;
+		const glvx::Vector2f& getOrigin() const;
 		Anchor getOriginAnchor() const;
-		const sf::Vector2f& getPosition() const;
-		sf::Vector2f getTransformPosition() const;
-		sf::Vector2f getGlobalPosition() const;
-		sf::Vector2f getGlobalOriginPosition() const;
-		sf::Vector2f getCenter() const;
-		sf::Vector2f getGlobalCenter() const;
-		sf::Vector2f getVisualGlobalCenter() const;
-		sf::Vector2f getTop() const;
-		sf::Vector2f getLeft() const;
-		sf::Vector2f getRight() const;
-		sf::Vector2f getBottom() const;
-		sf::Vector2f getGlobalTop() const;
-		sf::Vector2f getGlobalLeft() const;
-		sf::Vector2f getGlobalRight() const;
-		sf::Vector2f getGlobalBottom() const;
-		sf::Vector2f getTopLeft() const;
-		sf::Vector2f getTopRight() const;
-		sf::Vector2f getBottomLeft() const;
-		sf::Vector2f getBottomRight() const;
-		sf::Vector2f getGlobalTopLeft() const;
-		sf::Vector2f getGlobalTopRight() const;
-		sf::Vector2f getGlobalBottomLeft() const;
-		sf::Vector2f getGlobalBottomRight() const;
-		sf::Vector2f getVisualGlobalTopLeft() const;
-		sf::Vector2f getVisualGlobalTopRight() const;
-		sf::Vector2f getVisualGlobalBottomLeft() const;
-		sf::Vector2f getVisualGlobalBottomRight() const;
+		const glvx::Vector2f& getPosition() const;
+		glvx::Vector2f getTransformPosition() const;
+		glvx::Vector2f getGlobalPosition() const;
+		glvx::Vector2f getGlobalOriginPosition() const;
+		glvx::Vector2f getCenter() const;
+		glvx::Vector2f getGlobalCenter() const;
+		glvx::Vector2f getVisualGlobalCenter() const;
+		glvx::Vector2f getTop() const;
+		glvx::Vector2f getLeft() const;
+		glvx::Vector2f getRight() const;
+		glvx::Vector2f getBottom() const;
+		glvx::Vector2f getGlobalTop() const;
+		glvx::Vector2f getGlobalLeft() const;
+		glvx::Vector2f getGlobalRight() const;
+		glvx::Vector2f getGlobalBottom() const;
+		glvx::Vector2f getTopLeft() const;
+		glvx::Vector2f getTopRight() const;
+		glvx::Vector2f getBottomLeft() const;
+		glvx::Vector2f getBottomRight() const;
+		glvx::Vector2f getGlobalTopLeft() const;
+		glvx::Vector2f getGlobalTopRight() const;
+		glvx::Vector2f getGlobalBottomLeft() const;
+		glvx::Vector2f getGlobalBottomRight() const;
+		glvx::Vector2f getVisualGlobalTopLeft() const;
+		glvx::Vector2f getVisualGlobalTopRight() const;
+		glvx::Vector2f getVisualGlobalBottomLeft() const;
+		glvx::Vector2f getVisualGlobalBottomRight() const;
 		float getRotation() const;
-		virtual const sf::Color& getFillColor() const = 0;
+		virtual const glvx::Color& getFillColor() const = 0;
 		float getAlphaMultiplier() const;
 		virtual void setSize(float width, float height);
-		void setSize(const sf::Vector2f& size);
+		void setSize(const glvx::Vector2f& size);
 		void setWidth(float width);
 		void setHeight(float height);
 		void setSizeKeepPos(float width, float height);
-		void setSizeKeepPos(const sf::Vector2f& size);
+		void setSizeKeepPos(const glvx::Vector2f& size);
 		void setOrigin(Anchor anchor);
 		void setOrigin(float x, float y);
-		void setOrigin(const sf::Vector2f& origin);
+		void setOrigin(const glvx::Vector2f& origin);
 		void setOriginKeepPos(Anchor anchor);
 		void setOriginKeepPos(float x, float y);
-		void setOriginKeepPos(const sf::Vector2f& origin);
+		void setOriginKeepPos(const glvx::Vector2f& origin);
 		void setParentAnchor(Anchor anchor);
 		void setAnchorOffset(float x, float y);
-		void setAnchorOffset(const sf::Vector2f& offset);
+		void setAnchorOffset(const glvx::Vector2f& offset);
 		void setAnchorOffsetX(float x);
 		void setAnchorOffsetY(float y);
 		void setSizeXPolicy(SizePolicy policy);
 		void setSizeYPolicy(SizePolicy policy);
 		void setSizePolicy(SizePolicy policy);
 		void setMinSize(float width, float height);
-		void setMinSize(const sf::Vector2f& size);
+		void setMinSize(const glvx::Vector2f& size);
 		void setMaxSize(float width, float height);
-		void setMaxSize(const sf::Vector2f& size);
-		virtual void setFillColor(const sf::Color& color) = 0;
+		void setMaxSize(const glvx::Vector2f& size);
+		virtual void setFillColor(const glvx::Color& color) = 0;
 		void setPosition(float x, float y);
-		void setPosition(const sf::Vector2f& position);
+		void setPosition(const glvx::Vector2f& position);
 		void setPositionX(float x);
 		void setPositionY(float y);
 		void setTransformPosition(float x, float y);
-		void setTransformPosition(const sf::Vector2f& position);
+		void setTransformPosition(const glvx::Vector2f& position);
 		void setGlobalPosition(float x, float y);
-		void setGlobalPosition(const sf::Vector2f& position);
+		void setGlobalPosition(const glvx::Vector2f& position);
 		void setGlobalPositionX(float x);
 		void setGlobalPositionY(float y);
 		void setRotation(float angle);
@@ -306,13 +319,13 @@ namespace fw {
 		void setLocalRenderLayer(size_t layer);
 		void setParentLocalRenderLayer(size_t layer);
 		void setQuantizeRenderedPosition(bool value);
-		void setShader(sf::Shader* shader);
+		void setShader(glvx::Shader* shader);
 		void setAlphaMultiplier(float value);
 		void removeFocus();
-		void processKeyboardEvent(const sf::Event& event);
-		void render(sf::RenderTarget& target);
-		void renderBounds(sf::RenderTarget& target, const sf::Color& color, bool include_children, bool transformed);
-		void renderOrigin(sf::RenderTarget& target, bool include_children);
+		void processKeyboardEvent(const glvx::Event& event);
+		void render(glvx::RenderTarget& target);
+		void renderBounds(glvx::RenderTarget& target, const glvx::Color& color, bool include_children, bool transformed);
+		void renderOrigin(glvx::RenderTarget& target, bool include_children);
 		void setDebugRender(bool value);
 		void remove(bool with_clildren = true);
 
@@ -336,12 +349,12 @@ namespace fw {
 		CompVector<Widget*> children;
 		bool children_locked = false;
 		SearchIndexMultiple<std::string, Widget*> children_names;
-		sf::Shader* shader = nullptr;
+		glvx::Shader* shader = nullptr;
 		GlobalRenderLayer global_layer = GlobalRenderLayer::BASE;
 		std::map<Widget*, size_t> local_layers;
 		Anchor origin_anchor = Anchor::CUSTOM;
 		Anchor parent_anchor = Anchor::CUSTOM;
-		sf::Vector2f anchor_offset = sf::Vector2f(0.0f, 0.0f);
+		glvx::Vector2f anchor_offset = glvx::Vector2f(0.0f, 0.0f);
 		WidgetUnclippedRegion unclipped_region = WidgetUnclippedRegion(this);
 		SizePolicy size_policy_x = SizePolicy::NONE;
 		SizePolicy size_policy_y = SizePolicy::NONE;
@@ -352,8 +365,8 @@ namespace fw {
 		WidgetUpdateSocket children_x_target = WidgetUpdateSocket(this, WidgetUpdateType::CHILDREN_X);
 		WidgetUpdateSocket children_y_target = WidgetUpdateSocket(this, WidgetUpdateType::CHILDREN_Y);
 		CompVectorUptr<WidgetLink> links;
-		sf::Vector2f min_size;
-		sf::Vector2f max_size = sf::Vector2f(-1.0f, -1.0f); // negative values - unlimited
+		glvx::Vector2f min_size;
+		glvx::Vector2f max_size = glvx::Vector2f(-1.0f, -1.0f); // negative values - unlimited
 		bool visible = true;
 		bool renderable = true;
 		bool quantize_position = true;
@@ -367,16 +380,16 @@ namespace fw {
 		bool debug_render = false;
 		float alpha_multiplier = 1.0f;
 
-		sf::Vector2f anchorToPos(Anchor p_anchor, const sf::Vector2f& size);
-		virtual sf::Drawable* getDrawable() = 0;
-		virtual const sf::Drawable* getDrawable() const = 0;
-		virtual sf::Transformable* getTransformable() = 0;
-		virtual const sf::Transformable* getTransformable() const = 0;
-		virtual sf::Vector2f getRenderPositionOffset() const;
+		glvx::Vector2f anchorToPos(Anchor p_anchor, const glvx::Vector2f& size);
+		virtual glvx::Drawable* getDrawable() = 0;
+		virtual const glvx::Drawable* getDrawable() const = 0;
+		virtual glvx::Transformable* getTransformable() = 0;
+		virtual const glvx::Transformable* getTransformable() const = 0;
+		virtual glvx::Vector2f getRenderPositionOffset() const;
 		virtual void setSizeInternal(float width, float height) = 0;
 		void setOriginInternal(float x, float y);
-		void setOriginInternal(const sf::Vector2f& origin);
-		void setSizeInternal(const sf::Vector2f& size);
+		void setOriginInternal(const glvx::Vector2f& origin);
+		void setSizeInternal(const glvx::Vector2f& size);
 		void setRenderIterations(size_t iterations);
 		virtual Widget* clone(bool with_children = true) = 0;
 		virtual void addChild(Widget* child);
@@ -394,21 +407,21 @@ namespace fw {
 		virtual void internalPreUpdate();
 		virtual void internalPostUpdate();
 		virtual void internalOnSetParent(Widget* parent);
-		virtual void internalOnLeftPress(const sf::Vector2f& pos, bool became_focused);
-		virtual void internalOnRightPress(const sf::Vector2f& pos);
-		virtual void internalOnGlobalLeftRelease(const sf::Vector2f& pos);
-		virtual void internalOnBlockableLeftRelease(const sf::Vector2f& pos);
-		virtual void internalOnGlobalRightRelease(const sf::Vector2f& pos);
-		virtual void internalOnBlockableRightRelease(const sf::Vector2f& pos);
-		virtual void internalOnLeftClick(const sf::Vector2f& pos);
-		virtual void internalOnRightClick(const sf::Vector2f& pos);
-		virtual void internalOnScrollX(const sf::Vector2f& pos, float delta);
-		virtual void internalOnScrollY(const sf::Vector2f& pos, float delta);
-		virtual void internalProcessKeyboardEvent(const sf::Event& event);
-		virtual void internalProcessMouse(const sf::Vector2f& pos);
-		virtual void internalOnMouseMoved(const sf::Vector2f& pos);
-		virtual void internalOnMouseEnter(const sf::Vector2f& pos);
-		virtual void internalOnMouseExit(const sf::Vector2f& pos);
+		virtual void internalOnLeftPress(const glvx::Vector2f& pos, bool became_focused);
+		virtual void internalOnRightPress(const glvx::Vector2f& pos);
+		virtual void internalOnGlobalLeftRelease(const glvx::Vector2f& pos);
+		virtual void internalOnBlockableLeftRelease(const glvx::Vector2f& pos);
+		virtual void internalOnGlobalRightRelease(const glvx::Vector2f& pos);
+		virtual void internalOnBlockableRightRelease(const glvx::Vector2f& pos);
+		virtual void internalOnLeftClick(const glvx::Vector2f& pos);
+		virtual void internalOnRightClick(const glvx::Vector2f& pos);
+		virtual void internalOnScrollX(const glvx::Vector2f& pos, float delta);
+		virtual void internalOnScrollY(const glvx::Vector2f& pos, float delta);
+		virtual void internalProcessKeyboardEvent(const glvx::Event& event);
+		virtual void internalProcessMouse(const glvx::Vector2f& pos);
+		virtual void internalOnMouseMoved(const glvx::Vector2f& pos);
+		virtual void internalOnMouseEnter(const glvx::Vector2f& pos);
+		virtual void internalOnMouseExit(const glvx::Vector2f& pos);
 		virtual void internalOnFocused();
 		virtual void internalOnFocusLost();
 		virtual void internalOnBeforeRender();
@@ -418,12 +431,12 @@ namespace fw {
 		WidgetVisibility visibility;
 		RenderTexture render_textures;
 		size_t render_iterations = 1;
-		sf::View render_view;
+		glvx::View render_view;
 
 		std::string calcFullName() const;
 		void updateFullName();
 		void updateVisibility();
-		void updateRenderTexture(const sf::FloatRect& texture_bounds);
+		void updateRenderTexture(const glvx::FloatRect& texture_bounds);
 		void moveChildToIndex(Widget* child, size_t index);
 
 	};

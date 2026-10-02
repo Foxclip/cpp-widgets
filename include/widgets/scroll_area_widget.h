@@ -1,19 +1,19 @@
 #pragma once
 
-#include "empty_widget.h"
-#include "container_widget.h"
+#include "widgets/empty_widget.h"
+#include "widgets/container_widget.h"
 
 namespace fw {
 
 	const float SCROLL_AREA_SCROLLBAR_DEFAULT_WIDTH = 20.0f;
 	const float SCROLL_AREA_DEFAULT_SCROLL_X_DELTA = 40.0f;
 	const float SCROLL_AREA_DEFAULT_SCROLL_Y_DELTA = 20.0f;
-	const sf::Color SCROLL_AREA_DEFAULT_BACKGROUND_COLOR = sf::Color(100, 100, 100);
-	const sf::Color SCROLL_AREA_DEFAULT_SCROLL_BACKGROUND_COLOR = sf::Color(128, 128, 128);
-	const sf::Color SCROLL_AREA_DEFAULT_SLIDER_COLOR = sf::Color(150, 150, 150);
-	const sf::Color SCROLL_AREA_DEFAULT_SLIDER_HOVER_COLOR = sf::Color(175, 175, 175);
-	const sf::Color SCROLL_AREA_DEFAULT_SLIDER_PRESSED_COLOR = sf::Color(200, 200, 200);
-	const sf::Color SCROLL_AREA_DEFAULT_CORNER_COLOR = sf::Color(140, 140, 140);
+	const glvx::Color SCROLL_AREA_DEFAULT_BACKGROUND_COLOR = glvx::Color(100, 100, 100);
+	const glvx::Color SCROLL_AREA_DEFAULT_SCROLL_BACKGROUND_COLOR = glvx::Color(128, 128, 128);
+	const glvx::Color SCROLL_AREA_DEFAULT_SLIDER_COLOR = glvx::Color(150, 150, 150);
+	const glvx::Color SCROLL_AREA_DEFAULT_SLIDER_HOVER_COLOR = glvx::Color(175, 175, 175);
+	const glvx::Color SCROLL_AREA_DEFAULT_SLIDER_PRESSED_COLOR = glvx::Color(200, 200, 200);
+	const glvx::Color SCROLL_AREA_DEFAULT_CORNER_COLOR = glvx::Color(140, 140, 140);
 
 	class WidgetList;
 
@@ -25,7 +25,7 @@ namespace fw {
 			ON,
 		};
 		ScrollAreaWidget(WidgetList& widget_list, float width, float height);
-		ScrollAreaWidget(WidgetList& widget_list, const sf::Vector2f& size);
+		ScrollAreaWidget(WidgetList& widget_list, const glvx::Vector2f& size);
 		Widget* getScrolledWidget() const;
 		Widget* getAreaWidget() const;
 		Widget* getScrollbarXWidget() const;
@@ -35,9 +35,9 @@ namespace fw {
 		Widget* getCornerWidget() const;
 		void setScrolledWidget(Widget* widget);
 		Widget* takeScrolledWidget();
-		void setBackgroundColor(const sf::Color& color);
-		void setScrollbarColor(const sf::Color& color);
-		void setSliderColor(const sf::Color& color);
+		void setBackgroundColor(const glvx::Color& color);
+		void setScrollbarColor(const glvx::Color& color);
+		void setSliderColor(const glvx::Color& color);
 		void setDeltaX(float delta);
 		void setDeltaY(float delta);
 		void setScrollbarPolicy(ScrollbarPolicy policy);
@@ -65,8 +65,8 @@ namespace fw {
 		ScrollbarPolicy scrollbar_y_policy = ScrollbarPolicy::SIZE;
 
 		void internalPostUpdate() override;
-		void internalOnScrollX(const sf::Vector2f& pos, float delta) override;
-		void internalOnScrollY(const sf::Vector2f& pos, float delta) override;
+		void internalOnScrollX(const glvx::Vector2f& pos, float delta) override;
+		void internalOnScrollY(const glvx::Vector2f& pos, float delta) override;
 
 	private:
 		bool getScrollbarXVisibleIndividual();

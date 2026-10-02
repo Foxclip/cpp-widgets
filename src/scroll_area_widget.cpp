@@ -40,27 +40,27 @@ namespace fw {
 		slider_x_widget->setClickThrough(false);
 		slider_x_widget->setQuantizeRenderedPosition(false); // slider might be in non-integer positions
 		slider_x_widget->setParent(scrollbar_x_widget);
-		slider_x_widget->OnMouseEnter += [&](const sf::Vector2f& pos) {
+		slider_x_widget->OnMouseEnter += [&](const glvx::Vector2f& pos) {
 			slider_x_hover = true;
 			updateColors();
 		};
-		slider_x_widget->OnLeftPress += [&](const sf::Vector2f& pos) {
+		slider_x_widget->OnLeftPress += [&](const glvx::Vector2f& pos) {
 			slider_x_grabbed = true;
 			mouse_grab_pos = pos.x;
 			slider_grab_pos = slider_x_widget->getPosition().x;
 			updateColors();
 		};
-		slider_x_widget->OnMouseMoved += [&](const sf::Vector2f& pos) {
+		slider_x_widget->OnMouseMoved += [&](const glvx::Vector2f& pos) {
 			if (slider_x_grabbed) {
 				float x_offset = pos.x - mouse_grab_pos;
 				setSliderX(slider_grab_pos + x_offset);
 			}
 		};
-		slider_x_widget->OnGlobalLeftRelease += [&](const sf::Vector2f& pos) {
+		slider_x_widget->OnGlobalLeftRelease += [&](const glvx::Vector2f& pos) {
 			slider_x_grabbed = false;
 			updateColors();
 		};
-		slider_x_widget->OnMouseExit += [&](const sf::Vector2f& pos) {
+		slider_x_widget->OnMouseExit += [&](const glvx::Vector2f& pos) {
 			slider_x_hover = false;
 			updateColors();
 		};
@@ -79,27 +79,27 @@ namespace fw {
 		slider_y_widget->setClickThrough(false);
 		slider_y_widget->setQuantizeRenderedPosition(false);
 		slider_y_widget->setParent(scrollbar_y_widget);
-		slider_y_widget->OnMouseEnter += [&](const sf::Vector2f& pos) {
+		slider_y_widget->OnMouseEnter += [&](const glvx::Vector2f& pos) {
 			slider_y_hover = true;
 			updateColors();
 		};
-		slider_y_widget->OnLeftPress += [&](const sf::Vector2f& pos) {
+		slider_y_widget->OnLeftPress += [&](const glvx::Vector2f& pos) {
 			slider_y_grabbed = true;
 			mouse_grab_pos = pos.y;
 			slider_grab_pos = slider_y_widget->getPosition().y;
 			updateColors();
 		};
-		slider_y_widget->OnMouseMoved += [&](const sf::Vector2f& pos) {
+		slider_y_widget->OnMouseMoved += [&](const glvx::Vector2f& pos) {
 			if (slider_y_grabbed) {
 				float y_offset = pos.y - mouse_grab_pos;
 				setSliderY(slider_grab_pos + y_offset);
 			}
 		};
-		slider_y_widget->OnGlobalLeftRelease += [&](const sf::Vector2f& pos) {
+		slider_y_widget->OnGlobalLeftRelease += [&](const glvx::Vector2f& pos) {
 			slider_y_grabbed = false;
 			updateColors();
 		};
-		slider_y_widget->OnMouseExit += [&](const sf::Vector2f& pos) {
+		slider_y_widget->OnMouseExit += [&](const glvx::Vector2f& pos) {
 			slider_y_hover = false;
 			updateColors();
 		};
@@ -158,7 +158,7 @@ namespace fw {
 		updateScroll();
 	}
 
-	ScrollAreaWidget::ScrollAreaWidget(WidgetList& widget_list, const sf::Vector2f& size)
+	ScrollAreaWidget::ScrollAreaWidget(WidgetList& widget_list, const glvx::Vector2f& size)
 		: ScrollAreaWidget(widget_list, size.x, size.y) { }
 
 	Widget* ScrollAreaWidget::getScrolledWidget() const {
@@ -204,16 +204,16 @@ namespace fw {
 		return widget;
 	}
 
-	void ScrollAreaWidget::setBackgroundColor(const sf::Color& color) {
+	void ScrollAreaWidget::setBackgroundColor(const glvx::Color& color) {
 		area_widget->setFillColor(color);
 	}
 
-	void ScrollAreaWidget::setScrollbarColor(const sf::Color& color) {
+	void ScrollAreaWidget::setScrollbarColor(const glvx::Color& color) {
 		scrollbar_x_widget->setFillColor(color);
 		scrollbar_y_widget->setFillColor(color);
 	}
 
-	void ScrollAreaWidget::setSliderColor(const sf::Color& color) {
+	void ScrollAreaWidget::setSliderColor(const glvx::Color& color) {
 		slider_x_widget->setFillColor(color);
 		slider_y_widget->setFillColor(color);
 	}
@@ -268,11 +268,11 @@ namespace fw {
 		updateScroll();
 	}
 
-	void ScrollAreaWidget::internalOnScrollX(const sf::Vector2f& pos, float delta) {
+	void ScrollAreaWidget::internalOnScrollX(const glvx::Vector2f& pos, float delta) {
 		scrollX(delta_x * -delta);
 	}
 
-	void ScrollAreaWidget::internalOnScrollY(const sf::Vector2f& pos, float delta) {
+	void ScrollAreaWidget::internalOnScrollY(const glvx::Vector2f& pos, float delta) {
 		scrollY(delta_y * -delta);
 	}
 
@@ -374,8 +374,8 @@ namespace fw {
 	}
 
 	void ScrollAreaWidget::updateColors() {
-		sf::Color slider_x_color = SCROLL_AREA_DEFAULT_SLIDER_COLOR;
-		sf::Color slider_y_color = SCROLL_AREA_DEFAULT_SLIDER_COLOR;
+		glvx::Color slider_x_color = SCROLL_AREA_DEFAULT_SLIDER_COLOR;
+		glvx::Color slider_y_color = SCROLL_AREA_DEFAULT_SLIDER_COLOR;
 		if (slider_x_grabbed) {
 			slider_x_color = SCROLL_AREA_DEFAULT_SLIDER_PRESSED_COLOR;
 		} else if (slider_x_hover) {

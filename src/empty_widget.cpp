@@ -9,15 +9,15 @@ namespace fw {
 		setRenderable(false);
 	}
 
-	sf::FloatRect EmptyWidget::getLocalBounds() const {
-		return sf::FloatRect(sf::Vector2f(), size);
+	glvx::FloatRect EmptyWidget::getLocalBounds() const {
+		return glvx::FloatRect(glvx::Vector2f(), size);
 	}
 
-	const sf::Color& EmptyWidget::getFillColor() const {
-		return sf::Color::Transparent;
+	const glvx::Color& EmptyWidget::getFillColor() const {
+		return glvx::Color::Transparent;
 	}
 
-	void EmptyWidget::setFillColor(const sf::Color& color) { }
+	void EmptyWidget::setFillColor(const glvx::Color& color) { }
 
 	void EmptyWidget::setRenderable(bool value) {
 		if (value) {
@@ -32,19 +32,19 @@ namespace fw {
 		return widget_list.duplicateWidget(this, with_children);
 	}
 
-	sf::Drawable* EmptyWidget::getDrawable() {
+	glvx::Drawable* EmptyWidget::getDrawable() {
 		return nullptr;
 	}
 
-	const sf::Drawable* EmptyWidget::getDrawable() const {
+	const glvx::Drawable* EmptyWidget::getDrawable() const {
 		return nullptr;
 	}
 
-	sf::Transformable* EmptyWidget::getTransformable() {
+	glvx::Transformable* EmptyWidget::getTransformable() {
 		return nullptr;
 	}
 
-	const sf::Transformable* EmptyWidget::getTransformable() const {
+	const glvx::Transformable* EmptyWidget::getTransformable() const {
 		return nullptr;
 	}
 

@@ -1,14 +1,34 @@
 #pragma once
 
-#include <SFML/Graphics.hpp>
+#include <glvx/window.h>
+#include <glvx/event.h>
+#include <glvx/text.h>
+#include <glvx/font.h>
+#include <glvx/vertex.h>
+#include <glvx/vertex_array.h>
+#include <glvx/render_texture.h>
+#include <glvx/render_states.h>
+#include <glvx/shape.h>
+#include <glvx/rectangle.h>
+#include <glvx/image.h>
+#include <glvx/cursor.h>
+#include <glvx/keyboard.h>
+#include <glvx/mouse.h>
 #include <cassert>
 #include <string>
 #include <iostream>
 #include <numbers>
 #include "logger/logger.h"
-#include "font.h"
+#include "widgets/font.h"
 
 namespace fw {
+
+	enum class CursorType {
+		Arrow, Text,
+		SizeTopLeft, SizeTop, SizeTopRight,
+		SizeLeft, SizeRight,
+		SizeBottomLeft, SizeBottom, SizeBottomRight
+	};
 
 #ifndef NDEBUG
 
@@ -25,30 +45,52 @@ namespace fw {
 
 #endif // !NDEBUG
 
-	Logger& operator<<(Logger& lg, const sf::Vector2f& value);
+	Logger& operator<<(Logger& lg, const glvx::Vector2f& value);
 	float to_degrees(float angle);
 	float to_radians(float angle);
-	sf::Vector2i to2i(const sf::Vector2f& vec);
-	sf::Vector2i to2i(const sf::Vector2u& vec);
-	sf::Vector2f to2f(const sf::Vector2i& vec);
-	sf::Vector2f to2f(const sf::Vector2u& vec);
-	void extend_bounds(sf::FloatRect& rect1, const sf::FloatRect& rect2);
+	glvx::Vector2i to2i(const glvx::Vector2f& vec);
+	glvx::Vector2i to2i(const glvx::Vector2u& vec);
+	glvx::Vector2f to2f(const glvx::Vector2i& vec);
+	glvx::Vector2f to2f(const glvx::Vector2u& vec);
+	void extend_bounds(glvx::FloatRect& rect1, const glvx::FloatRect& rect2);
 	bool parseLL(const std::string& str, long long& result);
 	bool parseFloat(const std::string& str, float& result);
-	bool contains_point(const sf::FloatRect& rect, const sf::Vector2f& point, bool include_upper_bound = false);
-	bool contains_point(const sf::RectangleShape& shape, const sf::Vector2f& point, bool include_upper_bound = false);
-	void quantize_position(sf::Transform& transform);
+	bool contains_point(const glvx::FloatRect& rect, const glvx::Vector2f& point, bool include_upper_bound = false);
+	bool contains_point(const glvx::Rectangle& shape, const glvx::Vector2f& point, bool include_upper_bound = false);
+	void quantize_position(glvx::Transform& transform);
+	// Position of the character at `index` (baseline y) in the local
+	// coordinates of a glvx::Text rendering `str` with `font` at
+	// `character_size`.
+	glvx::Vector2f findTextCharacterPos(glvx::Font& font, unsigned int character_size, const std::string& str, size_t index);
+	// Visual bounds of `str` rendered by glvx::Text with `font` at
+	// `character_size`, replicating the glyph-rect semantics of
+	// glvx::Text::calculateVisualBounds().
+	glvx::FloatRect getTextVisualBounds(glvx::Font& font, unsigned int character_size, const std::string& str);
 	enum QuantizeMode {
 		QUANTIZE_MODE_FLOOR,
 		QUANTIZE_MODE_FLOOR_SUBTRACT,
 		QUANTIZE_MODE_CEIL_SUBTRACT,
 	};
-	sf::FloatRect quantize_rect(const sf::FloatRect& rect, QuantizeMode quantize_mode);
+	glvx::FloatRect quantize_rect(const glvx::FloatRect& rect, QuantizeMode quantize_mode);
+	// Draws a textured quad with vertex color `color` using BlendAlpha.
+	// Textures are expected in GLVX render texture orientation (screen top
+	// maps to v = 1). uv_rect is in [0,1] texture space, (0,0) at the
+	// top-left of the texture image.
+	void draw_texture_rect(
+		glvx::RenderTarget& target,
+		const glvx::AbstractTexture& texture,
+		const glvx::Vector2f& pos,
+		const glvx::Vector2f& size,
+		const glvx::Color& color = glvx::Color::White,
+		const glvx::Transform& extra_transform = glvx::Transform(),
+		const glvx::FloatRect& uv_rect = glvx::FloatRect(0.0f, 0.0f, 1.0f, 1.0f),
+		glvx::Shader* shader = nullptr
+	);
 	void str_to_file(std::string& str, const std::filesystem::path& path);
 	std::string file_to_str(const std::filesystem::path& path);
 	std::vector<std::string> read_file_lines(const std::filesystem::path& path);
 	std::string trim(const std::string &s);
-	std::string color_to_str(sf::Color color);
+	std::string color_to_str(glvx::Color color);
 
 	template <typename T>
 	std::string vec_to_str(const T& vec) {

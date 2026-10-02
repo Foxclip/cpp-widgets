@@ -1,10 +1,10 @@
 #pragma once
 
-#include "rectangle_widget.h"
+#include "widgets/rectangle_widget.h"
 
 namespace fw {
 
-	const sf::Vector2f CHECKBOX_DEFAULT_SIZE = sf::Vector2f(20.0f, 20.0f);
+	const glvx::Vector2f CHECKBOX_DEFAULT_SIZE = glvx::Vector2f(20.0f, 20.0f);
 
 	class WidgetList;
 
@@ -14,29 +14,29 @@ namespace fw {
 
 		CheckboxWidget(WidgetList& widget_list);
 		bool getValue() const;
-		const sf::Color& getFillColor() const override;
-		const sf::Color& getHighlightFillColor() const;
-		const sf::Color& getCheckFillColor() const;
-		void setFillColor(const sf::Color& color) override;
-		void setHighlightFillColor(const sf::Color& color);
-		void setCheckFillColor(const sf::Color& color);
+		const glvx::Color& getFillColor() const override;
+		const glvx::Color& getHighlightFillColor() const;
+		const glvx::Color& getCheckFillColor() const;
+		void setFillColor(const glvx::Color& color) override;
+		void setHighlightFillColor(const glvx::Color& color);
+		void setCheckFillColor(const glvx::Color& color);
 		void setValueSilent(bool value);
 		void setValue(bool value);
 		void toggleValue();
 		CheckboxWidget* clone(bool with_children = true) override;
 
 	protected:
-		void internalOnLeftPress(const sf::Vector2f& pos, bool became_focused) override;
-		void internalOnMouseEnter(const sf::Vector2f& pos) override;
-		void internalOnMouseExit(const sf::Vector2f& pos) override;
+		void internalOnLeftPress(const glvx::Vector2f& pos, bool became_focused) override;
+		void internalOnMouseEnter(const glvx::Vector2f& pos) override;
+		void internalOnMouseExit(const glvx::Vector2f& pos) override;
 
 	private:
 		bool checked = false;
 		float check_size = 0.6f;
 		RectangleWidget* check_widget = nullptr;
-		sf::Color background_fill_color = sf::Color(50, 50, 50);
-		sf::Color highlight_fill_color = sf::Color(100, 100, 100);
-		sf::Color check_fill_color = sf::Color(255, 128, 0);
+		glvx::Color background_fill_color = glvx::Color(50, 50, 50);
+		glvx::Color highlight_fill_color = glvx::Color(100, 100, 100);
+		glvx::Color check_fill_color = glvx::Color(255, 128, 0);
 
 	};
 

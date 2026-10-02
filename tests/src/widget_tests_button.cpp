@@ -15,8 +15,8 @@ void WidgetTestsButton::basicTest(test::Test& test) {
     fw::ButtonWidget* button_widget = application.getWidgets().createButtonWidget(40.0f, 20.0f);
     fw::Widget* root_widget = application.getWidgets().getRootWidget();
     T_ASSERT(T_CHECK(button_widget));
-    sf::Vector2f position(100.0f, 100.0f);
-    sf::Vector2f size(40.0f, 20.0f);
+    glvx::Vector2f position(100.0f, 100.0f);
+    glvx::Vector2f size(40.0f, 20.0f);
     button_widget->setPosition(position);
 
     GenericWidgetTest gwt(application, test);
@@ -43,8 +43,8 @@ void WidgetTestsButton::basicTest(test::Test& test) {
     gwt.clip_children = false;
     gwt.force_custom_cursor = false;
     gwt.parent = root_widget;
-    gwt.local_bounds = sf::FloatRect(sf::Vector2f(), size);
-    gwt.global_bounds = sf::FloatRect(position, size);
+    gwt.local_bounds = glvx::FloatRect(glvx::Vector2f(), size);
+    gwt.global_bounds = glvx::FloatRect(position, size);
     gwt.parent_local_bounds = gwt.global_bounds;
     gwt.visual_local_bounds = gwt.local_bounds;
     gwt.visual_global_bounds = gwt.global_bounds;
@@ -63,8 +63,8 @@ void WidgetTestsButton::pressTest(test::Test& test) {
     application.start(true);
     application.advance();
 
-    sf::Vector2f size(200.0f, 200.0f);
-    sf::Vector2f position(100.0f, 100.0f);
+    glvx::Vector2f size(200.0f, 200.0f);
+    glvx::Vector2f position(100.0f, 100.0f);
     fw::ButtonWidget* button_widget = application.getWidgets().createButtonWidget(size);
     button_widget->setPosition(position);
     bool pressed = false;
@@ -81,7 +81,7 @@ void WidgetTestsButton::pressTest(test::Test& test) {
     T_COMPARE(button_widget->getFillColor(), fw::BUTTON_DEFAULT_NORMAL_COLOR, &WidgetTests::colorToStr);
     application.advance();
 
-    sf::Vector2f button_center = button_widget->getGlobalCenter();
+    glvx::Vector2f button_center = button_widget->getGlobalCenter();
     application.mouseMove(button_center);
     application.mouseLeftPress();
     application.advance();

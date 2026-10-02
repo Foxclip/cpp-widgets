@@ -9,35 +9,43 @@ namespace fw {
 		setSize(width, height);
 	}
 
-	RectangleWidget::RectangleWidget(WidgetList& widget_list, const sf::Vector2f& size)
+	RectangleWidget::RectangleWidget(WidgetList& widget_list, const glvx::Vector2f& size)
 		: RectangleWidget(widget_list, size.x, size.y) { }
 
-	sf::Drawable* RectangleWidget::getDrawable() {
+	glvx::FloatRect RectangleWidget::getLocalBounds() const {
+		return getShapeLocalBounds();
+	}
+
+	glvx::Drawable* RectangleWidget::getDrawable() {
 		return &rect;
 	}
 
-	const sf::Drawable* RectangleWidget::getDrawable() const {
+	const glvx::Drawable* RectangleWidget::getDrawable() const {
 		return &rect;
 	}
 
-	sf::Transformable* RectangleWidget::getTransformable() {
+	glvx::Transformable* RectangleWidget::getTransformable() {
 		return &rect;
 	}
 
-	const sf::Transformable* RectangleWidget::getTransformable() const {
+	const glvx::Transformable* RectangleWidget::getTransformable() const {
 		return &rect;
 	}
 
-	sf::Shape& RectangleWidget::getShape() {
+	glvx::Shape& RectangleWidget::getShape() {
 		return rect;
 	}
 
-	const sf::Shape& RectangleWidget::getShape() const {
+	const glvx::Shape& RectangleWidget::getShape() const {
 		return rect;
+	}
+
+	glvx::FloatRect RectangleWidget::getShapeLocalBounds() const {
+		return glvx::FloatRect(glvx::Vector2f(), rect.getSize());
 	}
 
 	void RectangleWidget::setSizeInternal(float width, float height) {
-		rect.setSize(sf::Vector2f(width, height));
+		rect.setSize(glvx::Vector2f(width, height));
 		updateOrigin();
 	}
 

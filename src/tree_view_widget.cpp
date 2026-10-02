@@ -15,11 +15,11 @@ namespace fw {
 		setHorizontal(false);
 		setPadding(TREEVIEW_CONTAINER_PADDING);
 		setSizeXPolicy(SizePolicy::NONE);
-		OnLeftClick += [&](const sf::Vector2f& pos) {
+		OnLeftClick += [&](const glvx::Vector2f& pos) {
 			deselectAll();
 		};
-		widget_list.OnKeyPressed += [&](const sf::Keyboard::Key& key) {
-			if (key == sf::Keyboard::Escape) {
+		widget_list.OnKeyPressed += [&](const glvx::Key& key) {
+			if (key == glvx::Key::Escape) {
 				if (grabbed_entry) {
 					grabbed_entry->releaseGrab();
 				}
@@ -27,7 +27,7 @@ namespace fw {
 		};
 	}
 
-	TreeViewWidget::TreeViewWidget(WidgetList& widget_list, const sf::Vector2f& size)
+	TreeViewWidget::TreeViewWidget(WidgetList& widget_list, const glvx::Vector2f& size)
 		: TreeViewWidget(widget_list, size.x, size.y) { }
 
 	TreeViewWidget::TreeViewWidget(const TreeViewWidget& other)
@@ -120,7 +120,7 @@ namespace fw {
 		return top_entries[index];
 	}
 
-	TreeViewEntry* TreeViewWidget::addEntry(const sf::String& name) {
+	TreeViewEntry* TreeViewWidget::addEntry(const std::string& name) {
 		dp::DataPointerUnique<TreeViewEntry> entry_uptr = dp::make_data_pointer<TreeViewEntry>("TreeViewWidget Entry " + name, *this, name);
 		TreeViewEntry* ptr = entry_uptr.get();
 		top_entries.add(ptr);
@@ -152,14 +152,14 @@ namespace fw {
 		}
 	}
 
-	TreeViewEntry* TreeViewWidget::getTargetHighlightEntry(const sf::Vector2f& global_pos) const {
+	TreeViewEntry* TreeViewWidget::getTargetHighlightEntry(const glvx::Vector2f& global_pos) const {
 		CompVector<TreeViewEntry*> entries = getAllVisibleEntriesInOrder();
 		TreeViewEntry* result = nullptr;
 		size_t current_index = 0;
 		for (size_t i = 0; i < entries.size(); i++) {
 			TreeViewEntry* entry = entries[i];
 			if (entry->getWidget()->isVisible()) {
-				sf::Vector2f center = entry->getRectangleWidget()->getGlobalCenter();
+				glvx::Vector2f center = entry->getRectangleWidget()->getGlobalCenter();
 				if (global_pos.y < center.y) {
 					result = entry;
 					break;
@@ -171,19 +171,19 @@ namespace fw {
 
 	void TreeViewWidget::putTargetHighlight() {
 		target_highlight.visible = true;
-		sf::Vector2f mouse_pos = widget_list.getMousePosf();
+		glvx::Vector2f mouse_pos = widget_list.getMousePosf();
 		highlighted_entry = getTargetHighlightEntry(mouse_pos);
 		if (highlighted_entry) {
-			sf::Vector2f entry_pos = highlighted_entry->getWidget()->getGlobalPosition();
-			target_highlight.pos = entry_pos - sf::Vector2f(0.0f, TREEVIEW_CONTAINER_PADDING);
-			target_highlight.size = sf::Vector2f(highlighted_entry->getWidget()->getWidth(), TREEVIEW_CONTAINER_PADDING);
+			glvx::Vector2f entry_pos = highlighted_entry->getWidget()->getGlobalPosition();
+			target_highlight.pos = entry_pos - glvx::Vector2f(0.0f, TREEVIEW_CONTAINER_PADDING);
+			target_highlight.size = glvx::Vector2f(highlighted_entry->getWidget()->getWidth(), TREEVIEW_CONTAINER_PADDING);
 		} else {
-			target_highlight.size = sf::Vector2f(getContentWidth(), TREEVIEW_CONTAINER_PADDING);
+			target_highlight.size = glvx::Vector2f(getContentWidth(), TREEVIEW_CONTAINER_PADDING);
 			if (children.empty()) {
-				target_highlight.pos = getGlobalPosition() + sf::Vector2f(getLeftPadding(), 0.0f);
+				target_highlight.pos = getGlobalPosition() + glvx::Vector2f(getLeftPadding(), 0.0f);
 			} else {
 				Widget* last_entry_widget = children.back();
-				sf::Vector2f last_entry_widget_pos = last_entry_widget->getGlobalBottomLeft();
+				glvx::Vector2f last_entry_widget_pos = last_entry_widget->getGlobalBottomLeft();
 				target_highlight.pos = last_entry_widget_pos;
 			}
 		}

@@ -6,7 +6,8 @@
 namespace fw {
 
 	Widget::Widget(WidgetList& widget_list) : widget_list(widget_list) {
-		shader = &widget_list.getApplication().default_shader;
+		// null shader: GLVX falls back to its common default shader
+		shader = nullptr;
 	}
 
 	Widget::Widget(const Widget& other) : widget_list(other.widget_list), render_textures(RenderTexture()) {
@@ -96,8 +97,8 @@ namespace fw {
 		return mouseIn;
 	}
 
-	void Widget::updateMouseState(const sf::Vector2f& mouse_pos) {
-		sf::FloatRect bounds = getUnclippedRegion();
+	void Widget::updateMouseState(const glvx::Vector2f& mouse_pos) {
+		glvx::FloatRect bounds = getUnclippedRegion();
 		bool is_over = contains_point(bounds, mouse_pos);
 		if (is_over && !mouseIn) {
 			internalOnMouseEnter(mouse_pos);
@@ -112,10 +113,10 @@ namespace fw {
 		}
 	}
 
-	sf::Vector2f Widget::getRelativeMousePos() const {
-		sf::Vector2f mouse_pos = widget_list.application.getMousePosf();
-		sf::Vector2f global_pos = getGlobalPosition();
-		sf::Vector2f relative_pos = mouse_pos - global_pos;
+	glvx::Vector2f Widget::getRelativeMousePos() const {
+		glvx::Vector2f mouse_pos = widget_list.application.getMousePosf();
+		glvx::Vector2f global_pos = getGlobalPosition();
+		glvx::Vector2f relative_pos = mouse_pos - global_pos;
 		return relative_pos;
 	}
 
@@ -141,7 +142,7 @@ namespace fw {
 
 	WidgetVisibility Widget::checkVisibility() const {
 		WidgetVisibility v;
-		sf::FloatRect global_bounds = getGlobalBounds();
+		glvx::FloatRect global_bounds = getGlobalBounds();
 		const CompVector<Widget*>& parents = getParentChain();
 		v.addedToRoot = this == widget_list.root_widget || parents.contains(widget_list.root_widget);
 		v.allParentsVisible = true;
@@ -153,23 +154,23 @@ namespace fw {
 		}
 		v.renderableSetting = isRenderable();
 		v.visibleSetting = isVisible();
-		sf::FloatRect root_bounds = widget_list.getRootWidget()->getGlobalBounds();
+		glvx::FloatRect root_bounds = widget_list.getRootWidget()->getGlobalBounds();
 		v.onScreen = root_bounds.intersects(global_bounds);
-		v.nonZeroSize = global_bounds.width > 0 && global_bounds.height > 0;
+		v.nonZeroSize = global_bounds.size.x > 0 && global_bounds.size.y > 0;
 		v.hasUnclippedRegion = unclipped_region.isQuantizedNonZero();
 		v.opaque = getFillColor().a > 0;
 		return v;
 	}
 
-	bool Widget::containsPoint(const sf::Vector2f& point, bool include_upper_bound) const {
+	bool Widget::containsPoint(const glvx::Vector2f& point, bool include_upper_bound) const {
 		return contains_point(getGlobalBounds(), point, include_upper_bound);
 	}
 
-	bool Widget::unclippedRegionContainsPoint(const sf::Vector2f& point, bool include_upper_bound) const {
+	bool Widget::unclippedRegionContainsPoint(const glvx::Vector2f& point, bool include_upper_bound) const {
 		return contains_point(getUnclippedRegion(), point, include_upper_bound);
 	}
 
-	void Widget::processLeftPress(const sf::Vector2f& pos, bool became_focused) {
+	void Widget::processLeftPress(const glvx::Vector2f& pos, bool became_focused) {
 		if (!visible) {
 			return;
 		}
@@ -178,7 +179,7 @@ namespace fw {
 		OnLeftPress(pos);
 	}
 
-	void Widget::processRightPress(const sf::Vector2f& pos) {
+	void Widget::processRightPress(const glvx::Vector2f& pos) {
 		if (!visible) {
 			return;
 		}
@@ -187,7 +188,7 @@ namespace fw {
 		OnRightPress(pos);
 	}
 
-	void Widget::processGlobalLeftRelease(const sf::Vector2f& pos) {
+	void Widget::processGlobalLeftRelease(const glvx::Vector2f& pos) {
 		if (!visible) {
 			return;
 		}
@@ -199,7 +200,7 @@ namespace fw {
 		is_left_pressed = false;
 	}
 
-	void Widget::processBlockableLeftRelease(const sf::Vector2f& pos) {
+	void Widget::processBlockableLeftRelease(const glvx::Vector2f& pos) {
 		if (!visible) {
 			return;
 		}
@@ -211,7 +212,7 @@ namespace fw {
 		}
 	}
 
-	void Widget::processGlobalRightRelease(const sf::Vector2f& pos) {
+	void Widget::processGlobalRightRelease(const glvx::Vector2f& pos) {
 		if (!visible) {
 			return;
 		}
@@ -223,7 +224,7 @@ namespace fw {
 		is_right_pressed = false;
 	}
 
-	void Widget::processBlockableRightRelease(const sf::Vector2f& pos) {
+	void Widget::processBlockableRightRelease(const glvx::Vector2f& pos) {
 		if (!visible) {
 			return;
 		}
@@ -235,7 +236,7 @@ namespace fw {
 		}
 	}
 
-	void Widget::processMouseMove(const sf::Vector2f& pos) {
+	void Widget::processMouseMove(const glvx::Vector2f& pos) {
 		if (!visible) {
 			return;
 		}
@@ -246,7 +247,7 @@ namespace fw {
 		}
 	}
 
-	void Widget::processScrollX(const sf::Vector2f pos, float delta) {
+	void Widget::processScrollX(const glvx::Vector2f pos, float delta) {
 		if (!visible) {
 			return;
 		}
@@ -254,7 +255,7 @@ namespace fw {
 		OnScrollX(pos, delta);
 	}
 
-	void Widget::processScrollY(const sf::Vector2f pos, float delta) {
+	void Widget::processScrollY(const glvx::Vector2f pos, float delta) {
 		if (!visible) {
 			return;
 		}
@@ -262,7 +263,7 @@ namespace fw {
 		OnScrollY(pos, delta);
 	}
 
-	void Widget::processMouse(const sf::Vector2f& pos) {
+	void Widget::processMouse(const glvx::Vector2f& pos) {
 		if (!visible) {
 			return;
 		}
@@ -320,7 +321,7 @@ namespace fw {
 		return quantize_position;
 	}
 
-	sf::Shader* Widget::getShader() const {
+	glvx::Shader* Widget::getShader() const {
 		return shader;
 	}
 
@@ -416,71 +417,71 @@ namespace fw {
 		return result;
 	}
 
-	sf::FloatRect Widget::getParentLocalBounds() const {
+	glvx::FloatRect Widget::getParentLocalBounds() const {
 		return getTransform().transformRect(getLocalBounds());
 	}
 
-	sf::FloatRect Widget::getGlobalBounds() const {
+	glvx::FloatRect Widget::getGlobalBounds() const {
 		return getGlobalTransform().transformRect(getLocalBounds());
 	}
 
-	sf::FloatRect Widget::getVisualLocalBounds() const {
+	glvx::FloatRect Widget::getVisualLocalBounds() const {
 		return getLocalBounds();
 	}
 
-	sf::FloatRect Widget::getVisualParentLocalBounds() const {
+	glvx::FloatRect Widget::getVisualParentLocalBounds() const {
 		return getTransform().transformRect(getVisualLocalBounds());
 	}
 
-	sf::FloatRect Widget::getVisualGlobalBounds() const {
+	glvx::FloatRect Widget::getVisualGlobalBounds() const {
 		return getGlobalTransform().transformRect(getVisualLocalBounds());
 	}
 
-	const sf::FloatRect& Widget::getUnclippedRegion() const {
+	const glvx::FloatRect& Widget::getUnclippedRegion() const {
 		return unclipped_region.get();
 	}
 
-	const sf::FloatRect& Widget::getQuantizedUnclippedRegion() const {
+	const glvx::FloatRect& Widget::getQuantizedUnclippedRegion() const {
 		return unclipped_region.getQuantized();
 	}
 
-	sf::RenderTexture& Widget::getRenderTexture() {
-		return render_textures.getNormal();
+	glvx::RenderTexture& Widget::getRenderTexture() {
+		return render_textures.get();
 	}
 
-	sf::Vector2f Widget::toGlobal(const sf::Vector2f& pos) const {
+	glvx::Vector2f Widget::toGlobal(const glvx::Vector2f& pos) const {
 		return getGlobalTransform().transformPoint(pos);
 	}
 
-	sf::Vector2f Widget::toLocal(const sf::Vector2f& pos) const {
+	glvx::Vector2f Widget::toLocal(const glvx::Vector2f& pos) const {
 		return getInverseGlobalTransform().transformPoint(pos);
 	}
 
-	sf::Vector2f Widget::getSize() const {
-		return getLocalBounds().getSize();
+	glvx::Vector2f Widget::getSize() const {
+		return getLocalBounds().size;
 	}
 
 	float Widget::getWidth() const {
-		return getLocalBounds().width;
+		return getLocalBounds().size.x;
 	}
 
 	float Widget::getHeight() const {
-		return getLocalBounds().height;
+		return getLocalBounds().size.y;
 	}
 
 	float Widget::getGlobalWidth() const {
-		return getGlobalBounds().width;
+		return getGlobalBounds().size.x;
 	}
 
 	float Widget::getGlobalHeight() const {
-		return getGlobalBounds().height;
+		return getGlobalBounds().size.y;
 	}
 
 	Widget::Anchor Widget::getParentAnchor() const {
 		return parent_anchor;
 	}
 
-	sf::Vector2f Widget::getAnchorOffset() const {
+	glvx::Vector2f Widget::getAnchorOffset() const {
 		return anchor_offset;
 	}
 
@@ -492,11 +493,11 @@ namespace fw {
 		return size_policy_y;
 	}
 
-	const sf::Vector2f& Widget::getMinSize() const {
+	const glvx::Vector2f& Widget::getMinSize() const {
 		return min_size;
 	}
 
-	const sf::Vector2f& Widget::getMaxSize() const {
+	const glvx::Vector2f& Widget::getMaxSize() const {
 		return max_size;
 	}
 
@@ -528,39 +529,44 @@ namespace fw {
 		return links.getCompVector();
 	}
 
-	const sf::Transform& Widget::getTransform() const {
+	const glvx::Transform& Widget::getTransform() const {
 		return transforms.getTransform();
 	}
 
-	const sf::Transform& Widget::getInverseTransform() const {
+	const glvx::Transform& Widget::getInverseTransform() const {
 		return transforms.getInverseTransform();
 	}
 
-	const sf::Transform& Widget::getGlobalTransform() const {
+	const glvx::Transform& Widget::getGlobalTransform() const {
 		return transforms.getGlobalTransform();
 	}
 
-	const sf::Transform& Widget::getParentGlobalTransform() const {
+	static const glvx::Transform& identity_transform() {
+		static const glvx::Transform identity;
+		return identity;
+	}
+
+	const glvx::Transform& Widget::getParentGlobalTransform() const {
 		if (parent) {
 			return parent->getGlobalTransform();
 		} else {
-			return sf::Transform::Identity;
+			return identity_transform();
 		}
 	}
 
-	const sf::Transform& Widget::getInverseGlobalTransform() const {
+	const glvx::Transform& Widget::getInverseGlobalTransform() const {
 		return transforms.getInverseGlobalTransform();
 	}
 
-	const sf::Transform& Widget::getInverseParentGlobalTransform() const {
+	const glvx::Transform& Widget::getInverseParentGlobalTransform() const {
 		if (parent) {
 			return parent->getInverseGlobalTransform();
 		} else {
-			return sf::Transform::Identity;
+			return identity_transform();
 		}
 	}
 
-	const sf::Vector2f& Widget::getOrigin() const {
+	const glvx::Vector2f& Widget::getOrigin() const {
 		return transforms.getOrigin();
 	}
 
@@ -568,139 +574,139 @@ namespace fw {
 		return origin_anchor;
 	}
 
-	const sf::Vector2f& Widget::getPosition() const {
+	const glvx::Vector2f& Widget::getPosition() const {
 		return transforms.getPosition();
 	}
 
-	sf::Vector2f Widget::getTransformPosition() const {
+	glvx::Vector2f Widget::getTransformPosition() const {
 		return getPosition() - getOrigin();
 	}
 
-	sf::Vector2f Widget::getGlobalPosition() const {
-		return getGlobalTransform().transformPoint(sf::Vector2f());
+	glvx::Vector2f Widget::getGlobalPosition() const {
+		return getGlobalTransform().transformPoint(glvx::Vector2f());
 	}
 
-	sf::Vector2f Widget::getGlobalOriginPosition() const {
+	glvx::Vector2f Widget::getGlobalOriginPosition() const {
 		return getParentGlobalTransform().transformPoint(getPosition());
 	}
 
-	sf::Vector2f Widget::getTop() const {
-		sf::FloatRect bounds = getParentLocalBounds();
-		return sf::Vector2f(bounds.left + bounds.width / 2.0f, bounds.top);
+	glvx::Vector2f Widget::getTop() const {
+		glvx::FloatRect bounds = getParentLocalBounds();
+		return glvx::Vector2f(bounds.position.x + bounds.size.x / 2.0f, bounds.position.y);
 	}
 
-	sf::Vector2f Widget::getLeft() const {
-		sf::FloatRect bounds = getParentLocalBounds();
-		return sf::Vector2f(bounds.left, bounds.top + bounds.height / 2.0f);
+	glvx::Vector2f Widget::getLeft() const {
+		glvx::FloatRect bounds = getParentLocalBounds();
+		return glvx::Vector2f(bounds.position.x, bounds.position.y + bounds.size.y / 2.0f);
 	}
 
-	sf::Vector2f Widget::getRight() const {
-		sf::FloatRect bounds = getParentLocalBounds();
-		return sf::Vector2f(bounds.left + bounds.width, bounds.top + bounds.height / 2.0f);
+	glvx::Vector2f Widget::getRight() const {
+		glvx::FloatRect bounds = getParentLocalBounds();
+		return glvx::Vector2f(bounds.position.x + bounds.size.x, bounds.position.y + bounds.size.y / 2.0f);
 	}
 
-	sf::Vector2f Widget::getBottom() const {
-		sf::FloatRect bounds = getParentLocalBounds();
-		return sf::Vector2f(bounds.left + bounds.width / 2.0f, bounds.top + bounds.height);
+	glvx::Vector2f Widget::getBottom() const {
+		glvx::FloatRect bounds = getParentLocalBounds();
+		return glvx::Vector2f(bounds.position.x + bounds.size.x / 2.0f, bounds.position.y + bounds.size.y);
 	}
 
-	sf::Vector2f Widget::getGlobalTop() const {
-		sf::FloatRect bounds = getGlobalBounds();
-		return sf::Vector2f(bounds.left + bounds.width / 2.0f, bounds.top);
+	glvx::Vector2f Widget::getGlobalTop() const {
+		glvx::FloatRect bounds = getGlobalBounds();
+		return glvx::Vector2f(bounds.position.x + bounds.size.x / 2.0f, bounds.position.y);
 	}
 
-	sf::Vector2f Widget::getGlobalLeft() const {
-		sf::FloatRect bounds = getGlobalBounds();
-		return sf::Vector2f(bounds.left, bounds.top + bounds.height / 2.0f);
+	glvx::Vector2f Widget::getGlobalLeft() const {
+		glvx::FloatRect bounds = getGlobalBounds();
+		return glvx::Vector2f(bounds.position.x, bounds.position.y + bounds.size.y / 2.0f);
 	}
 
-	sf::Vector2f Widget::getGlobalRight() const {
-		sf::FloatRect bounds = getGlobalBounds();
-		return sf::Vector2f(bounds.left + bounds.width, bounds.top + bounds.height / 2.0f);
+	glvx::Vector2f Widget::getGlobalRight() const {
+		glvx::FloatRect bounds = getGlobalBounds();
+		return glvx::Vector2f(bounds.position.x + bounds.size.x, bounds.position.y + bounds.size.y / 2.0f);
 	}
 
-	sf::Vector2f Widget::getGlobalBottom() const {
-		sf::FloatRect bounds = getGlobalBounds();
-		return sf::Vector2f(bounds.left + bounds.width / 2.0f, bounds.top + bounds.height);
+	glvx::Vector2f Widget::getGlobalBottom() const {
+		glvx::FloatRect bounds = getGlobalBounds();
+		return glvx::Vector2f(bounds.position.x + bounds.size.x / 2.0f, bounds.position.y + bounds.size.y);
 	}
 
-	sf::Vector2f Widget::getTopLeft() const {
-		sf::FloatRect bounds = getParentLocalBounds();
-		return sf::Vector2f(bounds.left, bounds.top);
+	glvx::Vector2f Widget::getTopLeft() const {
+		glvx::FloatRect bounds = getParentLocalBounds();
+		return glvx::Vector2f(bounds.position.x, bounds.position.y);
 	}
 
-	sf::Vector2f Widget::getTopRight() const {
-		sf::FloatRect bounds = getParentLocalBounds();
-		return sf::Vector2f(bounds.left + bounds.width, bounds.top);
+	glvx::Vector2f Widget::getTopRight() const {
+		glvx::FloatRect bounds = getParentLocalBounds();
+		return glvx::Vector2f(bounds.position.x + bounds.size.x, bounds.position.y);
 	}
 
-	sf::Vector2f Widget::getBottomLeft() const {
-		sf::FloatRect bounds = getParentLocalBounds();
-		return sf::Vector2f(bounds.left, bounds.top + bounds.height);
+	glvx::Vector2f Widget::getBottomLeft() const {
+		glvx::FloatRect bounds = getParentLocalBounds();
+		return glvx::Vector2f(bounds.position.x, bounds.position.y + bounds.size.y);
 	}
 
-	sf::Vector2f Widget::getBottomRight() const {
-		sf::FloatRect bounds = getParentLocalBounds();
-		return sf::Vector2f(bounds.left + bounds.width, bounds.top + bounds.height);
+	glvx::Vector2f Widget::getBottomRight() const {
+		glvx::FloatRect bounds = getParentLocalBounds();
+		return glvx::Vector2f(bounds.position.x + bounds.size.x, bounds.position.y + bounds.size.y);
 	}
 
-	sf::Vector2f Widget::getGlobalTopLeft() const {
-		sf::FloatRect bounds = getGlobalBounds();
-		return sf::Vector2f(bounds.left, bounds.top);
+	glvx::Vector2f Widget::getGlobalTopLeft() const {
+		glvx::FloatRect bounds = getGlobalBounds();
+		return glvx::Vector2f(bounds.position.x, bounds.position.y);
 	}
 
-	sf::Vector2f Widget::getGlobalTopRight() const {
-		sf::FloatRect bounds = getGlobalBounds();
-		return sf::Vector2f(bounds.left + bounds.width, bounds.top);
+	glvx::Vector2f Widget::getGlobalTopRight() const {
+		glvx::FloatRect bounds = getGlobalBounds();
+		return glvx::Vector2f(bounds.position.x + bounds.size.x, bounds.position.y);
 	}
 
-	sf::Vector2f Widget::getGlobalBottomLeft() const {
-		sf::FloatRect bounds = getGlobalBounds();
-		return sf::Vector2f(bounds.left, bounds.top + bounds.height);
+	glvx::Vector2f Widget::getGlobalBottomLeft() const {
+		glvx::FloatRect bounds = getGlobalBounds();
+		return glvx::Vector2f(bounds.position.x, bounds.position.y + bounds.size.y);
 	}
 
-	sf::Vector2f Widget::getGlobalBottomRight() const {
-		sf::FloatRect bounds = getGlobalBounds();
-		return sf::Vector2f(bounds.left + bounds.width, bounds.top + bounds.height);
+	glvx::Vector2f Widget::getGlobalBottomRight() const {
+		glvx::FloatRect bounds = getGlobalBounds();
+		return glvx::Vector2f(bounds.position.x + bounds.size.x, bounds.position.y + bounds.size.y);
 	}
 
-	sf::Vector2f Widget::getVisualGlobalTopLeft() const {
-		sf::FloatRect bounds = getVisualGlobalBounds();
-		return sf::Vector2f(bounds.left, bounds.top);
+	glvx::Vector2f Widget::getVisualGlobalTopLeft() const {
+		glvx::FloatRect bounds = getVisualGlobalBounds();
+		return glvx::Vector2f(bounds.position.x, bounds.position.y);
 	}
 
-	sf::Vector2f Widget::getVisualGlobalTopRight() const {
-		sf::FloatRect bounds = getVisualGlobalBounds();
-		return sf::Vector2f(bounds.left + bounds.width, bounds.top);
+	glvx::Vector2f Widget::getVisualGlobalTopRight() const {
+		glvx::FloatRect bounds = getVisualGlobalBounds();
+		return glvx::Vector2f(bounds.position.x + bounds.size.x, bounds.position.y);
 	}
 
-	sf::Vector2f Widget::getVisualGlobalBottomLeft() const {
-		sf::FloatRect bounds = getVisualGlobalBounds();
-		return sf::Vector2f(bounds.left, bounds.top + bounds.height);
+	glvx::Vector2f Widget::getVisualGlobalBottomLeft() const {
+		glvx::FloatRect bounds = getVisualGlobalBounds();
+		return glvx::Vector2f(bounds.position.x, bounds.position.y + bounds.size.y);
 	}
 
-	sf::Vector2f Widget::getVisualGlobalBottomRight() const {
-		sf::FloatRect bounds = getVisualGlobalBounds();
-		return sf::Vector2f(bounds.left + bounds.width, bounds.top + bounds.height);
+	glvx::Vector2f Widget::getVisualGlobalBottomRight() const {
+		glvx::FloatRect bounds = getVisualGlobalBounds();
+		return glvx::Vector2f(bounds.position.x + bounds.size.x, bounds.position.y + bounds.size.y);
 	}
 
 	float Widget::getRotation() const {
 		return transforms.getRotation();
 	}
 
-	sf::Vector2f Widget::getCenter() const {
-		sf::FloatRect bounds = getLocalBounds();
-		return bounds.getPosition() + bounds.getSize() / 2.0f;
+	glvx::Vector2f Widget::getCenter() const {
+		glvx::FloatRect bounds = getLocalBounds();
+		return bounds.position + bounds.size / 2.0f;
 	}
 
-	sf::Vector2f Widget::getGlobalCenter() const {
-		sf::FloatRect bounds = getGlobalBounds();
-		return bounds.getPosition() + bounds.getSize() / 2.0f;
+	glvx::Vector2f Widget::getGlobalCenter() const {
+		glvx::FloatRect bounds = getGlobalBounds();
+		return bounds.position + bounds.size / 2.0f;
 	}
 
-	sf::Vector2f Widget::getVisualGlobalCenter() const {
-		sf::FloatRect bounds = getVisualGlobalBounds();
-		return bounds.getPosition() + bounds.getSize() / 2.0f;
+	glvx::Vector2f Widget::getVisualGlobalCenter() const {
+		glvx::FloatRect bounds = getVisualGlobalBounds();
+		return bounds.position + bounds.size / 2.0f;
 	}
 
 	float Widget::getAlphaMultiplier() const {
@@ -712,7 +718,7 @@ namespace fw {
 		setSizeInternal(width, height);
 	}
 
-	void Widget::setSize(const sf::Vector2f& size) {
+	void Widget::setSize(const glvx::Vector2f& size) {
 		wAssert(!widget_list.isLocked());
 		setSize(size.x, size.y);
 	}
@@ -729,14 +735,14 @@ namespace fw {
 
 	void Widget::setSizeKeepPos(float width, float height) {
 		wAssert(!widget_list.isLocked());
-		sf::Vector2f orig_offset_pos = getTopLeft();
+		glvx::Vector2f orig_offset_pos = getTopLeft();
 		setSize(width, height);
-		sf::Vector2f new_offset_pos = getTopLeft();
-		sf::Vector2f offset = orig_offset_pos - new_offset_pos;
+		glvx::Vector2f new_offset_pos = getTopLeft();
+		glvx::Vector2f offset = orig_offset_pos - new_offset_pos;
 		setPosition(getPosition() + offset);
 	}
 
-	void Widget::setSizeKeepPos(const sf::Vector2f& size) {
+	void Widget::setSizeKeepPos(const glvx::Vector2f& size) {
 		wAssert(!widget_list.isLocked());
 		setSizeKeepPos(size.x, size.y);
 	}
@@ -749,23 +755,23 @@ namespace fw {
 
 	void Widget::setOriginKeepPos(Anchor anchor) {
 		wAssert(!widget_list.isLocked());
-		sf::Vector2f old_orig = getOrigin();
+		glvx::Vector2f old_orig = getOrigin();
 		setOrigin(anchor);
-		sf::Vector2f new_orig = getOrigin();
-		sf::Vector2f offset = new_orig - old_orig;
+		glvx::Vector2f new_orig = getOrigin();
+		glvx::Vector2f offset = new_orig - old_orig;
 		setPosition(getPosition() + offset);
 	}
 
 	void Widget::setOriginKeepPos(float x, float y) {
 		wAssert(!widget_list.isLocked());
-		sf::Vector2f old_orig = getOrigin();
+		glvx::Vector2f old_orig = getOrigin();
 		setOrigin(x, y);
-		sf::Vector2f new_orig = getOrigin();
-		sf::Vector2f offset = new_orig - old_orig;
+		glvx::Vector2f new_orig = getOrigin();
+		glvx::Vector2f offset = new_orig - old_orig;
 		setPosition(getPosition() + offset);
 	}
 
-	void Widget::setOriginKeepPos(const sf::Vector2f& origin) {
+	void Widget::setOriginKeepPos(const glvx::Vector2f& origin) {
 		wAssert(!widget_list.isLocked());
 		setOriginKeepPos(origin.x, origin.y);
 	}
@@ -776,7 +782,7 @@ namespace fw {
 		origin_anchor = Anchor::CUSTOM;
 	}
 
-	void Widget::setOrigin(const sf::Vector2f& origin) {
+	void Widget::setOrigin(const glvx::Vector2f& origin) {
 		wAssert(!widget_list.isLocked());
 		setOrigin(origin.x, origin.y);
 		origin_anchor = Anchor::CUSTOM;
@@ -791,12 +797,12 @@ namespace fw {
 
 	void Widget::setAnchorOffset(float x, float y) {
 		wAssert(!widget_list.isLocked());
-		this->anchor_offset = sf::Vector2f(x, y);
+		this->anchor_offset = glvx::Vector2f(x, y);
 		updatePositionX();
 		updatePositionY();
 	}
 
-	void Widget::setAnchorOffset(const sf::Vector2f& offset) {
+	void Widget::setAnchorOffset(const glvx::Vector2f& offset) {
 		wAssert(!widget_list.isLocked());
 		this->anchor_offset = offset;
 		updatePositionX();
@@ -838,7 +844,7 @@ namespace fw {
 		this->min_size.y = height;
 	}
 
-	void Widget::setMinSize(const sf::Vector2f& size) {
+	void Widget::setMinSize(const glvx::Vector2f& size) {
 		wAssert(!widget_list.isLocked());
 		setMinSize(size.x, size.y);
 	}
@@ -849,17 +855,17 @@ namespace fw {
 		this->max_size.y = height;
 	}
 
-	void Widget::setMaxSize(const sf::Vector2f& size) {
+	void Widget::setMaxSize(const glvx::Vector2f& size) {
 		wAssert(!widget_list.isLocked());
 		setMaxSize(size.x, size.y);
 	}
 
 	void Widget::setPosition(float x, float y) {
 		wAssert(!widget_list.isLocked());
-		transforms.setPosition(sf::Vector2f(x, y));
+		transforms.setPosition(glvx::Vector2f(x, y));
 	}
 
-	void Widget::setPosition(const sf::Vector2f& position) {
+	void Widget::setPosition(const glvx::Vector2f& position) {
 		wAssert(!widget_list.isLocked());
 		transforms.setPosition(position);
 	}
@@ -876,20 +882,20 @@ namespace fw {
 
 	void Widget::setTransformPosition(float x, float y) {
 		wAssert(!widget_list.isLocked());
-		transforms.setPosition(sf::Vector2f(x, y) + getOrigin());
+		transforms.setPosition(glvx::Vector2f(x, y) + getOrigin());
 	}
 
-	void Widget::setTransformPosition(const sf::Vector2f& position) {
+	void Widget::setTransformPosition(const glvx::Vector2f& position) {
 		wAssert(!widget_list.isLocked());
 		transforms.setPosition(position + getOrigin());
 	}
 
 	void Widget::setGlobalPosition(float x, float y) {
 		wAssert(!widget_list.isLocked());
-		transforms.setPosition(sf::Vector2f(x, y));
+		transforms.setPosition(glvx::Vector2f(x, y));
 	}
 
-	void Widget::setGlobalPosition(const sf::Vector2f& position) {
+	void Widget::setGlobalPosition(const glvx::Vector2f& position) {
 		wAssert(!widget_list.isLocked());
 		transforms.setGlobalPosition(position);
 	}
@@ -986,14 +992,14 @@ namespace fw {
 
 	void Widget::setParentKeepPosSilent(Widget* new_parent) {
 		wAssert(!widget_list.isLocked());
-		sf::Vector2f old_global_pos = getGlobalOriginPosition();
+		glvx::Vector2f old_global_pos = getGlobalOriginPosition();
 		setParentSilent(new_parent);
 		setGlobalPosition(old_global_pos);
 	}
 
 	void Widget::setParentKeepPos(Widget* new_parent) {
 		wAssert(!widget_list.isLocked());
-		sf::Vector2f old_global_pos = getGlobalOriginPosition();
+		glvx::Vector2f old_global_pos = getGlobalOriginPosition();
 		setParent(new_parent);
 		setGlobalPosition(old_global_pos);
 	}
@@ -1134,7 +1140,7 @@ namespace fw {
 		this->quantize_position = value;
 	}
 
-	void Widget::setShader(sf::Shader* shader) {
+	void Widget::setShader(glvx::Shader* shader) {
 		wAssert(!widget_list.isLocked());
 		this->shader = shader;
 	}
@@ -1151,13 +1157,13 @@ namespace fw {
 		}
 	}
 
-	void Widget::processKeyboardEvent(const sf::Event& event) {
+	void Widget::processKeyboardEvent(const glvx::Event& event) {
 		wAssert(!widget_list.isLocked());
 		internalProcessKeyboardEvent(event);
 	}
 
-	sf::Vector2f Widget::getRenderPositionOffset() const {
-		return sf::Vector2f(0.0f, 0.0f);
+	glvx::Vector2f Widget::getRenderPositionOffset() const {
+		return glvx::Vector2f(0.0f, 0.0f);
 	}
 
 	void Widget::setOriginInternal(float x, float y) {
@@ -1165,12 +1171,12 @@ namespace fw {
 		transforms.setOrigin(x, y);
 	}
 
-	void Widget::setOriginInternal(const sf::Vector2f& origin) {
+	void Widget::setOriginInternal(const glvx::Vector2f& origin) {
 		wAssert(!widget_list.isLocked());
 		setOriginInternal(origin.x, origin.y);
 	}
 
-	void Widget::setSizeInternal(const sf::Vector2f& size) {
+	void Widget::setSizeInternal(const glvx::Vector2f& size) {
 		wAssert(!widget_list.isLocked());
 		setSizeInternal(size.x, size.y);
 	}
@@ -1207,7 +1213,7 @@ namespace fw {
 
 	void Widget::updateOrigin() {
 		wAssert(!widget_list.isLocked());
-		sf::Vector2f origin_pos = getOrigin();
+		glvx::Vector2f origin_pos = getOrigin();
 		if (origin_anchor != Anchor::CUSTOM) {
 			origin_pos = anchorToPos(origin_anchor, getSize());
 		}
@@ -1250,10 +1256,10 @@ namespace fw {
 		if (parent->isContainer()) {
 			return;
 		}
-		sf::Vector2f parent_size = parent->getLocalBounds().getSize();
-		sf::Vector2f anchored_pos = getPosition();
+		glvx::Vector2f parent_size = parent->getLocalBounds().size;
+		glvx::Vector2f anchored_pos = getPosition();
 		anchored_pos = anchorToPos(parent_anchor, parent_size);
-		sf::Vector2f offset_pos = anchored_pos + anchor_offset;
+		glvx::Vector2f offset_pos = anchored_pos + anchor_offset;
 		setPosition(offset_pos.x, getPosition().y);
 	}
 
@@ -1268,10 +1274,10 @@ namespace fw {
 		if (parent->isContainer()) {
 			return;
 		}
-		sf::Vector2f parent_size = parent->getLocalBounds().getSize();
-		sf::Vector2f anchored_pos = getPosition();
+		glvx::Vector2f parent_size = parent->getLocalBounds().size;
+		glvx::Vector2f anchored_pos = getPosition();
 		anchored_pos = anchorToPos(parent_anchor, parent_size);
-		sf::Vector2f offset_pos = anchored_pos + anchor_offset;
+		glvx::Vector2f offset_pos = anchored_pos + anchor_offset;
 		setPosition(getPosition().x, offset_pos.y);
 	}
 
@@ -1285,8 +1291,8 @@ namespace fw {
 
 	void Widget::updateSizeX() {
 		wAssert(!widget_list.isLocked());
-		sf::Vector2f new_pos = getPosition();
-		sf::Vector2f new_size = getSize();
+		glvx::Vector2f new_pos = getPosition();
+		glvx::Vector2f new_size = getSize();
 		if (size_policy_x == SizePolicy::PARENT) {
 			if (ContainerWidget* container = dynamic_cast<ContainerWidget*>(parent)) {
 				new_pos.x = container->getInnerPaddingX();
@@ -1302,8 +1308,8 @@ namespace fw {
 
 	void Widget::updateSizeY() {
 		wAssert(!widget_list.isLocked());
-		sf::Vector2f new_pos = getPosition();
-		sf::Vector2f new_size = getSize();
+		glvx::Vector2f new_pos = getPosition();
+		glvx::Vector2f new_size = getSize();
 		if (size_policy_y == SizePolicy::PARENT) {
 			if (ContainerWidget* container = dynamic_cast<ContainerWidget*>(parent)) {
 				new_pos.y = container->getInnerPaddingY();
@@ -1319,35 +1325,35 @@ namespace fw {
 
 	void Widget::internalOnSetParent(Widget* parent) { }
 
-	void Widget::internalOnLeftPress(const sf::Vector2f& pos, bool became_focused) { }
+	void Widget::internalOnLeftPress(const glvx::Vector2f& pos, bool became_focused) { }
 
-	void Widget::internalOnRightPress(const sf::Vector2f& pos) { }
+	void Widget::internalOnRightPress(const glvx::Vector2f& pos) { }
 
-	void Widget::internalOnGlobalLeftRelease(const sf::Vector2f& pos) { }
+	void Widget::internalOnGlobalLeftRelease(const glvx::Vector2f& pos) { }
 
-	void Widget::internalOnBlockableLeftRelease(const sf::Vector2f& pos) { }
+	void Widget::internalOnBlockableLeftRelease(const glvx::Vector2f& pos) { }
 
-	void Widget::internalOnGlobalRightRelease(const sf::Vector2f& pos) { }
+	void Widget::internalOnGlobalRightRelease(const glvx::Vector2f& pos) { }
 
-	void Widget::internalOnBlockableRightRelease(const sf::Vector2f& pos) { }
+	void Widget::internalOnBlockableRightRelease(const glvx::Vector2f& pos) { }
 
-	void Widget::internalOnLeftClick(const sf::Vector2f& pos) { }
+	void Widget::internalOnLeftClick(const glvx::Vector2f& pos) { }
 
-	void Widget::internalOnRightClick(const sf::Vector2f& pos) { }
+	void Widget::internalOnRightClick(const glvx::Vector2f& pos) { }
 
-	void Widget::internalOnScrollX(const sf::Vector2f& pos, float delta) { }
+	void Widget::internalOnScrollX(const glvx::Vector2f& pos, float delta) { }
 
-	void Widget::internalOnScrollY(const sf::Vector2f& pos, float delta) { }
+	void Widget::internalOnScrollY(const glvx::Vector2f& pos, float delta) { }
 
-	void Widget::internalProcessKeyboardEvent(const sf::Event& event) { }
+	void Widget::internalProcessKeyboardEvent(const glvx::Event& event) { }
 
-	void Widget::internalProcessMouse(const sf::Vector2f& pos) { }
+	void Widget::internalProcessMouse(const glvx::Vector2f& pos) { }
 
-	void Widget::internalOnMouseMoved(const sf::Vector2f& pos) { }
+	void Widget::internalOnMouseMoved(const glvx::Vector2f& pos) { }
 
-	void Widget::internalOnMouseEnter(const sf::Vector2f& pos) { }
+	void Widget::internalOnMouseEnter(const glvx::Vector2f& pos) { }
 
-	void Widget::internalOnMouseExit(const sf::Vector2f& pos) { }
+	void Widget::internalOnMouseExit(const glvx::Vector2f& pos) { }
 
 	void Widget::internalOnFocused() { }
 
@@ -1384,45 +1390,44 @@ namespace fw {
 		visibility = checkVisibility();
 	}
 
-	void Widget::updateRenderTexture(const sf::FloatRect& texture_bounds) {
-		if (texture_bounds.width == 0 || texture_bounds.height == 0) {
+	void Widget::updateRenderTexture(const glvx::FloatRect& texture_bounds) {
+		if (texture_bounds.size.x == 0 || texture_bounds.size.y == 0) {
 			return;
 		}
-		render_textures.create((unsigned int)texture_bounds.width, (unsigned int)texture_bounds.height);
-		sf::Transform global_transform = getGlobalTransform();
-		sf::Transform combined(global_transform);
-		sf::Vector2f render_position_offset = getRenderPositionOffset();
+		render_textures.create((unsigned int)texture_bounds.size.x, (unsigned int)texture_bounds.size.y);
+		glvx::Transform global_transform = getGlobalTransform();
+		glvx::Transform combined(global_transform);
+		glvx::Vector2f render_position_offset = getRenderPositionOffset();
 		combined.translate(render_position_offset);
 		if (getQuantizeRenderedPosition()) {
 			fw::quantize_position(combined);
 		}
-		sf::Vector2f physical_size = to2f(render_textures.getPhysicalSize());
-		render_view.setSize(physical_size);
-		sf::Vector2f bounds_center = texture_bounds.getPosition() + physical_size / 2.0f;
-		render_view.setCenter(bounds_center);
-		sf::RenderTexture& normal_texture = render_textures.getNormal();
-		normal_texture.setView(render_view);
-		normal_texture.clear(sf::Color::Transparent);
-		sf::Transformable* transformable = getTransformable();
+		glvx::Vector2f physical_size = to2f(render_textures.getPhysicalSize());
+		glvx::Vector2f bounds_center = texture_bounds.position + physical_size / 2.0f;
+		render_view.setPosition(bounds_center);
+		render_view.setScale(1.0f, -1.0f);
+		glvx::RenderTexture& texture = render_textures.get();
+		texture.setView(render_view);
+		texture.clear(glvx::Color::Transparent);
+		glvx::Transformable* transformable = getTransformable();
 		wAssert(transformable);
-		const sf::Transform& transformable_transform = transformable->getTransform();
-		wAssert(transformable_transform == sf::Transform::Identity);
-		wAssert(transformable->getOrigin() == sf::Vector2f());
-		OnBeforeRender(normal_texture);
-		sf::Drawable* drawable = getDrawable();
+		const glvx::Transform& transformable_transform = transformable->getTransform();
+		wAssert(transformable_transform == glvx::Transform());
+		wAssert(transformable->getOrigin().x == 0.0f && transformable->getOrigin().y == 0.0f);
+		OnBeforeRender(texture);
+		glvx::Drawable* drawable = getDrawable();
 		wAssert(drawable);
-		sf::RenderStates states(combined);
-		// CanvasWidget is premultiplied at this stage, the rest of widgets are not
-		// Using this blend mode instead of sf::BlendAlpha gives same result for all widgets
-		states.blendMode = sf::BlendMode(sf::BlendMode::One, sf::BlendMode::OneMinusSrcAlpha, sf::BlendMode::Add);
+		glvx::RenderStates states;
+		states.transform = combined;
+		states.blend_mode = glvx::BlendAlpha;
 		for (size_t i = 0; i < render_iterations; i++) {
-			normal_texture.draw(*drawable, states);
+			texture.draw(*drawable, states);
 		}
-		OnAfterRender(normal_texture);
-		normal_texture.display();
+		OnAfterRender(texture);
+		texture.display();
 	}
 
-	void Widget::render(sf::RenderTarget& target) {
+	void Widget::render(glvx::RenderTarget& target) {
 		if (!visible) {
 			return;
 		}
@@ -1434,53 +1439,42 @@ namespace fw {
 			if (alpha_multiplier == 0.0f) {
 				return;
 			}
-			{
-				// render with straight alpha to texture
-				wAssert(shader);
-				updateRenderTexture(unclipped_region.getQuantized());
-				sf::Sprite sprite = sf::Sprite(render_textures.getNormal().getTexture());
-				sprite.setTextureRect(sf::IntRect(sf::Vector2i(), to2i(render_textures.getSize())));
-				sf::RenderStates states;
-				states.blendMode = sf::BlendNone;
-				states.shader = shader;
-				shader->setUniform("texture", sf::Shader::CurrentTexture);
-				shader->setUniform("alpha_multiplier", alpha_multiplier);
-				sf::RenderTexture& premultiplied_texture = render_textures.getPremultiplied();
-				premultiplied_texture.clear(sf::Color::Transparent);
-				premultiplied_texture.draw(sprite, states);
-				premultiplied_texture.display();
-			}
-			{
-				// premultiply alpha
-				sf::Sprite sprite = sf::Sprite(render_textures.getPremultiplied().getTexture());
-				sprite.setTextureRect(sf::IntRect(sf::Vector2i(), to2i(render_textures.getSize())));
-				sprite.setPosition(unclipped_region.getQuantized().getPosition());
-				sf::RenderStates states;
-				states.blendMode = sf::BlendMode(sf::BlendMode::One, sf::BlendMode::OneMinusSrcAlpha, sf::BlendMode::Add);
-				if (type != WidgetType::Canvas) { // canvas is already premultiplied
-					sf::Shader* premultiply = &widget_list.getApplication().premultiply;
-					premultiply->setUniform("type", static_cast<int>(ColorType::TEXTURE));
-					premultiply->setUniform("src_texture", sf::Shader::CurrentTexture);
-					states.shader = premultiply;
-				}
-				target.draw(sprite, states);
-			}
+			const glvx::FloatRect& quantized = unclipped_region.getQuantized();
+			updateRenderTexture(quantized);
+			glvx::Vector2u logical_size = render_textures.getSize();
+			glvx::Vector2u physical_size = render_textures.getPhysicalSize();
+			float uv_x = (float)logical_size.x / (float)physical_size.x;
+			float uv_y = (float)logical_size.y / (float)physical_size.y;
+			glvx::FloatRect uv_rect(0.0f, 1.0f - uv_y, uv_x, uv_y);
+			int mult = (int)(alpha_multiplier * 255.0f);
+			mult = std::max(0, std::min(255, mult));
+			glvx::Color mult_color(mult, mult, mult, mult);
+			draw_texture_rect(
+				target,
+				render_textures.get(),
+				quantized.position,
+				quantized.size,
+				mult_color,
+				glvx::Transform(),
+				uv_rect,
+				shader
+			);
 		}
 		OnAfterGlobalRender(target);
 	}
 
-	void Widget::renderBounds(sf::RenderTarget& target, const sf::Color& color, bool include_children, bool transformed) {
+	void Widget::renderBounds(glvx::RenderTarget& target, const glvx::Color& color, bool include_children, bool transformed) {
 		if (!visible) {
 			return;
 		}
 		if (transformed) {
-			sf::FloatRect quantized_local_bounds = quantize_rect(
+			glvx::FloatRect quantized_local_bounds = quantize_rect(
 				getLocalBounds(),
 				QUANTIZE_MODE_FLOOR_SUBTRACT
 			);
 			draw_wire_rect(target, quantized_local_bounds, color, getGlobalTransform());
 		} else {
-			sf::FloatRect quantized_global_bounds = quantize_rect(
+			glvx::FloatRect quantized_global_bounds = quantize_rect(
 				getGlobalBounds(),
 				QUANTIZE_MODE_FLOOR_SUBTRACT
 			);
@@ -1493,17 +1487,17 @@ namespace fw {
 		}
 	}
 
-	void Widget::renderOrigin(sf::RenderTarget& target, bool include_children) {
+	void Widget::renderOrigin(glvx::RenderTarget& target, bool include_children) {
 		if (!visible) {
 			return;
 		}
 		float offset = DEBUG_RENDER_ORIGIN_SIZE;
-		sf::Vector2f hoffset = sf::Vector2f(offset, 0.0f);
-		sf::Vector2f voffset = sf::Vector2f(0.0f, offset);
-		sf::Vector2f origin_pos = getGlobalOriginPosition();
+		glvx::Vector2f hoffset = glvx::Vector2f(offset, 0.0f);
+		glvx::Vector2f voffset = glvx::Vector2f(0.0f, offset);
+		glvx::Vector2f origin_pos = getGlobalOriginPosition();
 		draw_line(target, origin_pos - hoffset, origin_pos + hoffset, DEBUG_RENDER_TRANSFORM_POSITION_COLOR);
 		draw_line(target, origin_pos - voffset, origin_pos + voffset, DEBUG_RENDER_TRANSFORM_POSITION_COLOR);
-		sf::Vector2f pos = getGlobalPosition();
+		glvx::Vector2f pos = getGlobalPosition();
 		draw_line(target, pos - hoffset, pos + hoffset, DEBUG_RENDER_POSITION_COLOR);
 		draw_line(target, pos - voffset, pos + voffset, DEBUG_RENDER_POSITION_COLOR);
 		if (include_children) {
@@ -1527,7 +1521,7 @@ namespace fw {
 		}
 	}
 
-	sf::Vector2f Widget::anchorToPos(Anchor p_anchor, const sf::Vector2f& size) {
+	glvx::Vector2f Widget::anchorToPos(Anchor p_anchor, const glvx::Vector2f& size) {
 		float x, y;
 		switch (p_anchor) {
 			case Anchor::TOP_LEFT: x = 0.0f; y = 0.0f; break;
@@ -1539,10 +1533,10 @@ namespace fw {
 			case Anchor::BOTTOM_LEFT: x = 0.0f; y = size.y; break;
 			case Anchor::BOTTOM_CENTER: x = size.x / 2.0f; y = size.y; break;
 			case Anchor::BOTTOM_RIGHT: x = size.x; y = size.y; break;
-			case Anchor::CUSTOM: wAssert("Custom anchor is not valid here"); return sf::Vector2f();
-			default: wAssert("Unknown anchor"); return sf::Vector2f();
+			case Anchor::CUSTOM: wAssert("Custom anchor is not valid here"); return glvx::Vector2f();
+			default: wAssert("Unknown anchor"); return glvx::Vector2f();
 		}
-		return sf::Vector2f(x, y);
+		return glvx::Vector2f(x, y);
 	}
 
 }

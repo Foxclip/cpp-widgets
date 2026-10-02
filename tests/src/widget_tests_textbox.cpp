@@ -26,8 +26,8 @@ void WidgetTestsTextbox::textboxWidgetBasicTest(test::Test& test) {
     fw::TextBoxWidget* textbox_widget = application.getWidgets().createTextBoxWidget();
     fw::Widget* root_widget = application.getWidgets().getRootWidget();
     T_ASSERT(T_CHECK(textbox_widget));
-    sf::Vector2f position(100.0f, 100.0f);
-    sf::Vector2f size(40.0f, 20.0f);
+    glvx::Vector2f position(100.0f, 100.0f);
+    glvx::Vector2f size(40.0f, 20.0f);
     textbox_widget->setPosition(position);
     textbox_widget->setSize(size);
 
@@ -55,15 +55,15 @@ void WidgetTestsTextbox::textboxWidgetBasicTest(test::Test& test) {
     gwt.clip_children = true;
     gwt.force_custom_cursor = true;
     gwt.parent = root_widget;
-    gwt.local_bounds = sf::FloatRect(sf::Vector2f(), size);
-    gwt.global_bounds = sf::FloatRect(position, size);
+    gwt.local_bounds = glvx::FloatRect(glvx::Vector2f(), size);
+    gwt.global_bounds = glvx::FloatRect(position, size);
     gwt.parent_local_bounds = gwt.global_bounds;
     gwt.visual_local_bounds = gwt.local_bounds;
     gwt.visual_global_bounds = gwt.global_bounds;
     gwt.visual_parent_local_bounds = gwt.global_bounds;
     T_WRAP_CONTAINER(WidgetTests::genericWidgetTest(gwt));
 
-    T_COMPARE(textbox_widget->getFillColor(), sf::Color(50, 50, 50), &WidgetTests::colorToStr);
+    T_COMPARE(textbox_widget->getFillColor(), glvx::Color(50, 50, 50), &WidgetTests::colorToStr);
 }
 
 void WidgetTestsTextbox::textboxWidgetInputTest(test::Test& test) {
@@ -77,19 +77,19 @@ void WidgetTestsTextbox::textboxWidgetInputTest(test::Test& test) {
     T_COMPARE(textbox_widget->getValue(), "Text");
     T_CHECK(textbox_widget->isValidValue());
     CHECK_SELECTION(true, "Text", 4, 0, 4);
-    ENTER_TEXT(sf::Keyboard::BackSpace, '\b');
+    ENTER_TEXT(glvx::Key::Backspace, '\b');
     T_COMPARE(textbox_widget->getValue(), "");
     CHECK_SELECTION(false, "", 0, -1, -1);
-    ENTER_TEXT(sf::Keyboard::A, 'a');
+    ENTER_TEXT(glvx::Key::A, 'a');
     T_COMPARE(textbox_widget->getValue(), "a");
     CHECK_SELECTION(false, "", 1, -1, -1);
-    ENTER_TEXT(sf::Keyboard::B, 'b');
+    ENTER_TEXT(glvx::Key::B, 'b');
     T_COMPARE(textbox_widget->getValue(), "ab");
     CHECK_SELECTION(false, "", 2, -1, -1);
-    ENTER_TEXT(sf::Keyboard::C, 'c');
+    ENTER_TEXT(glvx::Key::C, 'c');
     T_COMPARE(textbox_widget->getValue(), "abc");
     CHECK_SELECTION(false, "", 3, -1, -1);
-    ENTER_TEXT(sf::Keyboard::Enter, '\n');
+    ENTER_TEXT(glvx::Key::Enter, '\n');
     T_CHECK(!textbox_widget->isEditMode());
     T_COMPARE(textbox_widget->getValue(), "abc");
     T_CHECK(textbox_widget->isFocused());
@@ -100,16 +100,16 @@ void WidgetTestsTextbox::textboxWidgetEventsTest(test::Test& test) {
     fw::Application application(getWindow());
     fw::TextBoxWidget* textbox_widget = initTextBox(application, test.name, 80.0f, 20.0f);
     bool edit_mode = false;
-    sf::String value;
+    std::string value;
     bool confirmed = false;
     bool cancelled = false;
     textbox_widget->OnEditModeToggle = [&](bool value) {
         edit_mode = value;
     };
-    textbox_widget->OnValueChanged = [&](const sf::String& new_value) {
+    textbox_widget->OnValueChanged = [&](const std::string& new_value) {
         value = new_value;
     };
-    textbox_widget->OnConfirm = [&](const sf::String& value) {
+    textbox_widget->OnConfirm = [&](const std::string& value) {
         confirmed = true;
     };
     textbox_widget->OnCancel = [&]() {
@@ -117,22 +117,22 @@ void WidgetTestsTextbox::textboxWidgetEventsTest(test::Test& test) {
     };
     CLICK_MOUSE(textbox_widget->getGlobalCenter());
     T_CHECK(edit_mode);
-    CLICK_MOUSE(textbox_widget->getGlobalTopRight() + sf::Vector2f(10.0f, 0.0f));
+    CLICK_MOUSE(textbox_widget->getGlobalTopRight() + glvx::Vector2f(10.0f, 0.0f));
     T_CHECK(!edit_mode);
     CLICK_MOUSE(textbox_widget->getGlobalCenter());
     T_CHECK(edit_mode);
-    ENTER_TEXT(sf::Keyboard::A, 'a');
+    ENTER_TEXT(glvx::Key::A, 'a');
     T_COMPARE(value, "a");
-    ENTER_TEXT(sf::Keyboard::A, 'b');
+    ENTER_TEXT(glvx::Key::A, 'b');
     T_COMPARE(value, "ab");
-    ENTER_TEXT(sf::Keyboard::A, 'c');
+    ENTER_TEXT(glvx::Key::A, 'c');
     T_COMPARE(value, "abc");
-    ENTER_TEXT(sf::Keyboard::Enter, '\n');
+    ENTER_TEXT(glvx::Key::Enter, '\n');
     T_CHECK(!edit_mode);
     T_CHECK(confirmed);
     CLICK_MOUSE(textbox_widget->getGlobalCenter());
     T_CHECK(edit_mode);
-    TAP_KEY(sf::Keyboard::Escape);
+    TAP_KEY(glvx::Key::Escape);
     T_CHECK(!edit_mode);
     T_CHECK(cancelled);
 }
@@ -142,43 +142,43 @@ void WidgetTestsTextbox::textboxWidgetCursorTest(test::Test& test) {
     fw::TextBoxWidget* textbox_widget = initTextBox(application, test.name, 80.0f, 20.0f);
     CLICK_MOUSE(textbox_widget->getGlobalCenter());
 
-    ENTER_TEXT(sf::Keyboard::BackSpace, '\b');
-    TAP_KEY(sf::Keyboard::Left);
+    ENTER_TEXT(glvx::Key::Backspace, '\b');
+    TAP_KEY(glvx::Key::Left);
     T_COMPARE(textbox_widget->getValue(), "");
     CHECK_SELECTION(false, "", 0, -1, -1);
-    TAP_KEY(sf::Keyboard::Right);
+    TAP_KEY(glvx::Key::Right);
     T_COMPARE(textbox_widget->getValue(), "");
     CHECK_SELECTION(false, "", 0, -1, -1);
-    ENTER_TEXT(sf::Keyboard::A, 'a');
-    ENTER_TEXT(sf::Keyboard::B, 'b');
-    ENTER_TEXT(sf::Keyboard::C, 'c');
-    ENTER_TEXT(sf::Keyboard::D, 'd');
+    ENTER_TEXT(glvx::Key::A, 'a');
+    ENTER_TEXT(glvx::Key::B, 'b');
+    ENTER_TEXT(glvx::Key::C, 'c');
+    ENTER_TEXT(glvx::Key::D, 'd');
     T_ASSERT(T_COMPARE(textbox_widget->getValue(), "abcd"));
     CHECK_SELECTION(false, "", 4, -1, -1);
-    auto move_cursor = [&](sf::Keyboard::Key key, size_t pos) {
+    auto move_cursor = [&](glvx::Key key, size_t pos) {
         application.keyPress(key);
         application.advance();
         T_COMPARE(textbox_widget->getValue(), "abcd");
         CHECK_SELECTION(false, "", pos, -1, -1);
     };
-    T_WRAP_CONTAINER(move_cursor(sf::Keyboard::Right, 4));
-    T_WRAP_CONTAINER(move_cursor(sf::Keyboard::Right, 4));
-    T_WRAP_CONTAINER(move_cursor(sf::Keyboard::Left, 3));
-    T_WRAP_CONTAINER(move_cursor(sf::Keyboard::Left, 2));
-    T_WRAP_CONTAINER(move_cursor(sf::Keyboard::Left, 1));
-    T_WRAP_CONTAINER(move_cursor(sf::Keyboard::Left, 0));
-    T_WRAP_CONTAINER(move_cursor(sf::Keyboard::Left, 0));
-    T_WRAP_CONTAINER(move_cursor(sf::Keyboard::Left, 0));
-    T_WRAP_CONTAINER(move_cursor(sf::Keyboard::Right, 1));
-    T_WRAP_CONTAINER(move_cursor(sf::Keyboard::Right, 2));
-    T_WRAP_CONTAINER(move_cursor(sf::Keyboard::Right, 3));
-    T_WRAP_CONTAINER(move_cursor(sf::Keyboard::Right, 4));
-    T_WRAP_CONTAINER(move_cursor(sf::Keyboard::Right, 4));
-    T_WRAP_CONTAINER(move_cursor(sf::Keyboard::Right, 4));
-    T_WRAP_CONTAINER(move_cursor(sf::Keyboard::Home, 0));
-    T_WRAP_CONTAINER(move_cursor(sf::Keyboard::Home, 0));
-    T_WRAP_CONTAINER(move_cursor(sf::Keyboard::End, 4));
-    T_WRAP_CONTAINER(move_cursor(sf::Keyboard::End, 4));
+    T_WRAP_CONTAINER(move_cursor(glvx::Key::Right, 4));
+    T_WRAP_CONTAINER(move_cursor(glvx::Key::Right, 4));
+    T_WRAP_CONTAINER(move_cursor(glvx::Key::Left, 3));
+    T_WRAP_CONTAINER(move_cursor(glvx::Key::Left, 2));
+    T_WRAP_CONTAINER(move_cursor(glvx::Key::Left, 1));
+    T_WRAP_CONTAINER(move_cursor(glvx::Key::Left, 0));
+    T_WRAP_CONTAINER(move_cursor(glvx::Key::Left, 0));
+    T_WRAP_CONTAINER(move_cursor(glvx::Key::Left, 0));
+    T_WRAP_CONTAINER(move_cursor(glvx::Key::Right, 1));
+    T_WRAP_CONTAINER(move_cursor(glvx::Key::Right, 2));
+    T_WRAP_CONTAINER(move_cursor(glvx::Key::Right, 3));
+    T_WRAP_CONTAINER(move_cursor(glvx::Key::Right, 4));
+    T_WRAP_CONTAINER(move_cursor(glvx::Key::Right, 4));
+    T_WRAP_CONTAINER(move_cursor(glvx::Key::Right, 4));
+    T_WRAP_CONTAINER(move_cursor(glvx::Key::Home, 0));
+    T_WRAP_CONTAINER(move_cursor(glvx::Key::Home, 0));
+    T_WRAP_CONTAINER(move_cursor(glvx::Key::End, 4));
+    T_WRAP_CONTAINER(move_cursor(glvx::Key::End, 4));
 }
 
 void WidgetTestsTextbox::textboxWidgetScrollTest(test::Test& test) {
@@ -196,32 +196,32 @@ void WidgetTestsTextbox::textboxWidgetScrollTest(test::Test& test) {
         return text_pos;
     };
     T_APPROX_COMPARE(text_widget->getPosition().x, calc_text_pos(4));
-    TAP_KEY(sf::Keyboard::Home);
+    TAP_KEY(glvx::Key::Home);
     T_APPROX_COMPARE(text_widget->getPosition().x, zero_pos);
 
     T_ASSERT_NO_ERRORS();
-    TAP_KEY(sf::Keyboard::Right);
+    TAP_KEY(glvx::Key::Right);
     T_APPROX_COMPARE(text_widget->getPosition().x, calc_text_pos(1));
-    TAP_KEY(sf::Keyboard::Right);
+    TAP_KEY(glvx::Key::Right);
     T_APPROX_COMPARE(text_widget->getPosition().x, calc_text_pos(2));
-    TAP_KEY(sf::Keyboard::Right);
+    TAP_KEY(glvx::Key::Right);
     T_APPROX_COMPARE(text_widget->getPosition().x, calc_text_pos(3));
-    TAP_KEY(sf::Keyboard::Right);
+    TAP_KEY(glvx::Key::Right);
     T_APPROX_COMPARE(text_widget->getPosition().x, calc_text_pos(4));
-    TAP_KEY(sf::Keyboard::Right);
+    TAP_KEY(glvx::Key::Right);
     T_APPROX_COMPARE(text_widget->getPosition().x, calc_text_pos(4));
 
     T_ASSERT_NO_ERRORS();
     float begin_pos = text_widget->getPosition().x;
-    TAP_KEY(sf::Keyboard::Left);
+    TAP_KEY(glvx::Key::Left);
     T_COMPARE(text_widget->getPosition().x, begin_pos);
-    TAP_KEY(sf::Keyboard::Left);
+    TAP_KEY(glvx::Key::Left);
     T_COMPARE(textbox_widget->getLocalCharPos(2).x, zero_pos);
-    TAP_KEY(sf::Keyboard::Left);
+    TAP_KEY(glvx::Key::Left);
     T_COMPARE(textbox_widget->getLocalCharPos(1).x, zero_pos);
-    TAP_KEY(sf::Keyboard::Left);
+    TAP_KEY(glvx::Key::Left);
     T_COMPARE(textbox_widget->getLocalCharPos(0).x, zero_pos);
-    TAP_KEY(sf::Keyboard::Left);
+    TAP_KEY(glvx::Key::Left);
     T_COMPARE(textbox_widget->getLocalCharPos(0).x, zero_pos);
 }
 
@@ -252,63 +252,63 @@ void WidgetTestsTextbox::textboxWidgetSelectionTest(test::Test& test) {
     CLICK_MOUSE(textbox_widget->getGlobalCenter());
 
     CHECK_SELECTION(true, "Text", 4, 0, 4);
-    TAP_KEY(sf::Keyboard::Left);
+    TAP_KEY(glvx::Key::Left);
     CHECK_SELECTION(false, "", 0, -1, -1);
 
     T_ASSERT_NO_ERRORS();
     SELECT_ALL();
     CHECK_SELECTION(true, "Text", 4, 0, 4);
-    TAP_KEY(sf::Keyboard::Right);
+    TAP_KEY(glvx::Key::Right);
     CHECK_SELECTION(false, "", 4, -1, -1);
     SELECT_ALL();
     CHECK_SELECTION(true, "Text", 4, 0, 4);
-    TAP_KEY(sf::Keyboard::Home);
+    TAP_KEY(glvx::Key::Home);
     CHECK_SELECTION(false, "", 0, -1, -1);
     SELECT_ALL();
     CHECK_SELECTION(true, "Text", 4, 0, 4);
-    TAP_KEY(sf::Keyboard::End);
+    TAP_KEY(glvx::Key::End);
     CHECK_SELECTION(false, "", 4, -1, -1);
 
     T_ASSERT_NO_ERRORS();
-    TAP_KEY(sf::Keyboard::Home);
-    PRESS_KEY(sf::Keyboard::LShift);
-    TAP_KEY(sf::Keyboard::Right);
+    TAP_KEY(glvx::Key::Home);
+    PRESS_KEY(glvx::Key::LShift);
+    TAP_KEY(glvx::Key::Right);
     CHECK_SELECTION(true, "T", 1, 0, 1);
-    TAP_KEY(sf::Keyboard::Right);
+    TAP_KEY(glvx::Key::Right);
     CHECK_SELECTION(true, "Te", 2, 0, 2);
-    TAP_KEY(sf::Keyboard::Right);
+    TAP_KEY(glvx::Key::Right);
     CHECK_SELECTION(true, "Tex", 3, 0, 3);
-    TAP_KEY(sf::Keyboard::Right);
+    TAP_KEY(glvx::Key::Right);
     CHECK_SELECTION(true, "Text", 4, 0, 4);
-    TAP_KEY(sf::Keyboard::Right);
+    TAP_KEY(glvx::Key::Right);
     CHECK_SELECTION(true, "Text", 4, 0, 4);
-    RELEASE_KEY(sf::Keyboard::LShift);
+    RELEASE_KEY(glvx::Key::LShift);
     CHECK_SELECTION(true, "Text", 4, 0, 4);
-    TAP_KEY(sf::Keyboard::Left);
+    TAP_KEY(glvx::Key::Left);
     CHECK_SELECTION(false, "", 0, -1, -1);
 
     T_ASSERT_NO_ERRORS();
-    TAP_KEY(sf::Keyboard::Right);
-    TAP_KEY(sf::Keyboard::Right);
-    TAP_KEY(sf::Keyboard::Right);
-    PRESS_KEY(sf::Keyboard::LShift);
-    TAP_KEY(sf::Keyboard::Left);
+    TAP_KEY(glvx::Key::Right);
+    TAP_KEY(glvx::Key::Right);
+    TAP_KEY(glvx::Key::Right);
+    PRESS_KEY(glvx::Key::LShift);
+    TAP_KEY(glvx::Key::Left);
     CHECK_SELECTION(true, "x", 2, 2, 3);
-    TAP_KEY(sf::Keyboard::Left);
+    TAP_KEY(glvx::Key::Left);
     CHECK_SELECTION(true, "ex", 1, 1, 3);
-    TAP_KEY(sf::Keyboard::Left);
+    TAP_KEY(glvx::Key::Left);
     CHECK_SELECTION(true, "Tex", 0, 0, 3);
-    RELEASE_KEY(sf::Keyboard::LShift);
-    TAP_KEY(sf::Keyboard::Right);
+    RELEASE_KEY(glvx::Key::LShift);
+    TAP_KEY(glvx::Key::Right);
     CHECK_SELECTION(false, "", 3, -1, -1);
 
     T_ASSERT_NO_ERRORS();
-    TAP_KEY(sf::Keyboard::Home);
-    TAP_KEY(sf::Keyboard::Right);
-    PRESS_KEY(sf::Keyboard::LShift);
-    TAP_KEY(sf::Keyboard::Right);
-    TAP_KEY(sf::Keyboard::Right);
-    RELEASE_KEY(sf::Keyboard::LShift);
+    TAP_KEY(glvx::Key::Home);
+    TAP_KEY(glvx::Key::Right);
+    PRESS_KEY(glvx::Key::LShift);
+    TAP_KEY(glvx::Key::Right);
+    TAP_KEY(glvx::Key::Right);
+    RELEASE_KEY(glvx::Key::LShift);
     CHECK_SELECTION(true, "ex", 3, 1, 3);
     SELECT_ALL();
     CHECK_SELECTION(true, "Text", 4, 0, 4);
@@ -334,7 +334,7 @@ void WidgetTestsTextbox::textboxWidgetMouseClickTest(test::Test& test) {
     T_WRAP_CONTAINER(click_at_char(4));
 
     T_ASSERT_NO_ERRORS();
-    CLICK_MOUSE(textbox_widget->getGlobalTopRight() + sf::Vector2f(10.0f, 0.0f));
+    CLICK_MOUSE(textbox_widget->getGlobalTopRight() + glvx::Vector2f(10.0f, 0.0f));
     CHECK_SELECTION(false, "", 0, -1, -1);
     T_CHECK(!textbox_widget->isFocused());
 }
@@ -394,7 +394,7 @@ void WidgetTestsTextbox::textboxWidgetCopyPasteTest(test::Test& test) {
 
     COPY();
     T_COMPARE(textbox_widget->getValue(), "Text");
-    ENTER_TEXT(sf::Keyboard::Backspace, '\b');
+    ENTER_TEXT(glvx::Key::Backspace, '\b');
     T_COMPARE(textbox_widget->getValue(), "");
     PASTE();
     T_COMPARE(textbox_widget->getValue(), "Text");
@@ -407,30 +407,30 @@ void WidgetTestsTextbox::textboxWidgetCopyPasteTest(test::Test& test) {
     T_COMPARE(textbox_widget->getValue(), "Text");
 
     T_ASSERT_NO_ERRORS();
-    TAP_KEY(sf::Keyboard::Home);
-    TAP_KEY(sf::Keyboard::Right);
-    PRESS_KEY(sf::Keyboard::LShift);
-    TAP_KEY(sf::Keyboard::Right);
-    TAP_KEY(sf::Keyboard::Right);
-    RELEASE_KEY(sf::Keyboard::LShift);
+    TAP_KEY(glvx::Key::Home);
+    TAP_KEY(glvx::Key::Right);
+    PRESS_KEY(glvx::Key::LShift);
+    TAP_KEY(glvx::Key::Right);
+    TAP_KEY(glvx::Key::Right);
+    RELEASE_KEY(glvx::Key::LShift);
     COPY();
     T_COMPARE(textbox_widget->getValue(), "Text");
-    TAP_KEY(sf::Keyboard::Home);
+    TAP_KEY(glvx::Key::Home);
     PASTE();
     T_COMPARE(textbox_widget->getValue(), "exText");
 
     T_ASSERT_NO_ERRORS();
-    PRESS_KEY(sf::Keyboard::LShift);
-    TAP_KEY(sf::Keyboard::Right);
-    TAP_KEY(sf::Keyboard::Right);
-    RELEASE_KEY(sf::Keyboard::LShift);
+    PRESS_KEY(glvx::Key::LShift);
+    TAP_KEY(glvx::Key::Right);
+    TAP_KEY(glvx::Key::Right);
+    RELEASE_KEY(glvx::Key::LShift);
     CUT();
     T_COMPARE(textbox_widget->getValue(), "exxt");
-    TAP_KEY(sf::Keyboard::Left);
-    PRESS_KEY(sf::Keyboard::LShift);
-    TAP_KEY(sf::Keyboard::Right);
-    TAP_KEY(sf::Keyboard::Right);
-    RELEASE_KEY(sf::Keyboard::LShift);
+    TAP_KEY(glvx::Key::Left);
+    PRESS_KEY(glvx::Key::LShift);
+    TAP_KEY(glvx::Key::Right);
+    TAP_KEY(glvx::Key::Right);
+    RELEASE_KEY(glvx::Key::LShift);
     PASTE();
     T_COMPARE(textbox_widget->getValue(), "eTet");
 
@@ -459,20 +459,20 @@ void WidgetTestsTextbox::textboxWidgetHistoryTest(test::Test& test) {
     CLICK_MOUSE(textbox_widget->getGlobalCenter());
 
     auto undo = [&]() {
-        PRESS_KEY(sf::Keyboard::LControl);
-        ENTER_TEXT(sf::Keyboard::Z, 'z');
-        RELEASE_KEY(sf::Keyboard::LControl);
+        PRESS_KEY(glvx::Key::LControl);
+        ENTER_TEXT(glvx::Key::Z, 'z');
+        RELEASE_KEY(glvx::Key::LControl);
     };
     auto redo = [&]() {
-        PRESS_KEY(sf::Keyboard::LControl);
-        PRESS_KEY(sf::Keyboard::LShift);
-        ENTER_TEXT(sf::Keyboard::Z, 'z');
-        RELEASE_KEY(sf::Keyboard::LShift);
-        RELEASE_KEY(sf::Keyboard::LControl);
+        PRESS_KEY(glvx::Key::LControl);
+        PRESS_KEY(glvx::Key::LShift);
+        ENTER_TEXT(glvx::Key::Z, 'z');
+        RELEASE_KEY(glvx::Key::LShift);
+        RELEASE_KEY(glvx::Key::LControl);
     };
 
     T_COMPARE(textbox_widget->getValue(), "Text");
-    ENTER_TEXT(sf::Keyboard::Backspace, '\b');
+    ENTER_TEXT(glvx::Key::Backspace, '\b');
     T_COMPARE(textbox_widget->getValue(), "");
     undo();
     T_COMPARE(textbox_widget->getValue(), "Text");
@@ -481,9 +481,9 @@ void WidgetTestsTextbox::textboxWidgetHistoryTest(test::Test& test) {
     T_COMPARE(textbox_widget->getValue(), "");
 
     T_ASSERT_NO_ERRORS();
-    ENTER_TEXT(sf::Keyboard::A, 'a');
-    ENTER_TEXT(sf::Keyboard::B, 'b');
-    ENTER_TEXT(sf::Keyboard::C, 'c');
+    ENTER_TEXT(glvx::Key::A, 'a');
+    ENTER_TEXT(glvx::Key::B, 'b');
+    ENTER_TEXT(glvx::Key::C, 'c');
     T_COMPARE(textbox_widget->getValue(), "abc");
     undo();
     T_COMPARE(textbox_widget->getValue(), "");
@@ -504,12 +504,12 @@ void WidgetTestsTextbox::textboxWidgetHistoryTest(test::Test& test) {
     T_COMPARE(textbox_widget->getValue(), "");
     undo();
     T_COMPARE(textbox_widget->getValue(), "Text");
-    TAP_KEY(sf::Keyboard::Left);
-    TAP_KEY(sf::Keyboard::Right);
-    TAP_KEY(sf::Keyboard::Right);
-    TAP_KEY(sf::Keyboard::Right);
-    ENTER_TEXT(sf::Keyboard::Backspace, '\b');
-    ENTER_TEXT(sf::Keyboard::Backspace, '\b');
+    TAP_KEY(glvx::Key::Left);
+    TAP_KEY(glvx::Key::Right);
+    TAP_KEY(glvx::Key::Right);
+    TAP_KEY(glvx::Key::Right);
+    ENTER_TEXT(glvx::Key::Backspace, '\b');
+    ENTER_TEXT(glvx::Key::Backspace, '\b');
     T_COMPARE(textbox_widget->getValue(), "Tt");
     undo();
     T_COMPARE(textbox_widget->getValue(), "Text");
@@ -518,10 +518,10 @@ void WidgetTestsTextbox::textboxWidgetHistoryTest(test::Test& test) {
     CHECK_SELECTION(false, "", 3, -1, -1);
 
     T_ASSERT_NO_ERRORS();
-    PRESS_KEY(sf::Keyboard::LShift);
-    TAP_KEY(sf::Keyboard::Left);
-    TAP_KEY(sf::Keyboard::Left);
-    RELEASE_KEY(sf::Keyboard::LShift);
+    PRESS_KEY(glvx::Key::LShift);
+    TAP_KEY(glvx::Key::Left);
+    TAP_KEY(glvx::Key::Left);
+    RELEASE_KEY(glvx::Key::LShift);
     CUT();
     T_COMPARE(textbox_widget->getValue(), "Tt");
     undo();
@@ -532,7 +532,7 @@ void WidgetTestsTextbox::textboxWidgetHistoryTest(test::Test& test) {
 
     T_ASSERT_NO_ERRORS();
     T_COMPARE(textbox_widget->getValue(), "Text");
-    TAP_KEY(sf::Keyboard::Right);
+    TAP_KEY(glvx::Key::Right);
     PASTE();
     T_COMPARE(textbox_widget->getValue(), "Texext");
     PASTE();
@@ -558,62 +558,62 @@ void WidgetTestsTextbox::textboxWidgetIntegerTest(test::Test& test) {
     CUT();
     T_CHECK(!textbox_widget->isValidValue());
     // digits
-    ENTER_TEXT(sf::Keyboard::Num1, '1');
-    ENTER_TEXT(sf::Keyboard::Num2, '2');
-    ENTER_TEXT(sf::Keyboard::Num3, '3');
-    ENTER_TEXT(sf::Keyboard::Num4, '4');
+    ENTER_TEXT(glvx::Key::Num1, '1');
+    ENTER_TEXT(glvx::Key::Num2, '2');
+    ENTER_TEXT(glvx::Key::Num3, '3');
+    ENTER_TEXT(glvx::Key::Num4, '4');
     T_COMPARE(textbox_widget->getValue(), "1234");
     T_CHECK(textbox_widget->isValidValue());
     // letter e
-    ENTER_TEXT(sf::Keyboard::E, 'e');
+    ENTER_TEXT(glvx::Key::E, 'e');
     T_COMPARE(textbox_widget->getValue(), "1234");
     T_CHECK(textbox_widget->isValidValue());
     // plus sign
-    TAP_KEY(sf::Keyboard::Home);
-    PRESS_KEY(sf::Keyboard::LShift);
-    ENTER_TEXT(sf::Keyboard::Equal, '+');
-    RELEASE_KEY(sf::Keyboard::LShift);
+    TAP_KEY(glvx::Key::Home);
+    PRESS_KEY(glvx::Key::LShift);
+    ENTER_TEXT(glvx::Key::Plus, '+');
+    RELEASE_KEY(glvx::Key::LShift);
     T_COMPARE(textbox_widget->getValue(), "+1234");
     T_CHECK(textbox_widget->isValidValue());
     // two plus signs
-    PRESS_KEY(sf::Keyboard::LShift);
-    ENTER_TEXT(sf::Keyboard::Equal, '+');
-    RELEASE_KEY(sf::Keyboard::LShift);
+    PRESS_KEY(glvx::Key::LShift);
+    ENTER_TEXT(glvx::Key::Plus, '+');
+    RELEASE_KEY(glvx::Key::LShift);
     T_COMPARE(textbox_widget->getValue(), "++1234");
     T_CHECK(!textbox_widget->isValidValue());
-    ENTER_TEXT(sf::Keyboard::Backspace, '\b');
-    TAP_KEY(sf::Keyboard::End);
-    ENTER_TEXT(sf::Keyboard::Period, '.');
+    ENTER_TEXT(glvx::Key::Backspace, '\b');
+    TAP_KEY(glvx::Key::End);
+    ENTER_TEXT(glvx::Key::Period, '.');
     T_COMPARE(textbox_widget->getValue(), "+1234");
     // comma
-    ENTER_TEXT(sf::Keyboard::Comma, ',');
+    ENTER_TEXT(glvx::Key::Comma, ',');
     T_COMPARE(textbox_widget->getValue(), "+1234");
     T_CHECK(textbox_widget->isValidValue());
     // minus sign at the end
-    ENTER_TEXT(sf::Keyboard::Dash, '-');
+    ENTER_TEXT(glvx::Key::Minus, '-');
     T_COMPARE(textbox_widget->getValue(), "+1234-");
     T_CHECK(!textbox_widget->isValidValue());
     // all digits
-    ENTER_TEXT(sf::Keyboard::Backspace, '\b');
-    ENTER_TEXT(sf::Keyboard::Num5, '5');
-    ENTER_TEXT(sf::Keyboard::Num6, '6');
-    ENTER_TEXT(sf::Keyboard::Num7, '7');
-    ENTER_TEXT(sf::Keyboard::Num8, '8');
-    ENTER_TEXT(sf::Keyboard::Num9, '9');
+    ENTER_TEXT(glvx::Key::Backspace, '\b');
+    ENTER_TEXT(glvx::Key::Num5, '5');
+    ENTER_TEXT(glvx::Key::Num6, '6');
+    ENTER_TEXT(glvx::Key::Num7, '7');
+    ENTER_TEXT(glvx::Key::Num8, '8');
+    ENTER_TEXT(glvx::Key::Num9, '9');
     T_COMPARE(textbox_widget->getValue(), "+123456789");
     T_CHECK(textbox_widget->isValidValue());
     // minus sign before plus sign
-    TAP_KEY(sf::Keyboard::Home);
-    ENTER_TEXT(sf::Keyboard::Dash, '-');
+    TAP_KEY(glvx::Key::Home);
+    ENTER_TEXT(glvx::Key::Minus, '-');
     T_COMPARE(textbox_widget->getValue(), "-+123456789");
     T_CHECK(!textbox_widget->isValidValue());
     // minus sign
-    TAP_KEY(sf::Keyboard::Right);
-    ENTER_TEXT(sf::Keyboard::Backspace, '\b');
+    TAP_KEY(glvx::Key::Right);
+    ENTER_TEXT(glvx::Key::Backspace, '\b');
     T_COMPARE(textbox_widget->getValue(), "-123456789");
     T_CHECK(textbox_widget->isValidValue());
     // zero at the beginning
-    ENTER_TEXT(sf::Keyboard::Num0, '0');
+    ENTER_TEXT(glvx::Key::Num0, '0');
     T_COMPARE(textbox_widget->getValue(), "-0123456789");
     T_CHECK(textbox_widget->isValidValue());
 }
@@ -630,106 +630,106 @@ void WidgetTestsTextbox::textboxWidgetFloatTest(test::Test& test) {
     CUT();
     T_CHECK(!textbox_widget->isValidValue());
     // digits
-    ENTER_TEXT(sf::Keyboard::Num1, '1');
-    ENTER_TEXT(sf::Keyboard::Num2, '2');
-    ENTER_TEXT(sf::Keyboard::Num3, '3');
-    ENTER_TEXT(sf::Keyboard::Num4, '4');
+    ENTER_TEXT(glvx::Key::Num1, '1');
+    ENTER_TEXT(glvx::Key::Num2, '2');
+    ENTER_TEXT(glvx::Key::Num3, '3');
+    ENTER_TEXT(glvx::Key::Num4, '4');
     T_COMPARE(textbox_widget->getValue(), "1234");
     T_CHECK(textbox_widget->isValidValue());
     // plus sign
-    TAP_KEY(sf::Keyboard::Home);
-    PRESS_KEY(sf::Keyboard::LShift);
-    ENTER_TEXT(sf::Keyboard::Equal, '+');
-    RELEASE_KEY(sf::Keyboard::LShift);
+    TAP_KEY(glvx::Key::Home);
+    PRESS_KEY(glvx::Key::LShift);
+    ENTER_TEXT(glvx::Key::Plus, '+');
+    RELEASE_KEY(glvx::Key::LShift);
     T_COMPARE(textbox_widget->getValue(), "+1234");
     T_CHECK(textbox_widget->isValidValue());
     // two plus signs
-    PRESS_KEY(sf::Keyboard::LShift);
-    ENTER_TEXT(sf::Keyboard::Equal, '+');
-    RELEASE_KEY(sf::Keyboard::LShift);
+    PRESS_KEY(glvx::Key::LShift);
+    ENTER_TEXT(glvx::Key::Plus, '+');
+    RELEASE_KEY(glvx::Key::LShift);
     T_COMPARE(textbox_widget->getValue(), "++1234");
     T_CHECK(!textbox_widget->isValidValue());
     // minus sign at the end
-    ENTER_TEXT(sf::Keyboard::Backspace, '\b');
-    TAP_KEY(sf::Keyboard::End);
-    ENTER_TEXT(sf::Keyboard::Dash, '-');
+    ENTER_TEXT(glvx::Key::Backspace, '\b');
+    TAP_KEY(glvx::Key::End);
+    ENTER_TEXT(glvx::Key::Minus, '-');
     T_COMPARE(textbox_widget->getValue(), "+1234-");
     T_CHECK(!textbox_widget->isValidValue());
-    ENTER_TEXT(sf::Keyboard::Backspace, '\b');
+    ENTER_TEXT(glvx::Key::Backspace, '\b');
     // letter a
-    ENTER_TEXT(sf::Keyboard::A, 'a');
+    ENTER_TEXT(glvx::Key::A, 'a');
     T_COMPARE(textbox_widget->getValue(), "+1234");
     T_CHECK(textbox_widget->isValidValue());
     // letter e
-    ENTER_TEXT(sf::Keyboard::E, 'e');
+    ENTER_TEXT(glvx::Key::E, 'e');
     T_COMPARE(textbox_widget->getValue(), "+1234e");
     T_CHECK(!textbox_widget->isValidValue());
     // exponent
-    ENTER_TEXT(sf::Keyboard::Num5, '9');
+    ENTER_TEXT(glvx::Key::Num5, '9');
     T_COMPARE(textbox_widget->getValue(), "+1234e9");
     T_CHECK(textbox_widget->isValidValue());
     // big exponent
-    ENTER_TEXT(sf::Keyboard::Num5, '9');
+    ENTER_TEXT(glvx::Key::Num5, '9');
     T_COMPARE(textbox_widget->getValue(), "+1234e99");
     T_CHECK(!textbox_widget->isValidValue());
     // letter e after the end
-    ENTER_TEXT(sf::Keyboard::Backspace, '\b');
-    ENTER_TEXT(sf::Keyboard::Comma, ',');
+    ENTER_TEXT(glvx::Key::Backspace, '\b');
+    ENTER_TEXT(glvx::Key::Comma, ',');
     T_COMPARE(textbox_widget->getValue(), "+1234e9");
-    ENTER_TEXT(sf::Keyboard::E, 'e');
+    ENTER_TEXT(glvx::Key::E, 'e');
     T_COMPARE(textbox_widget->getValue(), "+1234e9e");
     T_CHECK(!textbox_widget->isValidValue());
     // dot after the end
-    ENTER_TEXT(sf::Keyboard::Backspace, '\b');
-    ENTER_TEXT(sf::Keyboard::Period, '.');
+    ENTER_TEXT(glvx::Key::Backspace, '\b');
+    ENTER_TEXT(glvx::Key::Period, '.');
     T_COMPARE(textbox_widget->getValue(), "+1234e9.");
     T_CHECK(!textbox_widget->isValidValue());
     // dot in exponent
-    ENTER_TEXT(sf::Keyboard::Num6, '6');
+    ENTER_TEXT(glvx::Key::Num6, '6');
     T_COMPARE(textbox_widget->getValue(), "+1234e9.6");
     T_CHECK(!textbox_widget->isValidValue());
     // dot in mantissa
-    ENTER_TEXT(sf::Keyboard::Backspace, '\b');
-    ENTER_TEXT(sf::Keyboard::Backspace, '\b');
+    ENTER_TEXT(glvx::Key::Backspace, '\b');
+    ENTER_TEXT(glvx::Key::Backspace, '\b');
     T_COMPARE(textbox_widget->getValue(), "+1234e9");
-    TAP_KEY(sf::Keyboard::Left);
-    TAP_KEY(sf::Keyboard::Left);
-    TAP_KEY(sf::Keyboard::Left);
-    ENTER_TEXT(sf::Keyboard::Period, '.');
+    TAP_KEY(glvx::Key::Left);
+    TAP_KEY(glvx::Key::Left);
+    TAP_KEY(glvx::Key::Left);
+    ENTER_TEXT(glvx::Key::Period, '.');
     T_COMPARE(textbox_widget->getValue(), "+123.4e9");
     T_CHECK(textbox_widget->isValidValue());
     // two dots in mantissa
-    ENTER_TEXT(sf::Keyboard::Period, '.');
+    ENTER_TEXT(glvx::Key::Period, '.');
     T_COMPARE(textbox_widget->getValue(), "+123..4e9");
     T_CHECK(!textbox_widget->isValidValue());
     // more digist in mantissa
-    ENTER_TEXT(sf::Keyboard::Backspace, '\b');
+    ENTER_TEXT(glvx::Key::Backspace, '\b');
     T_COMPARE(textbox_widget->getValue(), "+123.4e9");
-    TAP_KEY(sf::Keyboard::Right);
-    ENTER_TEXT(sf::Keyboard::Num5, '5');
-    ENTER_TEXT(sf::Keyboard::Num6, '6');
-    ENTER_TEXT(sf::Keyboard::Num7, '7');
-    ENTER_TEXT(sf::Keyboard::Num8, '8');
+    TAP_KEY(glvx::Key::Right);
+    ENTER_TEXT(glvx::Key::Num5, '5');
+    ENTER_TEXT(glvx::Key::Num6, '6');
+    ENTER_TEXT(glvx::Key::Num7, '7');
+    ENTER_TEXT(glvx::Key::Num8, '8');
     T_COMPARE(textbox_widget->getValue(), "+123.45678e9");
     T_CHECK(textbox_widget->isValidValue());
     // minus sign before plus sign
-    TAP_KEY(sf::Keyboard::Home);
-    ENTER_TEXT(sf::Keyboard::Dash, '-');
+    TAP_KEY(glvx::Key::Home);
+    ENTER_TEXT(glvx::Key::Minus, '-');
     T_COMPARE(textbox_widget->getValue(), "-+123.45678e9");
     T_CHECK(!textbox_widget->isValidValue());
     // zero in the beginning of mantissa
-    TAP_KEY(sf::Keyboard::Right);
-    ENTER_TEXT(sf::Keyboard::Backspace, '\b');
-    ENTER_TEXT(sf::Keyboard::Num0, '0');
+    TAP_KEY(glvx::Key::Right);
+    ENTER_TEXT(glvx::Key::Backspace, '\b');
+    ENTER_TEXT(glvx::Key::Num0, '0');
     T_COMPARE(textbox_widget->getValue(), "-0123.45678e9");
     T_CHECK(textbox_widget->isValidValue());
     // two minus signs at the beginning
-    TAP_KEY(sf::Keyboard::Home);
-    ENTER_TEXT(sf::Keyboard::Dash, '-');
+    TAP_KEY(glvx::Key::Home);
+    ENTER_TEXT(glvx::Key::Minus, '-');
     T_COMPARE(textbox_widget->getValue(), "--0123.45678e9");
     T_CHECK(!textbox_widget->isValidValue());
 
-    ENTER_TEXT(sf::Keyboard::Backspace, '\b');
+    ENTER_TEXT(glvx::Key::Backspace, '\b');
 }
 
 fw::TextBoxWidget* WidgetTestsTextbox::initTextBox(fw::Application& application, const std::string& test_name, float width, float height) {
@@ -740,8 +740,8 @@ fw::TextBoxWidget* WidgetTestsTextbox::initTextBox(fw::Application& application,
     fw::TextBoxWidget* textbox_widget = application.getWidgets().createTextBoxWidget();
     textbox_widget->setCharacterSize(20);
     textbox_widget->setFont(getFont());
-    sf::Vector2f position(100.0f, 100.0f);
-    sf::Vector2f size(width, height);
+    glvx::Vector2f position(100.0f, 100.0f);
+    glvx::Vector2f size(width, height);
     std::string value = "Text";
     textbox_widget->setPosition(position);
     textbox_widget->setSize(size);

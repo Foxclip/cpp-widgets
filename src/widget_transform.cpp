@@ -8,35 +8,35 @@ namespace fw {
 		this->widget = widget;
 	}
 
-	const sf::Transform& WidgetTransform::getTransform() const {
+	const glvx::Transform& WidgetTransform::getTransform() const {
 		if (!transform_valid) {
 			recalcTransform();
 		}
 		return transform;
 	}
 
-	const sf::Transform& WidgetTransform::getInverseTransform() const {
+	const glvx::Transform& WidgetTransform::getInverseTransform() const {
 		if (!inv_transform_valid) {
 			recalcInverseTransform();
 		}
 		return inv_transform;
 	}
 
-	const sf::Transform& WidgetTransform::getGlobalTransform() const {
+	const glvx::Transform& WidgetTransform::getGlobalTransform() const {
 		if (!global_transform_valid) {
 			recalcGlobalTransform();
 		}
 		return global_transform;
 	}
 
-	const sf::Transform& WidgetTransform::getInverseGlobalTransform() const {
+	const glvx::Transform& WidgetTransform::getInverseGlobalTransform() const {
 		if (!inv_global_transform_valid) {
 			recalcInverseGlobalTransform();
 		}
 		return inv_global_transform;
 	}
 
-	const sf::Vector2f& WidgetTransform::getPosition() const {
+	const glvx::Vector2f& WidgetTransform::getPosition() const {
 		return position;
 	}
 
@@ -44,11 +44,11 @@ namespace fw {
 		return rotation;
 	}
 
-	const sf::Vector2f& WidgetTransform::getScale() const {
+	const glvx::Vector2f& WidgetTransform::getScale() const {
 		return scale;
 	}
 
-	const sf::Vector2f& WidgetTransform::getOrigin() const {
+	const glvx::Vector2f& WidgetTransform::getOrigin() const {
 		return origin;
 	}
 
@@ -73,19 +73,19 @@ namespace fw {
 		invalidateTransform();
 	}
 
-	void WidgetTransform::setPosition(const sf::Vector2f& position) {
+	void WidgetTransform::setPosition(const glvx::Vector2f& position) {
 		this->position = position;
 		invalidateTransform();
 	}
 
 	void WidgetTransform::setGlobalPosition(float x, float y) {
-		const sf::Transform& inv_parent_global_transform = widget->getInverseParentGlobalTransform();
-		sf::Vector2f pos = sf::Vector2f(x, y);
-		sf::Vector2f local_pos = inv_parent_global_transform * pos;
+		const glvx::Transform& inv_parent_global_transform = widget->getInverseParentGlobalTransform();
+		glvx::Vector2f pos = glvx::Vector2f(x, y);
+		glvx::Vector2f local_pos = inv_parent_global_transform * pos;
 		setPosition(local_pos);
 	}
 
-	void WidgetTransform::setGlobalPosition(const sf::Vector2f& position) {
+	void WidgetTransform::setGlobalPosition(const glvx::Vector2f& position) {
 		setGlobalPosition(position.x, position.y);
 	}
 
@@ -94,7 +94,7 @@ namespace fw {
 		invalidateTransform();
 	}
 
-	void WidgetTransform::setScale(const sf::Vector2f& scale) {
+	void WidgetTransform::setScale(const glvx::Vector2f& scale) {
 		this->scale = scale;
 		invalidateTransform();
 	}
@@ -105,7 +105,7 @@ namespace fw {
 		invalidateTransform();
 	}
 
-	void WidgetTransform::setOrigin(const sf::Vector2f origin) {
+	void WidgetTransform::setOrigin(const glvx::Vector2f origin) {
 		setOrigin(origin.x, origin.y);
 	}
 
@@ -117,20 +117,12 @@ namespace fw {
 	}
 
 	void WidgetTransform::recalcTransform() const {
-		float angle  = (float)(-rotation * std::numbers::pi / 180.f);
-		float cosine = std::cos(angle);
-		float sine   = std::sin(angle);
-		float sxc    = scale.x * cosine;
-		float syc    = scale.y * cosine;
-		float sxs    = scale.x * sine;
-		float sys    = scale.y * sine;
-		float tx     = -origin.x * sxc - origin.y * sys + position.x;
-		float ty     =  origin.x * sxs - origin.y * syc + position.y;
-		transform = sf::Transform(
-			sxc, sys, tx,
-			-sxs, syc, ty,
-			0.f, 0.f, 1.f
-		);
+		glvx::Transform t = glvx::Transform();
+		t.translate(position);
+		t.rotate(glvx::Angle::fromDegrees(rotation), glvx::Vector2f());
+		t.scale(scale.x, scale.y);
+		t.translate(-origin);
+		transform = t;
 		transform_valid = true;
 	}
 
@@ -140,15 +132,15 @@ namespace fw {
 	}
 
 	void WidgetTransform::recalcGlobalTransform() const {
-		const sf::Transform& transform = getTransform();
-		const sf::Transform& parent_transform = widget->getParentGlobalTransform();
+		const glvx::Transform& transform = getTransform();
+		const glvx::Transform& parent_transform = widget->getParentGlobalTransform();
 		global_transform = parent_transform * transform;
 		global_transform_valid = true;
 	}
 
 	void WidgetTransform::recalcInverseGlobalTransform() const {
-		const sf::Transform& transform = getTransform();
-		const sf::Transform& global_transform = getGlobalTransform();
+		const glvx::Transform& transform = getTransform();
+		const glvx::Transform& global_transform = getGlobalTransform();
 		inv_global_transform = global_transform.getInverse();
 		inv_global_transform_valid = true;
 	}

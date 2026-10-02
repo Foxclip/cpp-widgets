@@ -13,12 +13,12 @@ void WidgetTestsCanvas::canvasWidgetBasicTest(test::Test& test) {
     application.start(true);
     application.mouseMove(400, 300);
     application.advance();
-    sf::Vector2f size(100.0f, 100.0f);
+    glvx::Vector2f size(100.0f, 100.0f);
     fw::CanvasWidget* canvas_widget =
-        application.getWidgets().createCanvasWidget(size, sf::Vector2u(100, 100));
+        application.getWidgets().createCanvasWidget(size, glvx::Vector2u(100, 100));
     fw::Widget* root_widget = application.getWidgets().getRootWidget();
     T_ASSERT(T_CHECK(canvas_widget));
-    sf::Vector2f position(100.0f, 100.0f);
+    glvx::Vector2f position(100.0f, 100.0f);
     canvas_widget->setPosition(position);
 
     GenericWidgetTest gwt(application, test);
@@ -45,8 +45,8 @@ void WidgetTestsCanvas::canvasWidgetBasicTest(test::Test& test) {
     gwt.clip_children = false;
     gwt.force_custom_cursor = false;
     gwt.parent = root_widget;
-    gwt.local_bounds = sf::FloatRect(sf::Vector2f(), size);
-    gwt.global_bounds = sf::FloatRect(position, size);
+    gwt.local_bounds = glvx::FloatRect(glvx::Vector2f(), size);
+    gwt.global_bounds = glvx::FloatRect(position, size);
     gwt.parent_local_bounds = gwt.global_bounds;
     gwt.visual_local_bounds = gwt.local_bounds;
     gwt.visual_global_bounds = gwt.global_bounds;
@@ -66,35 +66,35 @@ void WidgetTestsCanvas::canvasWidgetDrawTest(test::Test& test) {
     auto color_to_str = &WidgetTests::colorToStr;
     {
         canvas_widget->clear();
-        sf::Image image = canvas_widget->getRenderTexture().getTexture().copyToImage();
-        T_ASSERT(T_COMPARE(image.getPixel(0, 0), sf::Color::Black, color_to_str));
+        glvx::Image image = canvas_widget->getRenderTexture().readPixels();
+        T_ASSERT(T_COMPARE(image.getPixel(0, 0), glvx::Color::Black, color_to_str));
     }
     {
-        canvas_widget->clear(sf::Color(128, 128, 128));
-        sf::Image image = canvas_widget->getRenderTexture().getTexture().copyToImage();
-        T_ASSERT(T_COMPARE(image.getPixel(0, 0), sf::Color(128, 128, 128), color_to_str));
+        canvas_widget->clear(glvx::Color(128, 128, 128));
+        glvx::Image image = canvas_widget->getRenderTexture().readPixels();
+        T_ASSERT(T_COMPARE(image.getPixel(0, 0), glvx::Color(128, 128, 128), color_to_str));
     }
     {
-        canvas_widget->clear(sf::Color::Red);
-        sf::RectangleShape rect(sf::Vector2f(30.0f, 30.0f));
+        canvas_widget->clear(glvx::Color::Red);
+        glvx::Rectangle rect(glvx::Vector2f(30.0f, 30.0f));
         rect.setPosition(10.0f, 10.0f);
-        rect.setFillColor(sf::Color::Green);
+        rect.setColor(glvx::Color::Green);
         canvas_widget->draw(rect);
         canvas_widget->display();
-        sf::Image image = canvas_widget->getRenderTexture().getTexture().copyToImage();
-        T_COMPARE(image.getPixel(0, 0), sf::Color::Red, color_to_str);
-        T_COMPARE(image.getPixel(5, 5), sf::Color::Red, color_to_str);
-        T_COMPARE(image.getPixel(10, 10), sf::Color::Green, color_to_str);
-        T_COMPARE(image.getPixel(15, 15), sf::Color::Green, color_to_str);
-        T_COMPARE(image.getPixel(20, 20), sf::Color::Green, color_to_str);
-        T_COMPARE(image.getPixel(25, 25), sf::Color::Green, color_to_str);
-        T_COMPARE(image.getPixel(30, 30), sf::Color::Green, color_to_str);
-        T_COMPARE(image.getPixel(35, 35), sf::Color::Green, color_to_str);
-        T_COMPARE(image.getPixel(40, 40), sf::Color::Red, color_to_str);
-        T_COMPARE(image.getPixel(45, 45), sf::Color::Red, color_to_str);
-        T_COMPARE(image.getPixel(50, 50), sf::Color::Red, color_to_str);
-        T_COMPARE(image.getPixel(55, 55), sf::Color::Red, color_to_str);
-        T_COMPARE(image.getPixel(60, 60), sf::Color::Red, color_to_str);
+        glvx::Image image = canvas_widget->getRenderTexture().readPixels();
+        T_COMPARE(image.getPixel(0, 0), glvx::Color::Red, color_to_str);
+        T_COMPARE(image.getPixel(5, 5), glvx::Color::Red, color_to_str);
+        T_COMPARE(image.getPixel(10, 10), glvx::Color::Green, color_to_str);
+        T_COMPARE(image.getPixel(15, 15), glvx::Color::Green, color_to_str);
+        T_COMPARE(image.getPixel(20, 20), glvx::Color::Green, color_to_str);
+        T_COMPARE(image.getPixel(25, 25), glvx::Color::Green, color_to_str);
+        T_COMPARE(image.getPixel(30, 30), glvx::Color::Green, color_to_str);
+        T_COMPARE(image.getPixel(35, 35), glvx::Color::Green, color_to_str);
+        T_COMPARE(image.getPixel(40, 40), glvx::Color::Red, color_to_str);
+        T_COMPARE(image.getPixel(45, 45), glvx::Color::Red, color_to_str);
+        T_COMPARE(image.getPixel(50, 50), glvx::Color::Red, color_to_str);
+        T_COMPARE(image.getPixel(55, 55), glvx::Color::Red, color_to_str);
+        T_COMPARE(image.getPixel(60, 60), glvx::Color::Red, color_to_str);
     }
 }
 
@@ -106,15 +106,15 @@ void WidgetTestsCanvas::canvasWidgetAlphaTest(test::Test& test) {
     fw::CanvasWidget* canvas_widget = application.getWidgets().createCanvasWidget(100.0f, 100.0f, 100, 100);
     auto color_to_str = &WidgetTests::colorToStr;
     {
-        sf::RectangleShape rect(sf::Vector2f(100.0f, 100.0f));
+        glvx::Rectangle rect(glvx::Vector2f(100.0f, 100.0f));
         canvas_widget->clear();
-        rect.setFillColor(sf::Color(255, 0, 0, 128));
+        rect.setColor(glvx::Color(255, 0, 0, 128));
         canvas_widget->draw(rect);
-        rect.setFillColor(sf::Color(0, 255, 0, 128));
+        rect.setColor(glvx::Color(0, 255, 0, 128));
         canvas_widget->draw(rect);
-        rect.setFillColor(sf::Color(0, 0, 255, 128));
+        rect.setColor(glvx::Color(0, 0, 255, 128));
         canvas_widget->draw(rect);
-        sf::Image image = canvas_widget->getRenderTexture().getTexture().copyToImage();
-        T_ASSERT(T_COMPARE(image.getPixel(0, 0), sf::Color(32, 64, 128), color_to_str));
+        glvx::Image image = canvas_widget->getRenderTexture().readPixels();
+        T_ASSERT(T_COMPARE(image.getPixel(0, 0), glvx::Color(32, 64, 128), color_to_str));
     }
 }

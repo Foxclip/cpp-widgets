@@ -1,6 +1,19 @@
 #pragma once
 
-#include <SFML/Graphics.hpp>
+#include <glvx/window.h>
+#include <glvx/event.h>
+#include <glvx/text.h>
+#include <glvx/font.h>
+#include <glvx/vertex.h>
+#include <glvx/vertex_array.h>
+#include <glvx/render_texture.h>
+#include <glvx/render_states.h>
+#include <glvx/shape.h>
+#include <glvx/rectangle.h>
+#include <glvx/image.h>
+#include <glvx/cursor.h>
+#include <glvx/keyboard.h>
+#include <glvx/mouse.h>
 #include "common/compvector.h"
 
 namespace fw {
@@ -8,11 +21,11 @@ namespace fw {
 	const float TREEVIEW_ENTRY_HEIGHT = 20.0f;
 	const float TREEVIEW_ENTRY_CHILDREN_OFFSET = 20.0f;
 	const unsigned int TREEVIEW_ENTRY_FONT_SIZE = 12;
-	const sf::Color TREEVIEW_ENTRY_BACKGROUND_COLOR = sf::Color(100, 100, 100);
-	const sf::Color TREEVIEW_ENTRY_TEXT_COLOR = sf::Color(255, 255, 255);
-	const sf::Color TREEVIEW_ENTRY_SELECTION_COLOR = sf::Color(200, 100, 0);
-	const sf::Color TREEVIEW_ENTRY_ARROW_AREA_COLOR = sf::Color(80, 80, 80);
-	const sf::Color TREEVIEW_ENTRY_ARROW_COLOR = sf::Color(255, 255, 255);
+	const glvx::Color TREEVIEW_ENTRY_BACKGROUND_COLOR = glvx::Color(100, 100, 100);
+	const glvx::Color TREEVIEW_ENTRY_TEXT_COLOR = glvx::Color(255, 255, 255);
+	const glvx::Color TREEVIEW_ENTRY_SELECTION_COLOR = glvx::Color(200, 100, 0);
+	const glvx::Color TREEVIEW_ENTRY_ARROW_AREA_COLOR = glvx::Color(80, 80, 80);
+	const glvx::Color TREEVIEW_ENTRY_ARROW_COLOR = glvx::Color(255, 255, 255);
 	const float TREEVIEW_ENTRY_DRAG_DISTANCE = 10.0f;
 
 	class WidgetList;
@@ -27,7 +40,7 @@ namespace fw {
 
 	class TreeViewEntry {
 	public:
-		TreeViewEntry(TreeViewWidget& treeview, const sf::String& name);
+		TreeViewEntry(TreeViewWidget& treeview, const std::string& name);
 		virtual ~TreeViewEntry();
 		bool isExpanded() const;
 		bool isGrabbed() const;
@@ -45,12 +58,12 @@ namespace fw {
 		fw::ContainerWidget* getChildrenBoxWidget() const;
 		fw::EmptyWidget* getChildrenSpacingWidget() const;
 		fw::ContainerWidget* getChildrenWidget() const;
-		void processMouseMove(const sf::Vector2f& pos);
-		void processMouse(const sf::Vector2f& pos);
-		void processLeftPress(const sf::Vector2f& pos);
-		void processLeftClick(const sf::Vector2f& pos);
-		void processLeftRelease(const sf::Vector2f& pos);
-		void processGlobalLeftRelease(const sf::Vector2f& pos);
+		void processMouseMove(const glvx::Vector2f& pos);
+		void processMouse(const glvx::Vector2f& pos);
+		void processLeftPress(const glvx::Vector2f& pos);
+		void processLeftClick(const glvx::Vector2f& pos);
+		void processLeftRelease(const glvx::Vector2f& pos);
+		void processGlobalLeftRelease(const glvx::Vector2f& pos);
 		void selectSilent(bool with_children = false);
 		void deselectSilent(bool with_children = false);
 		void toggleSelectSilent(bool with_children = false);
@@ -79,7 +92,7 @@ namespace fw {
 #ifndef NDEBUG
 		std::string debug_name;
 #endif
-		sf::String name;
+		std::string name;
 		TreeViewEntry* parent = nullptr;
 		CompVector<TreeViewEntry*> children;
 		bool pressed = false;
@@ -87,7 +100,7 @@ namespace fw {
 		bool selected = false;
 		bool grabbed = false;
 		bool grab_begin = true;
-		sf::Vector2f grab_offset;
+		glvx::Vector2f grab_offset;
 		TreeViewEntryWidget* entry_widget = nullptr;
 
 		void addChild(TreeViewEntry* entry);

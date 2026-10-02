@@ -19,7 +19,7 @@ void WidgetTestsApplication::initTest(test::Test& test) {
     TestApplication application(getWindow());
     application.init(test.name, 800, 600, 0, false);
     T_ASSERT(T_CHECK(application.initialized));
-    T_COMPARE(application.getWindowSize(), sf::Vector2u(800, 600), &WidgetTests::sfVec2uToStr);
+    T_COMPARE(application.getWindowSize(), glvx::Vector2u(800, 600), &WidgetTests::sfVec2uToStr);
 }
 
 void WidgetTestsApplication::startTest(test::Test& test) {
@@ -68,27 +68,27 @@ void WidgetTestsApplication::mouseEventsTest(test::Test& test) {
     application.start(true);
     application.advance();
     {
-        sf::Vector2i pos(100, 100);
+        glvx::Vector2i pos(100, 100);
         application.mouseMove(pos);
         application.advance();
         T_COMPARE(application.getMousePos(), pos, &WidgetTests::sfVec2iToStr);
         T_CHECK(application.process_mouse_move);
     }
     {
-        sf::Vector2i pos(100, 100);
+        glvx::Vector2i pos(100, 100);
         application.mouseLeftPress();
         application.advance();
         T_COMPARE(application.getMousePos(), pos, &WidgetTests::sfVec2iToStr);
         T_COMPARE(application.left_click_pos, pos, &WidgetTests::sfVec2iToStr);
     }
     {
-        sf::Vector2i pos(150, 150);
+        glvx::Vector2i pos(150, 150);
         application.mouseMove(pos);
         application.advance();
         T_COMPARE(application.getMousePos(), pos, &WidgetTests::sfVec2iToStr);
     }
     {
-        sf::Vector2i pos(200, 200);
+        glvx::Vector2i pos(200, 200);
         application.mouseMove(pos);
         application.mouseLeftRelease();
         application.advance();
@@ -96,7 +96,7 @@ void WidgetTestsApplication::mouseEventsTest(test::Test& test) {
         T_COMPARE(application.left_release_pos, pos, &WidgetTests::sfVec2iToStr);
     }
     {
-        sf::Vector2i pos(100, 100);
+        glvx::Vector2i pos(100, 100);
         application.mouseMove(pos);
         application.mouseRightPress();
         application.advance();
@@ -104,13 +104,13 @@ void WidgetTestsApplication::mouseEventsTest(test::Test& test) {
         T_COMPARE(application.right_click_pos, pos, &WidgetTests::sfVec2iToStr);
     }
     {
-        sf::Vector2i pos(150, 150);
+        glvx::Vector2i pos(150, 150);
         application.mouseMove(pos);
         application.advance();
         T_COMPARE(application.getMousePos(), pos, &WidgetTests::sfVec2iToStr);
     }
     {
-        sf::Vector2i pos(200, 200);
+        glvx::Vector2i pos(200, 200);
         application.mouseMove(pos);
         application.mouseRightRelease();
         application.advance();
@@ -137,18 +137,18 @@ void WidgetTestsApplication::keyboardEventsTest(test::Test& test) {
     application.start(true);
     T_CHECK(!application.space_key_pressed);
     {
-        application.keyPress(sf::Keyboard::Space);
+        application.keyPress(glvx::Key::Space);
         application.advance();
         T_CHECK(application.space_key_pressed);
     }
     {
-        application.keyRelease(sf::Keyboard::Space);
+        application.keyRelease(glvx::Key::Space);
         application.advance();
         T_CHECK(!application.space_key_pressed);
     }
 }
 
-TestApplication::TestApplication(sf::RenderWindow& window) : Application(window) { }
+TestApplication::TestApplication(glvx::Window& window) : Application(window) { }
 
 void TestApplication::onInit() {
     initialized = true;
@@ -170,18 +170,18 @@ void TestApplication::onProcessWidgets() {
     process_widgets = true;
 }
 
-void TestApplication::onProcessWindowEvent(const sf::Event& event) {
+void TestApplication::onProcessWindowEvent(const glvx::Event& event) {
     process_window_event = true;
 }
 
-void TestApplication::onProcessKeyboardEvent(const sf::Event& event) {
+void TestApplication::onProcessKeyboardEvent(const glvx::Event& event) {
     process_keyboard_event = true;
-    if (event.type == sf::Event::KeyPressed) {
-        if (event.key.code == sf::Keyboard::Space) {
+    if (event.type == glvx::EventType::KeyPressed) {
+        if (event.key.code == glvx::Key::Space) {
             space_key_pressed = true;
         }
-    } else if (event.type == sf::Event::KeyReleased) {
-        if (event.key.code == sf::Keyboard::Space) {
+    } else if (event.type == glvx::EventType::KeyReleased) {
+        if (event.key.code == glvx::Key::Space) {
             space_key_pressed = false;
         }
     }

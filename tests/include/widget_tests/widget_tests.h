@@ -7,20 +7,20 @@ struct GenericWidgetTest;
 
 class WidgetTests : public test::TestModule {
 public:
-	sf::RenderWindow window;
+	glvx::Window window;
 	fw::Font textbox_font;
 
 	WidgetTests(const std::string& name, test::TestModule* manager, const std::vector<TestNode*>& required_nodes = { });
-	static std::string sfVec2fToStr(const sf::Vector2f& vec);
-	static std::string sfVec2iToStr(const sf::Vector2i& vec);
-	static std::string sfVec2uToStr(const sf::Vector2u& vec);
-	static std::string cursorTypeToStr(sf::Cursor::Type type);
-	static std::string floatRectToStr(const sf::FloatRect& rect);
-	static std::string colorToStr(const sf::Color& color);
+	static std::string sfVec2fToStr(const glvx::Vector2f& vec);
+	static std::string sfVec2iToStr(const glvx::Vector2i& vec);
+	static std::string sfVec2uToStr(const glvx::Vector2u& vec);
+	static std::string cursorTypeToStr(fw::CursorType type);
+	static std::string floatRectToStr(const glvx::FloatRect& rect);
+	static std::string colorToStr(const glvx::Color& color);
 	static std::string anchorToStr(fw::Widget::Anchor anchor);
-	static bool rectApproxCmp(const sf::FloatRect& left, const sf::FloatRect& right);
+	static bool rectApproxCmp(const glvx::FloatRect& left, const glvx::FloatRect& right);
 	static void genericWidgetTest(const GenericWidgetTest& gwt);
-	static void mouseDragGesture(fw::Application& application, const sf::Vector2f& begin_pos, const sf::Vector2f& offset);
+	static void mouseDragGesture(fw::Application& application, const glvx::Vector2f& begin_pos, const glvx::Vector2f& offset);
 	enum class ResizePoint {
 		TOP_LEFT,
 		TOP,
@@ -31,9 +31,9 @@ public:
 		BOTTOM,
 		BOTTOM_RIGHT
 	};
-	static sf::Vector2f getGrabPos(fw::WindowWidget* window, ResizePoint resize_point);
-	static void resizeWindow(fw::WindowWidget* window, ResizePoint resize_point, const sf::Vector2f offset);
-	static void dragWindow(fw::Application& application, fw::WindowWidget* window, const sf::Vector2f& offset);
+	static glvx::Vector2f getGrabPos(fw::WindowWidget* window, ResizePoint resize_point);
+	static void resizeWindow(fw::WindowWidget* window, ResizePoint resize_point, const glvx::Vector2f offset);
+	static void dragWindow(fw::Application& application, fw::WindowWidget* window, const glvx::Vector2f& offset);
 
 protected:
 	void beforeRunModule() override;
@@ -61,12 +61,12 @@ struct GenericWidgetTest {
 	bool clip_children = false;
 	bool force_custom_cursor = false;
 	fw::Widget* parent = nullptr;
-	sf::FloatRect local_bounds;
-	sf::FloatRect global_bounds;
-	sf::FloatRect parent_local_bounds;
-	sf::FloatRect visual_local_bounds;
-	sf::FloatRect visual_global_bounds;
-	sf::FloatRect visual_parent_local_bounds;
+	glvx::FloatRect local_bounds;
+	glvx::FloatRect global_bounds;
+	glvx::FloatRect parent_local_bounds;
+	glvx::FloatRect visual_local_bounds;
+	glvx::FloatRect visual_global_bounds;
+	glvx::FloatRect visual_parent_local_bounds;
 };
 
 #define PRESS_MOUSE_LEFT(pos) \
@@ -106,27 +106,27 @@ struct GenericWidgetTest {
     application.advance();
 
 #define SELECT_ALL() \
-    application.keyPress(sf::Keyboard::LControl); \
-    application.keyPress(sf::Keyboard::A); \
+    application.keyPress(glvx::Key::LControl); \
+    application.keyPress(glvx::Key::A); \
     application.advance(); \
-    application.keyRelease(sf::Keyboard::A); \
-    application.keyRelease(sf::Keyboard::LControl); \
+    application.keyRelease(glvx::Key::A); \
+    application.keyRelease(glvx::Key::LControl); \
     application.advance();
 
 #define COPY() \
-    PRESS_KEY(sf::Keyboard::LControl); \
-    ENTER_TEXT(sf::Keyboard::C, 'c'); \
-    RELEASE_KEY(sf::Keyboard::LControl);
+    PRESS_KEY(glvx::Key::LControl); \
+    ENTER_TEXT(glvx::Key::C, 'c'); \
+    RELEASE_KEY(glvx::Key::LControl);
 
 #define PASTE() \
-    PRESS_KEY(sf::Keyboard::LControl); \
-    ENTER_TEXT(sf::Keyboard::V, 'v'); \
-    RELEASE_KEY(sf::Keyboard::LControl);
+    PRESS_KEY(glvx::Key::LControl); \
+    ENTER_TEXT(glvx::Key::V, 'v'); \
+    RELEASE_KEY(glvx::Key::LControl);
 
 #define CUT() \
-    PRESS_KEY(sf::Keyboard::LControl); \
-    ENTER_TEXT(sf::Keyboard::X, 'x'); \
-    RELEASE_KEY(sf::Keyboard::LControl);
+    PRESS_KEY(glvx::Key::LControl); \
+    ENTER_TEXT(glvx::Key::X, 'x'); \
+    RELEASE_KEY(glvx::Key::LControl);
 
 #define _CHECK_SELECTION(active, text, cursor_pos, left, right) \
     T_CHECK(textbox_widget->isSelectionActive() == active); \

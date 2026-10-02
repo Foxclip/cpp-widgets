@@ -1,6 +1,6 @@
 #pragma once
 
-#include "rectangle_widget.h"
+#include "widgets/rectangle_widget.h"
 
 namespace fw {
 
@@ -9,7 +9,7 @@ namespace fw {
 	class ContainerWidget : public RectangleWidget {
 	public:
 		ContainerWidget(WidgetList& widget_list, float width, float height);
-		ContainerWidget(WidgetList& widget_list, const sf::Vector2f& size);
+		ContainerWidget(WidgetList& widget_list, const glvx::Vector2f& size);
 		bool getHorizontal() const;
 		float getInnerPaddingX() const;
 		float getInnerPaddingY() const;
@@ -55,7 +55,7 @@ namespace fw {
 		float right_padding = 0.0f;
 		Alignment alignment_y = Alignment::ALIGN_TOP;
 		Alignment alignment_x = Alignment::ALIGN_LEFT;
-		sf::FloatRect children_bounds;
+		glvx::FloatRect children_bounds;
 
 	};
 

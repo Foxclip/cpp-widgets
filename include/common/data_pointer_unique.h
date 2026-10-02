@@ -1,6 +1,6 @@
 #pragma once
 
-#include "data_pointer_common.h"
+#include "common/data_pointer_common.h"
 
 namespace dp {
 

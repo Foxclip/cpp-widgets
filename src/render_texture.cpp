@@ -26,24 +26,19 @@ void RenderTexture::create(unsigned int new_width, unsigned int new_height) {
 		unsigned int new_physical_width = next_width;
 		unsigned int new_physical_height = next_height;
 		render_texture.create(new_physical_width, new_physical_height);
-		render_texture_premultiplied.create(new_physical_width, new_physical_height);
 	}
 	width = new_width;
 	height = new_height;
 }
 
-sf::Vector2u RenderTexture::getSize() const {
-	return sf::Vector2u(width, height);
+glvx::Vector2u RenderTexture::getSize() const {
+	return glvx::Vector2u(width, height);
 }
 
-sf::Vector2u RenderTexture::getPhysicalSize() const {
-	return render_texture.getSize();
+glvx::Vector2u RenderTexture::getPhysicalSize() const {
+	return glvx::Vector2u((unsigned int)render_texture.getWidth(), (unsigned int)render_texture.getHeight());
 }
 
-sf::RenderTexture& RenderTexture::getNormal() {
+glvx::RenderTexture& RenderTexture::get() {
 	return render_texture;
-}
-
-sf::RenderTexture& RenderTexture::getPremultiplied() {
-	return render_texture_premultiplied;
 }

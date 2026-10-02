@@ -16,18 +16,18 @@ void WidgetTestsSizePolicy::sizePolicyTest(test::Test& test) {
     application.start(true);
     application.mouseMove(400, 300);
     application.advance();
-    sf::Vector2f parent_size(150.0f, 150.0f);
-    sf::Vector2f container_size(100.0f, 100.0f);
-    sf::Vector2f child_size(30.0f, 30.0f);
+    glvx::Vector2f parent_size(150.0f, 150.0f);
+    glvx::Vector2f container_size(100.0f, 100.0f);
+    glvx::Vector2f child_size(30.0f, 30.0f);
     float container_padding = 10.0f;
     fw::RectangleWidget* parent_widget = application.getWidgets().createRectangleWidget(parent_size);
     fw::ContainerWidget* container_widget = application.getWidgets().createContainerWidget(container_size);
     fw::RectangleWidget* red_widget = application.getWidgets().createRectangleWidget(child_size);
     fw::RectangleWidget* green_widget = application.getWidgets().createRectangleWidget(child_size);
-    parent_widget->setFillColor(sf::Color(128, 128, 128));
-    container_widget->setFillColor(sf::Color(100, 100, 100));
-    red_widget->setFillColor(sf::Color::Red);
-    green_widget->setFillColor(sf::Color::Green);
+    parent_widget->setFillColor(glvx::Color(128, 128, 128));
+    container_widget->setFillColor(glvx::Color(100, 100, 100));
+    red_widget->setFillColor(glvx::Color::Red);
+    green_widget->setFillColor(glvx::Color::Green);
     container_widget->setPadding(container_padding);
     container_widget->setHorizontal(false);
     container_widget->setParent(parent_widget);
@@ -38,10 +38,10 @@ void WidgetTestsSizePolicy::sizePolicyTest(test::Test& test) {
     application.advance();
     auto rect_to_str = &WidgetTests::floatRectToStr;
     float container_height = child_size.y * 2 + container_padding * 3;
-    T_COMPARE(parent_widget->getParentLocalBounds(), sf::FloatRect(0.0f, 0.0f, parent_size.x, parent_size.y), rect_to_str);
-    T_COMPARE(container_widget->getParentLocalBounds(), sf::FloatRect(0.0f, 0.0f, parent_size.x, container_height), rect_to_str);
-    T_COMPARE(red_widget->getParentLocalBounds(), sf::FloatRect(container_padding, container_padding, parent_size.x - container_padding * 2, child_size.y), rect_to_str);
-    T_COMPARE(green_widget->getParentLocalBounds(), sf::FloatRect(container_padding, container_padding * 2 + child_size.y, child_size.x, child_size.y), rect_to_str);
+    T_COMPARE(parent_widget->getParentLocalBounds(), glvx::FloatRect(0.0f, 0.0f, parent_size.x, parent_size.y), rect_to_str);
+    T_COMPARE(container_widget->getParentLocalBounds(), glvx::FloatRect(0.0f, 0.0f, parent_size.x, container_height), rect_to_str);
+    T_COMPARE(red_widget->getParentLocalBounds(), glvx::FloatRect(container_padding, container_padding, parent_size.x - container_padding * 2, child_size.y), rect_to_str);
+    T_COMPARE(green_widget->getParentLocalBounds(), glvx::FloatRect(container_padding, container_padding * 2 + child_size.y, child_size.x, child_size.y), rect_to_str);
 }
 
 void WidgetTestsSizePolicy::sizePolicyPositionTest(test::Test& test) {
@@ -50,18 +50,18 @@ void WidgetTestsSizePolicy::sizePolicyPositionTest(test::Test& test) {
     application.start(true);
     application.mouseMove(400, 300);
     application.advance();
-    sf::Vector2f parent_size(150.0f, 150.0f);
-    sf::Vector2f child0_size(100.0f, 100.0f);
-    sf::Vector2f child1_size(30.0f, 30.0f);
+    glvx::Vector2f parent_size(150.0f, 150.0f);
+    glvx::Vector2f child0_size(100.0f, 100.0f);
+    glvx::Vector2f child1_size(30.0f, 30.0f);
     fw::RectangleWidget* parent_widget = application.getWidgets().createRectangleWidget(parent_size);
     fw::RectangleWidget* child0_widget = application.getWidgets().createRectangleWidget(child0_size);
     fw::RectangleWidget* child1_widget = application.getWidgets().createRectangleWidget(child1_size);
     parent_widget->setName("parent");
     child0_widget->setName("child0");
     child1_widget->setName("child1");
-    parent_widget->setFillColor(sf::Color(128, 128, 128));
-    child0_widget->setFillColor(sf::Color::Red);
-    child1_widget->setFillColor(sf::Color::Green);
+    parent_widget->setFillColor(glvx::Color(128, 128, 128));
+    child0_widget->setFillColor(glvx::Color::Red);
+    child1_widget->setFillColor(glvx::Color::Green);
     child0_widget->setParent(parent_widget);
     child1_widget->setParent(child0_widget);
     auto rect_to_str = &WidgetTests::floatRectToStr;
@@ -69,21 +69,21 @@ void WidgetTestsSizePolicy::sizePolicyPositionTest(test::Test& test) {
     child0_widget->setSizeXPolicy(fw::Widget::SizePolicy::PARENT);
     child1_widget->setParentAnchor(fw::Widget::Anchor::TOP_RIGHT);
     application.advance();
-    T_COMPARE(parent_widget->getParentLocalBounds(), sf::FloatRect(0.0f, 0.0f, parent_size.x, parent_size.y), rect_to_str);
-    T_COMPARE(child0_widget->getParentLocalBounds(), sf::FloatRect(0.0f, 0.0f, parent_size.x, child0_size.y), rect_to_str);
-    T_COMPARE(child1_widget->getParentLocalBounds(), sf::FloatRect(parent_size.x, 0.0f, child1_size.x, child1_size.y), rect_to_str);
+    T_COMPARE(parent_widget->getParentLocalBounds(), glvx::FloatRect(0.0f, 0.0f, parent_size.x, parent_size.y), rect_to_str);
+    T_COMPARE(child0_widget->getParentLocalBounds(), glvx::FloatRect(0.0f, 0.0f, parent_size.x, child0_size.y), rect_to_str);
+    T_COMPARE(child1_widget->getParentLocalBounds(), glvx::FloatRect(parent_size.x, 0.0f, child1_size.x, child1_size.y), rect_to_str);
 
     child1_widget->setParentAnchor(fw::Widget::Anchor::CENTER);
     application.advance();
-    T_COMPARE(parent_widget->getParentLocalBounds(), sf::FloatRect(0.0f, 0.0f, parent_size.x, parent_size.y), rect_to_str);
-    T_COMPARE(child0_widget->getParentLocalBounds(), sf::FloatRect(0.0f, 0.0f, parent_size.x, child0_size.y), rect_to_str);
-    T_COMPARE(child1_widget->getParentLocalBounds(), sf::FloatRect(parent_size.x / 2.0f, child0_size.y / 2.0f, child1_size.x, child1_size.y), rect_to_str);
+    T_COMPARE(parent_widget->getParentLocalBounds(), glvx::FloatRect(0.0f, 0.0f, parent_size.x, parent_size.y), rect_to_str);
+    T_COMPARE(child0_widget->getParentLocalBounds(), glvx::FloatRect(0.0f, 0.0f, parent_size.x, child0_size.y), rect_to_str);
+    T_COMPARE(child1_widget->getParentLocalBounds(), glvx::FloatRect(parent_size.x / 2.0f, child0_size.y / 2.0f, child1_size.x, child1_size.y), rect_to_str);
 
     child0_widget->setSizeYPolicy(fw::Widget::SizePolicy::PARENT);
     application.advance();
-    T_COMPARE(parent_widget->getParentLocalBounds(), sf::FloatRect(0.0f, 0.0f, parent_size.x, parent_size.y), rect_to_str);
-    T_COMPARE(child0_widget->getParentLocalBounds(), sf::FloatRect(0.0f, 0.0f, parent_size.x, parent_size.y), rect_to_str);
-    T_COMPARE(child1_widget->getParentLocalBounds(), sf::FloatRect(parent_size.x / 2.0f, parent_size.y / 2.0f, child1_size.x, child1_size.y), rect_to_str);
+    T_COMPARE(parent_widget->getParentLocalBounds(), glvx::FloatRect(0.0f, 0.0f, parent_size.x, parent_size.y), rect_to_str);
+    T_COMPARE(child0_widget->getParentLocalBounds(), glvx::FloatRect(0.0f, 0.0f, parent_size.x, parent_size.y), rect_to_str);
+    T_COMPARE(child1_widget->getParentLocalBounds(), glvx::FloatRect(parent_size.x / 2.0f, parent_size.y / 2.0f, child1_size.x, child1_size.y), rect_to_str);
 }
 
 void WidgetTestsSizePolicy::sizePolicyExpandTest(test::Test& test) {
@@ -92,8 +92,8 @@ void WidgetTestsSizePolicy::sizePolicyExpandTest(test::Test& test) {
     application.start(true);
     application.mouseMove(400, 300);
     application.advance();
-    sf::Vector2f container_size(200.0f, 150.0f);
-    sf::Vector2f child_size(30.0f, 30.0f);
+    glvx::Vector2f container_size(200.0f, 150.0f);
+    glvx::Vector2f child_size(30.0f, 30.0f);
     float container_padding = 10.0f;
     fw::ContainerWidget* container_widget = application.getWidgets().createContainerWidget(container_size);
     fw::RectangleWidget* red_widget = application.getWidgets().createRectangleWidget(child_size);
@@ -110,11 +110,11 @@ void WidgetTestsSizePolicy::sizePolicyExpandTest(test::Test& test) {
     green_widget->setParent(container_widget);
     blue_widget->setParent(container_widget);
     yellow_widget->setParent(container_widget);
-    container_widget->setFillColor(sf::Color(100, 100, 100));
-    red_widget->setFillColor(sf::Color::Red);
-    green_widget->setFillColor(sf::Color::Green);
-    blue_widget->setFillColor(sf::Color::Blue);
-    yellow_widget->setFillColor(sf::Color::Yellow);
+    container_widget->setFillColor(glvx::Color(100, 100, 100));
+    red_widget->setFillColor(glvx::Color::Red);
+    green_widget->setFillColor(glvx::Color::Green);
+    blue_widget->setFillColor(glvx::Color::Blue);
+    yellow_widget->setFillColor(glvx::Color(255, 255, 0));
     container_widget->setSizeXPolicy(fw::Widget::SizePolicy::NONE);
     green_widget->setSizeXPolicy(fw::Widget::SizePolicy::EXPAND);
     yellow_widget->setSizeXPolicy(fw::Widget::SizePolicy::EXPAND);
@@ -130,11 +130,11 @@ void WidgetTestsSizePolicy::sizePolicyExpandTest(test::Test& test) {
     float yellow_x = blue_x + child_size.x + container_padding;
     float yellow_width = green_width;
     application.advance();
-    T_COMPARE(container_widget->getParentLocalBounds(), sf::FloatRect(0.0f, 0.0f, container_size.x, child_size.y + container_padding * 2), rect_to_str);
-    T_COMPARE(red_widget->getParentLocalBounds(), sf::FloatRect(red_x, container_padding, child_size.x, child_size.y), rect_to_str);
-    T_COMPARE(green_widget->getParentLocalBounds(), sf::FloatRect(green_x, container_padding, green_width, child_size.y), rect_to_str);
-    T_COMPARE(blue_widget->getParentLocalBounds(), sf::FloatRect(blue_x, container_padding, child_size.x, child_size.y), rect_to_str);
-    T_COMPARE(yellow_widget->getParentLocalBounds(), sf::FloatRect(yellow_x, container_padding, yellow_width, child_size.y), rect_to_str);
+    T_COMPARE(container_widget->getParentLocalBounds(), glvx::FloatRect(0.0f, 0.0f, container_size.x, child_size.y + container_padding * 2), rect_to_str);
+    T_COMPARE(red_widget->getParentLocalBounds(), glvx::FloatRect(red_x, container_padding, child_size.x, child_size.y), rect_to_str);
+    T_COMPARE(green_widget->getParentLocalBounds(), glvx::FloatRect(green_x, container_padding, green_width, child_size.y), rect_to_str);
+    T_COMPARE(blue_widget->getParentLocalBounds(), glvx::FloatRect(blue_x, container_padding, child_size.x, child_size.y), rect_to_str);
+    T_COMPARE(yellow_widget->getParentLocalBounds(), glvx::FloatRect(yellow_x, container_padding, yellow_width, child_size.y), rect_to_str);
 }
 
 void WidgetTestsSizePolicy::sizePolicyLimitsTest(test::Test& test) {
@@ -143,8 +143,8 @@ void WidgetTestsSizePolicy::sizePolicyLimitsTest(test::Test& test) {
     application.start(true);
     application.mouseMove(400, 300);
     application.advance();
-    sf::Vector2f container_size(300.0f, 150.0f);
-    sf::Vector2f child_size(30.0f, 30.0f);
+    glvx::Vector2f container_size(300.0f, 150.0f);
+    glvx::Vector2f child_size(30.0f, 30.0f);
     float container_padding = 10.0f;
     fw::ContainerWidget* container_widget = application.getWidgets().createContainerWidget(container_size);
     fw::RectangleWidget* red_widget = application.getWidgets().createRectangleWidget(child_size);
@@ -154,29 +154,29 @@ void WidgetTestsSizePolicy::sizePolicyLimitsTest(test::Test& test) {
     fw::RectangleWidget* magenta_widget = application.getWidgets().createRectangleWidget(child_size);
     container_widget->setName("container");
     container_widget->setPadding(container_padding);
-    container_widget->setFillColor(sf::Color(100, 100, 100));
+    container_widget->setFillColor(glvx::Color(100, 100, 100));
     container_widget->setSizeXPolicy(fw::Widget::SizePolicy::NONE);
     red_widget->setName("red");
     red_widget->setParent(container_widget);
-    red_widget->setFillColor(sf::Color::Red);
+    red_widget->setFillColor(glvx::Color::Red);
     green_widget->setName("green");
     green_widget->setParent(container_widget);
-    green_widget->setFillColor(sf::Color::Green);
+    green_widget->setFillColor(glvx::Color::Green);
     green_widget->setSizeXPolicy(fw::Widget::SizePolicy::EXPAND);
     green_widget->setMinSize(75.0f, 0.0f);
     blue_widget->setName("blue");
     blue_widget->setParent(container_widget);
-    blue_widget->setFillColor(sf::Color::Blue);
+    blue_widget->setFillColor(glvx::Color::Blue);
     blue_widget->setSizeXPolicy(fw::Widget::SizePolicy::EXPAND);
     blue_widget->setMaxSize(15.0f, -1.0f);
     yellow_widget->setName("yellow");
     yellow_widget->setParent(container_widget);
-    yellow_widget->setFillColor(sf::Color::Yellow);
+    yellow_widget->setFillColor(glvx::Color(255, 255, 0));
     yellow_widget->setSizeXPolicy(fw::Widget::SizePolicy::EXPAND);
     yellow_widget->setMaxSize(500.0f, -1.0f);
     magenta_widget->setName("purple");
     magenta_widget->setParent(container_widget);
-    magenta_widget->setFillColor(sf::Color::Magenta);
+    magenta_widget->setFillColor(glvx::Color(255, 0, 255));
     magenta_widget->setSizeXPolicy(fw::Widget::SizePolicy::EXPAND);
     auto rect_to_str = &WidgetTests::floatRectToStr;
 
@@ -193,12 +193,12 @@ void WidgetTestsSizePolicy::sizePolicyLimitsTest(test::Test& test) {
     float magenta_x = yellow_x + yellow_width + container_padding;
     float magenta_width = exp_delta;
     application.advance();
-    T_COMPARE(container_widget->getParentLocalBounds(), sf::FloatRect(0.0f, 0.0f, container_size.x, child_size.y + container_padding * 2), rect_to_str);
-    T_COMPARE(red_widget->getParentLocalBounds(), sf::FloatRect(red_x, container_padding, child_size.x, child_size.y), rect_to_str);
-    T_COMPARE(green_widget->getParentLocalBounds(), sf::FloatRect(green_x, container_padding, green_width, child_size.y), rect_to_str);
-    T_COMPARE(blue_widget->getParentLocalBounds(), sf::FloatRect(blue_x, container_padding, blue_width, child_size.y), rect_to_str);
-    T_COMPARE(yellow_widget->getParentLocalBounds(), sf::FloatRect(yellow_x, container_padding, yellow_width, child_size.y), rect_to_str);
-    T_COMPARE(magenta_widget->getParentLocalBounds(), sf::FloatRect(magenta_x, container_padding, magenta_width, child_size.y), rect_to_str);
+    T_COMPARE(container_widget->getParentLocalBounds(), glvx::FloatRect(0.0f, 0.0f, container_size.x, child_size.y + container_padding * 2), rect_to_str);
+    T_COMPARE(red_widget->getParentLocalBounds(), glvx::FloatRect(red_x, container_padding, child_size.x, child_size.y), rect_to_str);
+    T_COMPARE(green_widget->getParentLocalBounds(), glvx::FloatRect(green_x, container_padding, green_width, child_size.y), rect_to_str);
+    T_COMPARE(blue_widget->getParentLocalBounds(), glvx::FloatRect(blue_x, container_padding, blue_width, child_size.y), rect_to_str);
+    T_COMPARE(yellow_widget->getParentLocalBounds(), glvx::FloatRect(yellow_x, container_padding, yellow_width, child_size.y), rect_to_str);
+    T_COMPARE(magenta_widget->getParentLocalBounds(), glvx::FloatRect(magenta_x, container_padding, magenta_width, child_size.y), rect_to_str);
 }
 
 void WidgetTestsSizePolicy::sizePolicyCombinedTest(test::Test& test) {
@@ -207,9 +207,9 @@ void WidgetTestsSizePolicy::sizePolicyCombinedTest(test::Test& test) {
     application.start(true);
     application.mouseMove(400, 300);
     application.advance();
-    sf::Vector2f parent_size(200.0f, 150.0f);
-    sf::Vector2f container_size(100.0f, 50.0f);
-    sf::Vector2f child_size(30.0f, 30.0f);
+    glvx::Vector2f parent_size(200.0f, 150.0f);
+    glvx::Vector2f container_size(100.0f, 50.0f);
+    glvx::Vector2f child_size(30.0f, 30.0f);
     float container_padding = 10.0f;
     fw::RectangleWidget* parent_widget = application.getWidgets().createRectangleWidget(parent_size);
     fw::ContainerWidget* container_widget = application.getWidgets().createContainerWidget(container_size);
@@ -219,32 +219,32 @@ void WidgetTestsSizePolicy::sizePolicyCombinedTest(test::Test& test) {
     fw::RectangleWidget* blue_widget = application.getWidgets().createRectangleWidget(child_size);
     fw::RectangleWidget* yellow_widget = application.getWidgets().createRectangleWidget(child_size);
     parent_widget->setName("parent");
-    parent_widget->setFillColor(sf::Color(128, 128, 128));
+    parent_widget->setFillColor(glvx::Color(128, 128, 128));
     container_widget->setName("container");
     container_widget->setHorizontal(false);
     container_widget->setPadding(container_padding);
-    container_widget->setFillColor(sf::Color(100, 100, 100));
+    container_widget->setFillColor(glvx::Color(100, 100, 100));
     container_widget->setSizeXPolicy(fw::Widget::SizePolicy::PARENT);
     container_widget->setSizeYPolicy(fw::Widget::SizePolicy::PARENT);
     container_widget->setParent(parent_widget);
     inner_container_widget->setName("inner container");
     inner_container_widget->setPadding(container_padding);
-    inner_container_widget->setFillColor(sf::Color(75, 75, 75));
+    inner_container_widget->setFillColor(glvx::Color(75, 75, 75));
     inner_container_widget->setSizeXPolicy(fw::Widget::SizePolicy::PARENT);
     inner_container_widget->setParent(container_widget);
     red_widget->setName("red");
     red_widget->setParent(inner_container_widget);
-    red_widget->setFillColor(sf::Color::Red);
+    red_widget->setFillColor(glvx::Color::Red);
     green_widget->setName("green");
     green_widget->setParent(inner_container_widget);
-    green_widget->setFillColor(sf::Color::Green);
+    green_widget->setFillColor(glvx::Color::Green);
     green_widget->setSizeXPolicy(fw::Widget::SizePolicy::EXPAND);
     blue_widget->setName("blue");
     blue_widget->setParent(inner_container_widget);
-    blue_widget->setFillColor(sf::Color::Blue);
+    blue_widget->setFillColor(glvx::Color::Blue);
     yellow_widget->setName("yellow");
     yellow_widget->setParent(container_widget);
-    yellow_widget->setFillColor(sf::Color::Yellow);
+    yellow_widget->setFillColor(glvx::Color(255, 255, 0));
     yellow_widget->setSizeYPolicy(fw::Widget::SizePolicy::EXPAND);
     auto rect_to_str = &WidgetTests::floatRectToStr;
 
@@ -258,13 +258,13 @@ void WidgetTestsSizePolicy::sizePolicyCombinedTest(test::Test& test) {
     float yellow_y = child_size.y + container_padding * 4;
     float yellow_height = parent_size.y - child_size.y - container_padding * 5;
     application.advance();
-    T_COMPARE(parent_widget->getParentLocalBounds(), sf::FloatRect(0.0f, 0.0f, parent_size.x, parent_size.y), rect_to_str);
-    T_COMPARE(container_widget->getParentLocalBounds(), sf::FloatRect(0.0f, 0.0f, parent_size.x, parent_size.y), rect_to_str);
-    T_COMPARE(inner_container_widget->getParentLocalBounds(), sf::FloatRect(
+    T_COMPARE(parent_widget->getParentLocalBounds(), glvx::FloatRect(0.0f, 0.0f, parent_size.x, parent_size.y), rect_to_str);
+    T_COMPARE(container_widget->getParentLocalBounds(), glvx::FloatRect(0.0f, 0.0f, parent_size.x, parent_size.y), rect_to_str);
+    T_COMPARE(inner_container_widget->getParentLocalBounds(), glvx::FloatRect(
         container_padding, container_padding, parent_size.x - container_padding * 2, child_size.y + container_padding * 2), rect_to_str
     );
-    T_COMPARE(red_widget->getParentLocalBounds(), sf::FloatRect(red_x, container_padding, child_size.x, child_size.y), rect_to_str);
-    T_COMPARE(green_widget->getParentLocalBounds(), sf::FloatRect(green_x, container_padding, green_width, child_size.y), rect_to_str);
-    T_COMPARE(blue_widget->getParentLocalBounds(), sf::FloatRect(blue_x, container_padding, child_size.x, child_size.y), rect_to_str);
-    T_COMPARE(yellow_widget->getParentLocalBounds(), sf::FloatRect(container_padding, yellow_y, child_size.x, yellow_height), rect_to_str);
+    T_COMPARE(red_widget->getParentLocalBounds(), glvx::FloatRect(red_x, container_padding, child_size.x, child_size.y), rect_to_str);
+    T_COMPARE(green_widget->getParentLocalBounds(), glvx::FloatRect(green_x, container_padding, green_width, child_size.y), rect_to_str);
+    T_COMPARE(blue_widget->getParentLocalBounds(), glvx::FloatRect(blue_x, container_padding, child_size.x, child_size.y), rect_to_str);
+    T_COMPARE(yellow_widget->getParentLocalBounds(), glvx::FloatRect(container_padding, yellow_y, child_size.x, yellow_height), rect_to_str);
 }

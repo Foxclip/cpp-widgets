@@ -1,6 +1,19 @@
 #pragma once
 
-#include <SFML/Graphics.hpp>
+#include <glvx/window.h>
+#include <glvx/event.h>
+#include <glvx/text.h>
+#include <glvx/font.h>
+#include <glvx/vertex.h>
+#include <glvx/vertex_array.h>
+#include <glvx/render_texture.h>
+#include <glvx/render_states.h>
+#include <glvx/shape.h>
+#include <glvx/rectangle.h>
+#include <glvx/image.h>
+#include <glvx/cursor.h>
+#include <glvx/keyboard.h>
+#include <glvx/mouse.h>
 
 namespace fw {
 
@@ -17,75 +30,75 @@ namespace fw {
 	class CanvasWidget;
 
 	void draw_line(
-		sf::RenderTarget& target,
-		const sf::Vector2f& v1,
-		const sf::Vector2f& v2,
-		const sf::Color& color
+		glvx::RenderTarget& target,
+		const glvx::Vector2f& v1,
+		const glvx::Vector2f& v2,
+		const glvx::Color& color
 	);
 
 	void draw_line(
 		CanvasWidget* canvas,
-		const sf::Vector2f& v1,
-		const sf::Vector2f& v2,
-		const sf::Color& color
+		const glvx::Vector2f& v1,
+		const glvx::Vector2f& v2,
+		const glvx::Color& color
 	);
 
 	void draw_line(
-		sf::RenderTarget& target,
-		const sf::Vector2f& v1,
-		const sf::Vector2f& v2,
-		const sf::Color& color,
-		const sf::Transform& transform
+		glvx::RenderTarget& target,
+		const glvx::Vector2f& v1,
+		const glvx::Vector2f& v2,
+		const glvx::Color& color,
+		const glvx::Transform& transform
 	);
 
 	void draw_line(
 		CanvasWidget* canvas,
-		const sf::Vector2f& v1,
-		const sf::Vector2f& v2,
-		const sf::Color& color,
-		const sf::Transform& transform
+		const glvx::Vector2f& v1,
+		const glvx::Vector2f& v2,
+		const glvx::Color& color,
+		const glvx::Transform& transform
 	);
 
 	void draw_rect(
-		sf::RenderTarget& target,
-		const sf::Vector2f& v1,
-		const sf::Vector2f& v2,
-		const sf::Vector2f& v3,
-		const sf::Vector2f& v4,
-		const sf::Color& color
+		glvx::RenderTarget& target,
+		const glvx::Vector2f& v1,
+		const glvx::Vector2f& v2,
+		const glvx::Vector2f& v3,
+		const glvx::Vector2f& v4,
+		const glvx::Color& color
 	);
 
 	void draw_rect(
-		sf::RenderTarget& target,
-		const sf::Vector2f& pos,
-		const sf::Vector2f& size,
-		const sf::Color& color
+		glvx::RenderTarget& target,
+		const glvx::Vector2f& pos,
+		const glvx::Vector2f& size,
+		const glvx::Color& color
 	);
 
 	void draw_wire_rect(
-		sf::RenderTarget& target,
-		const sf::FloatRect& bounds,
-		const sf::Color& color
-	);
-
-	void draw_wire_rect(
-		CanvasWidget* canvas,
-		const sf::FloatRect& bounds,
-		const sf::Color& color
-	);
-
-	void draw_wire_rect(
-		sf::RenderTarget& target,
-		const sf::FloatRect& bounds,
-		const sf::Color& color,
-		const sf::Transform& transform
+		glvx::RenderTarget& target,
+		const glvx::FloatRect& bounds,
+		const glvx::Color& color
 	);
 
 	void draw_wire_rect(
 		CanvasWidget* canvas,
-		const sf::FloatRect& bounds,
-		const sf::Color& color,
-		const sf::Transform& transform
+		const glvx::FloatRect& bounds,
+		const glvx::Color& color
+	);
+
+	void draw_wire_rect(
+		glvx::RenderTarget& target,
+		const glvx::FloatRect& bounds,
+		const glvx::Color& color,
+		const glvx::Transform& transform
+	);
+
+	void draw_wire_rect(
+		CanvasWidget* canvas,
+		const glvx::FloatRect& bounds,
+		const glvx::Color& color,
+		const glvx::Transform& transform
 	);
 
 }

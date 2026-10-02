@@ -19,15 +19,15 @@ void WidgetTestsPostActions::moveTest(test::Test& test) {
     application.mouseMove(400, 300);
     application.advance();
 
-    sf::Vector2f position(100.0f, 100.0f);
-    sf::Vector2f size(100.0f, 100.0f);
+    glvx::Vector2f position(100.0f, 100.0f);
+    glvx::Vector2f size(100.0f, 100.0f);
     fw::WidgetList& widgets = application.getWidgets();
     fw::Widget* root_widget = widgets.getRootWidget();
     fw::RectangleWidget* rectangle_1_widget = application.getWidgets().createRectangleWidget(size);
     fw::RectangleWidget* rectangle_2_widget = application.getWidgets().createRectangleWidget(size);
     rectangle_1_widget->setPosition(position);
     rectangle_2_widget->setPosition(position);
-    rectangle_2_widget->OnLeftClick += [&](const sf::Vector2f& pos) {
+    rectangle_2_widget->OnLeftClick += [&](const glvx::Vector2f& pos) {
         widgets.addPostAction([=](fw::WidgetList& widget_list) {
             rectangle_2_widget->moveToIndex(0);
         }, fw::PostActionStage::MOVE);
@@ -39,7 +39,7 @@ void WidgetTestsPostActions::moveTest(test::Test& test) {
     }
 
     T_ASSERT_NO_ERRORS();
-    sf::Vector2f rect_2_center = rectangle_2_widget->getGlobalCenter();
+    glvx::Vector2f rect_2_center = rectangle_2_widget->getGlobalCenter();
     application.mouseMove(rect_2_center);
 	application.advance();
 	application.mouseLeftClick(rect_2_center);
@@ -57,13 +57,13 @@ void WidgetTestsPostActions::deleteTest(test::Test& test) {
     application.mouseMove(400, 300);
     application.advance();
 
-    sf::Vector2f position(100.0f, 100.0f);
-    sf::Vector2f size(100.0f, 100.0f);
+    glvx::Vector2f position(100.0f, 100.0f);
+    glvx::Vector2f size(100.0f, 100.0f);
     fw::WidgetList& widgets = application.getWidgets();
     fw::Widget* root_widget = widgets.getRootWidget();
     fw::RectangleWidget* rectangle_widget = application.getWidgets().createRectangleWidget(size);
     rectangle_widget->setPosition(position);
-    rectangle_widget->OnLeftClick += [&](const sf::Vector2f& pos) {
+    rectangle_widget->OnLeftClick += [&](const glvx::Vector2f& pos) {
         widgets.addPostAction([=](fw::WidgetList& widget_list) {
             rectangle_widget->remove();
         }, fw::PostActionStage::REMOVE);
@@ -74,7 +74,7 @@ void WidgetTestsPostActions::deleteTest(test::Test& test) {
     }
 
     T_ASSERT_NO_ERRORS();
-    sf::Vector2f rec_center = rectangle_widget->getGlobalCenter();
+    glvx::Vector2f rec_center = rectangle_widget->getGlobalCenter();
     application.mouseMove(rec_center);
     application.advance();
     application.mouseLeftClick(rec_center);
@@ -89,8 +89,8 @@ void WidgetTestsPostActions::setParentTest(test::Test& test) {
     application.mouseMove(400, 300);
     application.advance();
 
-    sf::Vector2f position(100.0f, 100.0f);
-    sf::Vector2f size(100.0f, 100.0f);
+    glvx::Vector2f position(100.0f, 100.0f);
+    glvx::Vector2f size(100.0f, 100.0f);
     fw::WidgetList& widgets = application.getWidgets();
     fw::Widget* root_widget = widgets.getRootWidget();
     fw::RectangleWidget* rectangle_1_widget = application.getWidgets().createRectangleWidget(size);
@@ -100,7 +100,7 @@ void WidgetTestsPostActions::setParentTest(test::Test& test) {
     rectangle_1_widget->setPosition(position);
     rectangle_2_widget->setPosition(position);
     rectangle_3_widget->setPosition(position);
-    rectangle_3_widget->OnLeftClick += [&](const sf::Vector2f& pos) {
+    rectangle_3_widget->OnLeftClick += [&](const glvx::Vector2f& pos) {
         widgets.addPostAction([=](fw::WidgetList& widget_list) {
             rectangle_3_widget->setParent(rectangle_2_widget);
         }, fw::PostActionStage::SET_PARENT);
@@ -116,7 +116,7 @@ void WidgetTestsPostActions::setParentTest(test::Test& test) {
     }
 
     T_ASSERT_NO_ERRORS();
-    sf::Vector2f rect_3_center = rectangle_3_widget->getGlobalCenter();
+    glvx::Vector2f rect_3_center = rectangle_3_widget->getGlobalCenter();
     application.mouseMove(rect_3_center);
     application.advance();
     application.mouseLeftClick(rect_3_center);
@@ -138,8 +138,8 @@ void WidgetTestsPostActions::setParentMoveTest(test::Test& test) {
     application.mouseMove(400, 300);
     application.advance();
 
-    sf::Vector2f position(100.0f, 100.0f);
-    sf::Vector2f size(100.0f, 100.0f);
+    glvx::Vector2f position(100.0f, 100.0f);
+    glvx::Vector2f size(100.0f, 100.0f);
     fw::WidgetList& widgets = application.getWidgets();
     fw::Widget* root_widget = widgets.getRootWidget();
     fw::RectangleWidget* rectangle_1_widget = application.getWidgets().createRectangleWidget(size);
@@ -151,7 +151,7 @@ void WidgetTestsPostActions::setParentMoveTest(test::Test& test) {
     rectangle_1_widget->setPosition(position);
     rectangle_2_widget->setPosition(position);
     rectangle_3_widget->setPosition(position);
-    std::function<void(const sf::Vector2f)> move_then_set_parent = [&](const sf::Vector2f& pos) {
+    std::function<void(const glvx::Vector2f)> move_then_set_parent = [&](const glvx::Vector2f& pos) {
         widgets.addPostAction([=](fw::WidgetList& widget_list) {
             rectangle_3_widget->setParent(rectangle_2_widget);
         }, fw::PostActionStage::SET_PARENT);
@@ -159,7 +159,7 @@ void WidgetTestsPostActions::setParentMoveTest(test::Test& test) {
             rectangle_3_widget->moveToIndex(0);
         }, fw::PostActionStage::MOVE);
     };
-    std::function<void(const sf::Vector2f)> set_parent_then_move = [&](const sf::Vector2f& pos) {
+    std::function<void(const glvx::Vector2f)> set_parent_then_move = [&](const glvx::Vector2f& pos) {
         widgets.addPostAction([=](fw::WidgetList& widget_list) {
             rectangle_3_widget->setParent(rectangle_2_widget);
         }, fw::PostActionStage::SET_PARENT);
@@ -181,7 +181,7 @@ void WidgetTestsPostActions::setParentMoveTest(test::Test& test) {
     }
 
     T_ASSERT_NO_ERRORS();
-    sf::Vector2f rect_3_center = rectangle_3_widget->getGlobalCenter();
+    glvx::Vector2f rect_3_center = rectangle_3_widget->getGlobalCenter();
     application.mouseLeftClick(rect_3_center);
     application.advance();
     if (T_COMPARE(root_widget->getChildrenCount(), 2)) {
@@ -219,13 +219,13 @@ void WidgetTestsPostActions::duplicateTest(test::Test& test) {
     application.mouseMove(400, 300);
     application.advance();
 
-    sf::Vector2f position(100.0f, 100.0f);
-    sf::Vector2f size(100.0f, 100.0f);
+    glvx::Vector2f position(100.0f, 100.0f);
+    glvx::Vector2f size(100.0f, 100.0f);
     fw::WidgetList& widgets = application.getWidgets();
     fw::Widget* root_widget = widgets.getRootWidget();
     fw::RectangleWidget* rectangle_1_widget = application.getWidgets().createRectangleWidget(size);
     rectangle_1_widget->setPosition(position);
-    rectangle_1_widget->OnLeftClick += [&](const sf::Vector2f& pos) {
+    rectangle_1_widget->OnLeftClick += [&](const glvx::Vector2f& pos) {
         widgets.addPostAction([=](fw::WidgetList& widget_list) {
             fw::Widget* clone = rectangle_1_widget->clone();
             clone->setName("clone");
@@ -234,7 +234,7 @@ void WidgetTestsPostActions::duplicateTest(test::Test& test) {
     };
     application.advance();
 
-    sf::Vector2f rect_1_center = rectangle_1_widget->getGlobalCenter();
+    glvx::Vector2f rect_1_center = rectangle_1_widget->getGlobalCenter();
 	application.mouseLeftClick(rect_1_center);
     application.advance();
     if (T_COMPARE(root_widget->getChildrenCount(), 2)) {
@@ -252,13 +252,13 @@ void WidgetTestsPostActions::removeTest(test::Test& test) {
     application.mouseMove(400, 300);
     application.advance();
 
-    sf::Vector2f position(100.0f, 100.0f);
-    sf::Vector2f size(100.0f, 100.0f);
+    glvx::Vector2f position(100.0f, 100.0f);
+    glvx::Vector2f size(100.0f, 100.0f);
     fw::WidgetList& widgets = application.getWidgets();
     fw::Widget* root_widget = widgets.getRootWidget();
     fw::RectangleWidget* rectangle_1_widget = application.getWidgets().createRectangleWidget(size);
     rectangle_1_widget->setPosition(position);
-    rectangle_1_widget->OnLeftClick += [&](const sf::Vector2f& pos) {
+    rectangle_1_widget->OnLeftClick += [&](const glvx::Vector2f& pos) {
         widgets.addPostAction([=](fw::WidgetList& widget_list) {
             rectangle_1_widget->remove();
         }, fw::PostActionStage::REMOVE);
@@ -269,7 +269,7 @@ void WidgetTestsPostActions::removeTest(test::Test& test) {
     }
 
     T_ASSERT_NO_ERRORS();
-    sf::Vector2f rect_1_center = rectangle_1_widget->getGlobalCenter();
+    glvx::Vector2f rect_1_center = rectangle_1_widget->getGlobalCenter();
     application.mouseMove(rect_1_center);
     application.advance();
     application.mouseLeftClick(rect_1_center);
@@ -284,15 +284,15 @@ void WidgetTestsPostActions::removeMoveTest(test::Test& test) {
     application.mouseMove(400, 300);
     application.advance();
 
-    sf::Vector2f position(100.0f, 100.0f);
-    sf::Vector2f size(100.0f, 100.0f);
+    glvx::Vector2f position(100.0f, 100.0f);
+    glvx::Vector2f size(100.0f, 100.0f);
     fw::WidgetList& widgets = application.getWidgets();
     fw::Widget* root_widget = widgets.getRootWidget();
     fw::RectangleWidget* rectangle_1_widget = widgets.createRectangleWidget(size);
     fw::RectangleWidget* rectangle_2_widget = widgets.createRectangleWidget(size);
     rectangle_1_widget->setPosition(position);
     rectangle_2_widget->setPosition(position);
-    rectangle_2_widget->OnLeftClick += [&](const sf::Vector2f& pos) {
+    rectangle_2_widget->OnLeftClick += [&](const glvx::Vector2f& pos) {
         widgets.addPostAction([=](fw::WidgetList& widget_list) {
             rectangle_2_widget->remove();
         }, fw::PostActionStage::REMOVE);
@@ -307,7 +307,7 @@ void WidgetTestsPostActions::removeMoveTest(test::Test& test) {
     }
 
     T_ASSERT_NO_ERRORS();
-    sf::Vector2f rect_2_center = rectangle_2_widget->getGlobalCenter();
+    glvx::Vector2f rect_2_center = rectangle_2_widget->getGlobalCenter();
     application.mouseMove(rect_2_center);
     application.advance();
     application.mouseLeftClick(rect_2_center);

@@ -1,25 +1,25 @@
 #pragma once
 
-#include "widget.h"
-#include "empty_widget.h"
-#include "widget_update_queue.h"
-#include "widget_render_queue.h"
+#include "widgets/widget.h"
+#include "widgets/empty_widget.h"
+#include "widgets/widget_update_queue.h"
+#include "widgets/widget_render_queue.h"
 
 namespace fw {
 
 	const float DEBUG_RENDER_ORIGIN_SIZE = 10.0f;
 	const float DEBUG_RENDER_MOUSE_SIZE = 11.0f;
 	const int DEBUG_RENDER_MOUSE_TRACE_MAX_LENGTH = 10;
-	const sf::Color DEBUG_RENDER_TRANSFORMED_BOUNDS_COLOR = sf::Color(0, 255, 0);
-	const sf::Color DEBUG_RENDER_BOUNDS_COLOR = sf::Color(0, 128, 0);
-	const sf::Color DEBUG_RENDER_POSITION_COLOR = sf::Color(255, 0, 0);
-	const sf::Color DEBUG_RENDER_TRANSFORM_POSITION_COLOR = sf::Color(0, 0, 255);
-	const sf::Color DEBUG_RENDER_MOUSE_POSITION_COLOR = sf::Color(255, 255, 255, 128);
-	const sf::Color DEBUG_RENDER_MOUSE_LEFT_RECT_COLOR = sf::Color(255, 64, 0, 64);
-	const sf::Color DEBUG_RENDER_MOUSE_RIGHT_RECT_COLOR = sf::Color(0, 255, 0, 64);
-	const sf::Color DEBUG_RENDER_MOUSE_MIDDLE_RECT_COLOR = sf::Color(0, 200, 255, 64);
-	const sf::Color DEBUG_RENDER_MOUSE_TRACE_COLOR = sf::Color(255, 255, 255);
-	const sf::Color DEBUG_RENDER_FOCUSED_WIDGET_BOUNDS_COLOR = sf::Color(0, 200, 255);
+	const glvx::Color DEBUG_RENDER_TRANSFORMED_BOUNDS_COLOR = glvx::Color(0, 255, 0);
+	const glvx::Color DEBUG_RENDER_BOUNDS_COLOR = glvx::Color(0, 128, 0);
+	const glvx::Color DEBUG_RENDER_POSITION_COLOR = glvx::Color(255, 0, 0);
+	const glvx::Color DEBUG_RENDER_TRANSFORM_POSITION_COLOR = glvx::Color(0, 0, 255);
+	const glvx::Color DEBUG_RENDER_MOUSE_POSITION_COLOR = glvx::Color(255, 255, 255, 128);
+	const glvx::Color DEBUG_RENDER_MOUSE_LEFT_RECT_COLOR = glvx::Color(255, 64, 0, 64);
+	const glvx::Color DEBUG_RENDER_MOUSE_RIGHT_RECT_COLOR = glvx::Color(0, 255, 0, 64);
+	const glvx::Color DEBUG_RENDER_MOUSE_MIDDLE_RECT_COLOR = glvx::Color(0, 200, 255, 64);
+	const glvx::Color DEBUG_RENDER_MOUSE_TRACE_COLOR = glvx::Color(255, 255, 255);
+	const glvx::Color DEBUG_RENDER_FOCUSED_WIDGET_BOUNDS_COLOR = glvx::Color(0, 200, 255);
 
 	class Application;
 	class RectangleWidget;
@@ -63,8 +63,8 @@ namespace fw {
 	public:
 		static bool debug_render;
 		static bool debug_mouse;
-		Event<sf::Keyboard::Key> OnKeyPressed;
-		Event<sf::Keyboard::Key> OnKeyReleased;
+		Event<glvx::Key> OnKeyPressed;
+		Event<glvx::Key> OnKeyReleased;
 		Event<> OnProcessAfterInput;
 
 		WidgetList(Application& application);
@@ -82,11 +82,11 @@ namespace fw {
 		Widget* getTopWidgetUnderCursor() const;
 		Widget* getBlockingWidget() const;
 		CompVector<Widget*> getWidgetsUnderCursor(bool can_block, bool& blocked) const;
-		bool getCurrentCursorType(sf::Cursor::Type& result) const;
+		bool getCurrentCursorType(CursorType& result) const;
 		Widget* getLeftGestureSource() const;
 		Widget* getRightGestureSource() const;
-		sf::Vector2f getMousePosf() const;
-		sf::Vector2u getWindowSize() const;
+		glvx::Vector2f getMousePosf() const;
+		glvx::Vector2u getWindowSize() const;
 		bool isLeftButtonPressed() const;
 		bool isRightButtonPressed() const;
 		bool isMiddleButtonPressed() const;
@@ -100,28 +100,28 @@ namespace fw {
 		requires std::derived_from<T, Widget>
 		T* createWidget(Args&&... args);
 		RectangleWidget* createRectangleWidget(float width, float height);
-		RectangleWidget* createRectangleWidget(const sf::Vector2f& size);
+		RectangleWidget* createRectangleWidget(const glvx::Vector2f& size);
 		TextWidget* createTextWidget();
-		PolygonWidget* createPolygonWidget(const std::vector<sf::Vector2f>& vertices);
+		PolygonWidget* createPolygonWidget(const std::vector<glvx::Vector2f>& vertices);
 		PolygonWidget* createPolygonWidget(size_t vertex_count, float radius = 10.0f, float angle_offset = 0.0f);
 		ContainerWidget* createContainerWidget(float width, float height);
-		ContainerWidget* createContainerWidget(const sf::Vector2f& size);
+		ContainerWidget* createContainerWidget(const glvx::Vector2f& size);
 		EmptyWidget* createEmptyWidget();
 		TextBoxWidget* createTextBoxWidget();
 		TextBoxWidget* createTextBoxWidget(float width, float height);
-		TextBoxWidget* createTextBoxWidget(const sf::Vector2f& size);
+		TextBoxWidget* createTextBoxWidget(const glvx::Vector2f& size);
 		CheckboxWidget* createCheckboxWidget();
 		DropdownWidget* createDropdownWidget();
 		CanvasWidget* createCanvasWidget(float width, float height, unsigned int texture_width, unsigned int texture_height);
-		CanvasWidget* createCanvasWidget(const sf::Vector2f& size, const sf::Vector2u& texture_size);
+		CanvasWidget* createCanvasWidget(const glvx::Vector2f& size, const glvx::Vector2u& texture_size);
 		WindowWidget* createWindowWidget(float width, float height);
-		WindowWidget* createWindowWidget(const sf::Vector2f& size);
+		WindowWidget* createWindowWidget(const glvx::Vector2f& size);
 		ScrollAreaWidget* createScrollAreaWidget(float width, float height);
-		ScrollAreaWidget* createScrollAreaWidget(const sf::Vector2f& size);
+		ScrollAreaWidget* createScrollAreaWidget(const glvx::Vector2f& size);
 		TreeViewWidget* createTreeViewWidget(float width, float height);
-		TreeViewWidget* createTreeViewWidget(const sf::Vector2f& size);
+		TreeViewWidget* createTreeViewWidget(const glvx::Vector2f& size);
 		ButtonWidget* createButtonWidget(float width, float height);
-		ButtonWidget* createButtonWidget(const sf::Vector2f& size);
+		ButtonWidget* createButtonWidget(const glvx::Vector2f& size);
 		template<typename T>
 		requires std::derived_from<T, Widget>
 		T* duplicateWidget(T* widget, bool with_children = true);
@@ -129,22 +129,22 @@ namespace fw {
 		void lock();
 		void unlock();
 		void processBeforeInput();
-		void processLeftPress(const sf::Vector2f pos);
-		void processRightPress(const sf::Vector2f pos);
-		void processLeftRelease(const sf::Vector2f pos);
-		void processRightRelease(const sf::Vector2f pos);
-		void processMouseMove(const sf::Vector2f pos);
-		void processScrollX(const sf::Vector2f pos, float delta);
-		void processScrollY(const sf::Vector2f pos, float delta);
-		void processMouse(const sf::Vector2f pos);
-		void processWindowEvent(const sf::Event& event);
-		void processKeyboardEvent(const sf::Event& event);
+		void processLeftPress(const glvx::Vector2f pos);
+		void processRightPress(const glvx::Vector2f pos);
+		void processLeftRelease(const glvx::Vector2f pos);
+		void processRightRelease(const glvx::Vector2f pos);
+		void processMouseMove(const glvx::Vector2f pos);
+		void processScrollX(const glvx::Vector2f pos, float delta);
+		void processScrollY(const glvx::Vector2f pos, float delta);
+		void processMouse(const glvx::Vector2f pos);
+		void processWindowEvent(const glvx::Event& event);
+		void processKeyboardEvent(const glvx::Event& event);
 		void processAfterInput();
 		void updateRenderQueue();
 		void updateWidgets();
 		void printUpdateQueue();
-		void render(sf::RenderTarget& target);
-		void reset(const sf::Vector2f& root_size, const sf::Vector2f& mouse_pos);
+		void render(glvx::RenderTarget& target);
+		void reset(const glvx::Vector2f& root_size, const glvx::Vector2f& mouse_pos);
 		void setFocusedWidget(Widget* widget);
 		void addPostAction(const PostActionFuncType& func, PostActionStage stage);
 		Widget* operator[](size_t index) const;
@@ -168,7 +168,7 @@ namespace fw {
 		std::vector<PostAction> post_actions[STAGE_COUNT];
 		WidgetUpdateQueue update_queue = WidgetUpdateQueue(*this);
 		WidgetRenderQueue render_queue = WidgetRenderQueue(*this);
-		sf::VertexArray mouse_debug_trace = sf::VertexArray(sf::PrimitiveType::LineStrip);
+		glvx::VertexArray mouse_debug_trace = glvx::VertexArray(glvx::PrimitiveType::LineStrip);
 
 		void removeWidget(Widget* widget, bool with_children);
 	};

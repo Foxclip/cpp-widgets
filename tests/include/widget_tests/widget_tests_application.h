@@ -20,7 +20,7 @@ public:
 
 class TestApplication : public fw::Application {
 public:
-	TestApplication(sf::RenderWindow& window);
+	TestApplication(glvx::Window& window);
 
 	bool initialized = false;
 	bool started = false;
@@ -42,10 +42,10 @@ public:
 	bool process_world = false;
 	bool rendered = false;
 	bool closed = false;
-	sf::Vector2i left_click_pos;
-	sf::Vector2i left_release_pos;
-	sf::Vector2i right_click_pos;
-	sf::Vector2i right_release_pos;
+	glvx::Vector2i left_click_pos;
+	glvx::Vector2i left_release_pos;
+	glvx::Vector2i right_click_pos;
+	glvx::Vector2i right_release_pos;
 	float scroll_x_delta = 0.0f;
 	float scroll_y_delta = 0.0f;
 	bool space_key_pressed = false;
@@ -55,8 +55,8 @@ public:
 	void onFrameBegin() override;
 	void onFrameEnd() override;
 	void onProcessWidgets() override;
-	void onProcessWindowEvent(const sf::Event& event) override;
-	void onProcessKeyboardEvent(const sf::Event& event) override;
+	void onProcessWindowEvent(const glvx::Event& event) override;
+	void onProcessKeyboardEvent(const glvx::Event& event) override;
 	void onProcessLeftPress() override;
 	void onProcessRightPress() override;
 	void onProcessLeftRelease() override;

@@ -1,5 +1,6 @@
 #include "widgets/widgets_common.h"
 #include <fstream>
+#include <algorithm>
 
 namespace fw {
 
@@ -15,7 +16,7 @@ namespace fw {
 
 #endif // !NDEBUG
 
-	Logger& operator<<(Logger& lg, const sf::Vector2f& value) {
+	Logger& operator<<(Logger& lg, const glvx::Vector2f& value) {
 		return lg << "(" << value.x << " " << value.y << ")";
 	}
 
@@ -30,38 +31,38 @@ namespace fw {
 		return RAD_IN_DEG * angle;
 	}
 
-	sf::Vector2i to2i(const sf::Vector2f& vec) {
-		return sf::Vector2i((int)vec.x, (int)vec.y);
+	glvx::Vector2i to2i(const glvx::Vector2f& vec) {
+		return glvx::Vector2i((int)vec.x, (int)vec.y);
 	}
 
-	sf::Vector2i to2i(const sf::Vector2u& vec) {
-		return sf::Vector2i((int)vec.x, (int)vec.y);
+	glvx::Vector2i to2i(const glvx::Vector2u& vec) {
+		return glvx::Vector2i((int)vec.x, (int)vec.y);
 	}
 
-	sf::Vector2f to2f(const sf::Vector2i& vec) {
-		return sf::Vector2f((float)vec.x, (float)vec.y);
+	glvx::Vector2f to2f(const glvx::Vector2i& vec) {
+		return glvx::Vector2f((float)vec.x, (float)vec.y);
 	}
 
-	sf::Vector2f to2f(const sf::Vector2u& vec) {
-		return sf::Vector2f((float)vec.x, (float)vec.y);
+	glvx::Vector2f to2f(const glvx::Vector2u& vec) {
+		return glvx::Vector2f((float)vec.x, (float)vec.y);
 	}
 
-	void extend_bounds(sf::FloatRect& rect1, const sf::FloatRect& rect2) {
-		float rect1_right = rect1.left + rect1.width;
-		float rect2_right = rect2.left + rect2.width;
-		float rect1_bottom = rect1.top + rect1.height;
-		float rect2_bottom = rect2.top + rect2.height;
-		if (rect2.left < rect1.left) {
-			rect1.left = rect2.left;
+	void extend_bounds(glvx::FloatRect& rect1, const glvx::FloatRect& rect2) {
+		float rect1_right = rect1.position.x + rect1.size.x;
+		float rect2_right = rect2.position.x + rect2.size.x;
+		float rect1_bottom = rect1.position.y + rect1.size.y;
+		float rect2_bottom = rect2.position.y + rect2.size.y;
+		if (rect2.position.x < rect1.position.x) {
+			rect1.position.x = rect2.position.x;
 		}
-		if (rect2.top < rect1.top) {
-			rect1.top = rect2.top;
+		if (rect2.position.y < rect1.position.y) {
+			rect1.position.y = rect2.position.y;
 		}
 		if (rect2_right > rect1_right) {
-			rect1.width += rect2_right - rect1_right;
+			rect1.size.x += rect2_right - rect1_right;
 		}
 		if (rect2_bottom > rect1_bottom) {
-			rect1.height += rect2_bottom - rect1_bottom;
+			rect1.size.y += rect2_bottom - rect1_bottom;
 		}
 	}
 
@@ -87,7 +88,7 @@ namespace fw {
 		return pos == end;
 	}
 
-	bool contains_point(const sf::FloatRect& rect, const sf::Vector2f& point, bool include_upper_bound) {
+	bool contains_point(const glvx::FloatRect& rect, const glvx::Vector2f& point, bool include_upper_bound) {
 		auto cmp = [&](float left, float right) {
 			if (include_upper_bound) {
 				return left <= right;
@@ -96,27 +97,143 @@ namespace fw {
 			}
 		};
 		return (
-			point.x >= rect.left
-			&& cmp(point.x, rect.left + rect.width)
-			&& point.y >= rect.top
-			&& cmp(point.y, rect.top + rect.height)
+			point.x >= rect.position.x
+			&& cmp(point.x, rect.position.x + rect.size.x)
+			&& point.y >= rect.position.y
+			&& cmp(point.y, rect.position.y + rect.size.y)
 		);
 	}
 
-	bool contains_point(const sf::RectangleShape& shape, const sf::Vector2f& point, bool include_upper_bound) {
-		return contains_point(shape.getGlobalBounds(), point, include_upper_bound);
+	bool contains_point(const glvx::Rectangle& shape, const glvx::Vector2f& point, bool include_upper_bound) {
+		glvx::FloatRect local_bounds(glvx::Vector2f(), shape.getSize());
+		return contains_point(shape.getTransform().transformRect(local_bounds), point, include_upper_bound);
 	}
 
-	void quantize_position(sf::Transform& transform) {
-		float x_pos = transform.getMatrix()[12];
-		float y_pos = transform.getMatrix()[13];
+	void quantize_position(glvx::Transform& transform) {
+		const float* matrix_data = transform.toMatrix4().getData();
+		float x_pos = matrix_data[12];
+		float y_pos = matrix_data[13];
 		float x_offset = x_pos - floor(x_pos);
 		float y_offset = y_pos - floor(y_pos);
-		sf::Vector2f subpixel_offset = sf::Vector2f(x_offset, y_offset);
+		glvx::Vector2f subpixel_offset = glvx::Vector2f(x_offset, y_offset);
 		transform.translate(-subpixel_offset);
 	}
 
-	sf::FloatRect quantize_rect(const sf::FloatRect& rect, QuantizeMode quantize_mode) {
+	// Replicates sf::Text::findCharacterPos: the position of the start of the
+	// character at `index`, with y measured as the line offset from the top of
+	// the first line (not the baseline).
+	glvx::Vector2f findTextCharacterPos(glvx::Font& font, unsigned int character_size, const std::string& str, size_t index) {
+		if (index > str.size()) {
+			index = str.size();
+		}
+		float whitespace_width = (float)font.getCharacter(character_size, ' ').advance;
+		float line_height = (float)font.getLineHeight(character_size);
+		float x = 0.0f;
+		float y = 0.0f;
+		unsigned char prev_char = 0;
+		for (size_t i = 0; i < index; i++) {
+			unsigned char cur_char = (unsigned char)str[i];
+			x += (float)font.getKerning(character_size, prev_char, cur_char);
+			prev_char = cur_char;
+			if (cur_char == ' ') {
+				x += whitespace_width;
+			} else if (cur_char == '\t') {
+				x += whitespace_width * 4.0f;
+			} else if (cur_char == '\n') {
+				y += line_height;
+				x = 0.0f;
+			} else if (cur_char != '\r') {
+				x += (float)font.getCharacter(character_size, cur_char).advance;
+			}
+		}
+		return glvx::Vector2f(x, y);
+	}
+
+	// Replicates sf::Text::getLocalBounds() geometry (Text::ensureGeometryUpdate
+	// in SFML's Text.cpp): the baseline of the first line sits at y = character
+	// size, each glyph contributes the rect (x + bearingLeft, baseline -
+	// bearingTop, bitmapWidth, bitmapRows), spaces/newlines contribute the
+	// pen position, and the result is the union of all contributions.
+	glvx::FloatRect getTextVisualBounds(glvx::Font& font, unsigned int character_size, const std::string& str) {
+		if (str.empty()) {
+			return glvx::FloatRect();
+		}
+		float line_height = (float)font.getLineHeight(character_size);
+		float font_size = (float)character_size;
+		float whitespace_width = (float)font.getCharacter(character_size, ' ').advance;
+		float x = 0.0f;
+		float y = font_size;
+		float min_x = font_size;
+		float min_y = font_size;
+		float max_x = 0.0f;
+		float max_y = 0.0f;
+		unsigned char prev_char = 0;
+		for (size_t i = 0; i < str.size(); i++) {
+			unsigned char cur_char = (unsigned char)str[i];
+			if (cur_char == '\r') {
+				continue;
+			}
+			x += (float)font.getKerning(character_size, prev_char, cur_char);
+			prev_char = cur_char;
+			if (cur_char == ' ' || cur_char == '\n' || cur_char == '\t') {
+				min_x = std::min(min_x, x);
+				min_y = std::min(min_y, y);
+				if (cur_char == ' ') {
+					x += whitespace_width;
+				} else if (cur_char == '\t') {
+					x += whitespace_width * 4.0f;
+				} else {
+					y += line_height;
+					x = 0.0f;
+				}
+				max_x = std::max(max_x, x);
+				max_y = std::max(max_y, y);
+				continue;
+			}
+			const glvx::Character& ch = font.getCharacter(character_size, cur_char);
+			float left = (float)ch.x;
+			float top = (float)ch.top;
+			float right = left + (float)ch.width;
+			min_x = std::min(min_x, x + left);
+			max_x = std::max(max_x, x + right);
+			min_y = std::min(min_y, y - top);
+			max_y = std::max(max_y, y - top + (float)ch.glyph_height);
+			x += (float)ch.advance;
+		}
+		return glvx::FloatRect(glvx::Vector2f(min_x, min_y), glvx::Vector2f(max_x - min_x, max_y - min_y));
+	}
+
+	void draw_texture_rect(
+		glvx::RenderTarget& target,
+		const glvx::AbstractTexture& texture,
+		const glvx::Vector2f& pos,
+		const glvx::Vector2f& size,
+		const glvx::Color& color,
+		const glvx::Transform& extra_transform,
+		const glvx::FloatRect& uv_rect,
+		glvx::Shader* shader
+	) {
+		glvx::VertexArray quad(glvx::PrimitiveType::TriangleStrip, 4);
+		quad[0].position = pos;
+		quad[1].position = glvx::Vector2f(pos.x + size.x, pos.y);
+		quad[2].position = glvx::Vector2f(pos.x, pos.y + size.y);
+		quad[3].position = glvx::Vector2f(pos.x + size.x, pos.y + size.y);
+		for (size_t i = 0; i < 4; i++) {
+			quad[i].color = color;
+		}
+		quad[0].tex_coords = glvx::Vector2f(uv_rect.position.x, uv_rect.position.y + uv_rect.size.y);
+		quad[1].tex_coords = glvx::Vector2f(uv_rect.position.x + uv_rect.size.x, uv_rect.position.y + uv_rect.size.y);
+		quad[2].tex_coords = glvx::Vector2f(uv_rect.position.x, uv_rect.position.y);
+		quad[3].tex_coords = glvx::Vector2f(uv_rect.position.x + uv_rect.size.x, uv_rect.position.y);
+		glvx::RenderStates states;
+		states.transform = extra_transform;
+		states.texture = const_cast<glvx::AbstractTexture*>(&texture);
+		states.shader = shader;
+		states.blend_mode = glvx::BlendAlpha;
+		target.draw(quad, states);
+	}
+
+	glvx::FloatRect quantize_rect(const glvx::FloatRect& rect, QuantizeMode quantize_mode) {
 		auto rounding_func = [&](float x) {
 			if (quantize_mode == QUANTIZE_MODE_FLOOR) {
 				return floor(x);
@@ -128,13 +245,13 @@ namespace fw {
 				wAssert(false, "Unknown QuantizeMode"); return floor(x);
 			}
 		};
-		sf::Vector2f top_left = rect.getPosition();
-		sf::Vector2f bottom_right = top_left + rect.getSize();
-		sf::Vector2f quantized_top_left = sf::Vector2f(floor(top_left.x), floor(top_left.y));
-		sf::Vector2f quantized_bottom_right = sf::Vector2f(rounding_func(bottom_right.x), rounding_func(bottom_right.y));
+		glvx::Vector2f top_left = rect.position;
+		glvx::Vector2f bottom_right = top_left + rect.size;
+		glvx::Vector2f quantized_top_left = glvx::Vector2f(floor(top_left.x), floor(top_left.y));
+		glvx::Vector2f quantized_bottom_right = glvx::Vector2f(rounding_func(bottom_right.x), rounding_func(bottom_right.y));
 		float quantized_width = quantized_bottom_right.x - quantized_top_left.x;
 		float quantized_height = quantized_bottom_right.y - quantized_top_left.y;
-		sf::FloatRect quantized_bounds(quantized_top_left, sf::Vector2f(quantized_width, quantized_height));
+		glvx::FloatRect quantized_bounds(quantized_top_left, glvx::Vector2f(quantized_width, quantized_height));
 		return quantized_bounds;
 	}
 
@@ -183,7 +300,7 @@ namespace fw {
 		return s;
 	}
 
-	std::string color_to_str(sf::Color color) {
+	std::string color_to_str(glvx::Color color) {
 		return
 			std::to_string(color.r)
 			+ " " + std::to_string(color.g)

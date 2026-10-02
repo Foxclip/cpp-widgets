@@ -9,7 +9,7 @@ namespace fw {
 		setName("dropdown");
 		setClickThrough(false);
 		setFocusableType(FocusableType::MODAL);
-		OnLeftPress += [&](const sf::Vector2f& pos) {
+		OnLeftPress += [&](const glvx::Vector2f& pos) {
 			togglePanel();
 		};
 		OnFocused += [&]() {
@@ -45,7 +45,7 @@ namespace fw {
 		square_widget->setSizeYPolicy(SizePolicy::PARENT);
 		square_widget->setParent(main_widget);
 		// main triangle
-		std::vector<sf::Vector2f> vertices = get_regular_polygon<sf::Vector2f>(3, 5.0f, to_radians(90.0f));
+		std::vector<glvx::Vector2f> vertices = get_regular_polygon<glvx::Vector2f>(3, 5.0f, to_radians(90.0f));
 		triangle_widget = widget_list.createPolygonWidget(vertices);
 		triangle_widget->setName("triangle");
 		triangle_widget->setFillColor(DROPDOWN_DEFAULT_TRIANGLE_COLOR);
@@ -62,31 +62,31 @@ namespace fw {
 		panel_widget->setParent(this);
 	}
 
-	const sf::Color& DropdownWidget::getMainBackgroundColor() const {
+	const glvx::Color& DropdownWidget::getMainBackgroundColor() const {
 		return main_widget->getFillColor();
 	}
 
-	const sf::Color& DropdownWidget::getOptionHoverBackgroundColor() const {
+	const glvx::Color& DropdownWidget::getOptionHoverBackgroundColor() const {
 		return option_hover_background_color;
 	}
 
-	const sf::Color& DropdownWidget::getTriangleColor() const {
+	const glvx::Color& DropdownWidget::getTriangleColor() const {
 		return triangle_widget->getFillColor();
 	}
 
-	const sf::Color& DropdownWidget::getSquareColor() const {
+	const glvx::Color& DropdownWidget::getSquareColor() const {
 		return square_widget->getFillColor();
 	}
 
-	const sf::Color& DropdownWidget::getPanelBackgroundColor() const {
+	const glvx::Color& DropdownWidget::getPanelBackgroundColor() const {
 		return panel_widget->getFillColor();
 	}
 
-	const sf::Color& DropdownWidget::getMainTextColor() const {
+	const glvx::Color& DropdownWidget::getMainTextColor() const {
 		return text_widget->getFillColor();
 	}
 
-	const sf::Color& DropdownWidget::getPanelTextColor() const {
+	const glvx::Color& DropdownWidget::getPanelTextColor() const {
 		return panel_text_color;
 	}
 
@@ -110,7 +110,7 @@ namespace fw {
 		return text_widget;
 	}
 
-	const sf::String& DropdownWidget::getOptionText(size_t index) const {
+	const std::string& DropdownWidget::getOptionText(size_t index) const {
 		return getOptionTextWidget(index)->getString();
 	}
 
@@ -127,7 +127,7 @@ namespace fw {
 		updateOptionSize();
 	}
 
-	void DropdownWidget::addOption(const sf::String& text, ptrdiff_t index) {
+	void DropdownWidget::addOption(const std::string& text, ptrdiff_t index) {
 		wAssert(index == -1 || index < (ptrdiff_t)option_widgets.size());
 		if (index < 0) {
 			index = option_widgets.size();
@@ -135,13 +135,13 @@ namespace fw {
 		RectangleWidget* option_widget = widget_list.createRectangleWidget(100.0f, 20.0f);
 		option_widget->setParent(panel_widget);
 		option_widget->moveToIndex(index);
-		option_widget->setFillColor(sf::Color::Transparent);
+		option_widget->setFillColor(glvx::Color::Transparent);
 		option_widget->setClipChildren(true);
-		option_widget->OnMouseEnter += [&, option_widget](const sf::Vector2f& pos) {
+		option_widget->OnMouseEnter += [&, option_widget](const glvx::Vector2f& pos) {
 			option_widget->setFillColor(option_hover_background_color);
 		};
-		option_widget->OnMouseExit += [&, option_widget](const sf::Vector2f& pos) {
-			option_widget->setFillColor(sf::Color::Transparent);
+		option_widget->OnMouseExit += [&, option_widget](const glvx::Vector2f& pos) {
+			option_widget->setFillColor(glvx::Color::Transparent);
 		};
 		option_widget->setGlobalRenderLayer(GlobalRenderLayer::DROPDOWN_PANEL);
 		option_widgets.insert(option_widgets.begin() + index, option_widget);
@@ -168,7 +168,7 @@ namespace fw {
 		text_widget->setString(text);
 	}
 
-	void DropdownWidget::setOptionText(size_t index, const sf::String& text) {
+	void DropdownWidget::setOptionText(size_t index, const std::string& text) {
 		wAssert(index >= 0 && index < option_widgets.size());
 		RectangleWidget* option_widget = option_widgets[index];
 		TextWidget* option_text_widget = dynamic_cast<TextWidget*>(option_widget->find("text"));
@@ -182,7 +182,7 @@ namespace fw {
 		updateOptions();
 	}
 
-	void DropdownWidget::removeOption(const sf::String& text) {
+	void DropdownWidget::removeOption(const std::string& text) {
 		for (size_t i = 0; i < option_widgets.size(); i++) {
 			RectangleWidget* option_widget = option_widgets[i];
 			TextWidget* option_text_widget = dynamic_cast<TextWidget*>(option_widget->find("text"));
@@ -202,7 +202,7 @@ namespace fw {
 		for (size_t i = 0; i < option_widgets.size(); i++) {
 			RectangleWidget* option_widget = option_widgets[i];
 			option_widget->setName("option" + std::to_string(i));
-			option_widget->OnLeftPress += [=](const sf::Vector2f& pos) {
+			option_widget->OnLeftPress += [=](const glvx::Vector2f& pos) {
 				selectOption(i);
 				hidePanel();
 			};
@@ -229,31 +229,31 @@ namespace fw {
 		panel_widget->setHeight(main_widget->getHeight() * option_widgets.size());
 	}
 
-	void DropdownWidget::setMainBackgroundColor(const sf::Color& color) {
+	void DropdownWidget::setMainBackgroundColor(const glvx::Color& color) {
 		main_widget->setFillColor(color);
 	}
 
-	void DropdownWidget::setOptionHoverBackgroundColor(const sf::Color& color) {
+	void DropdownWidget::setOptionHoverBackgroundColor(const glvx::Color& color) {
 		option_hover_background_color = color;
 	}
 
-	void DropdownWidget::setTriangleColor(const sf::Color& color) {
+	void DropdownWidget::setTriangleColor(const glvx::Color& color) {
 		triangle_widget->setFillColor(color);
 	}
 
-	void DropdownWidget::setSquareColor(const sf::Color& color) {
+	void DropdownWidget::setSquareColor(const glvx::Color& color) {
 		square_widget->setFillColor(color);
 	}
 
-	void DropdownWidget::setPanelBackgroundColor(const sf::Color& color) {
+	void DropdownWidget::setPanelBackgroundColor(const glvx::Color& color) {
 		panel_widget->setFillColor(color);
 	}
 
-	void DropdownWidget::setMainTextColor(const sf::Color& color) {
+	void DropdownWidget::setMainTextColor(const glvx::Color& color) {
 		text_widget->setFillColor(color);
 	}
 
-	void DropdownWidget::setPanelTextColor(const sf::Color& color) {
+	void DropdownWidget::setPanelTextColor(const glvx::Color& color) {
 		panel_text_color = color;
 		for (size_t i = 0; i < option_widgets.size(); i++) {
 			RectangleWidget* option_widget = option_widgets[i];

@@ -3,7 +3,7 @@
 
 namespace fw {
 
-	PolygonWidget::PolygonWidget(WidgetList& widget_list, const std::vector<sf::Vector2f>& vertices) : ShapeWidget(widget_list) {
+	PolygonWidget::PolygonWidget(WidgetList& widget_list, const std::vector<glvx::Vector2f>& vertices) : ShapeWidget(widget_list) {
 		type = WidgetType::Polygon;
 		setName("polygon");
 		setVertices(vertices);
@@ -12,15 +12,19 @@ namespace fw {
 	PolygonWidget::PolygonWidget(WidgetList& widget_list, size_t vertex_count, float radius, float angle_offset) : ShapeWidget(widget_list) {
 		type = WidgetType::Polygon;
 		setName("polygon");
-		std::vector<sf::Vector2f> vertices = get_regular_polygon<sf::Vector2f>(vertex_count, radius, angle_offset);
+		std::vector<glvx::Vector2f> vertices = get_regular_polygon<glvx::Vector2f>(vertex_count, radius, angle_offset);
 		setVertices(vertices);
 	}
 
-	const std::vector<sf::Vector2f>& PolygonWidget::getVertices() const {
+	const std::vector<glvx::Vector2f>& PolygonWidget::getVertices() const {
 		return vertices;
 	}
 
-	void PolygonWidget::setVertices(const std::vector<sf::Vector2f>& vertices) {
+	glvx::FloatRect PolygonWidget::getLocalBounds() const {
+		return getShapeLocalBounds();
+	}
+
+	void PolygonWidget::setVertices(const std::vector<glvx::Vector2f>& vertices) {
 		this->vertices = vertices;
 		syncVertices();
 	}
@@ -29,27 +33,27 @@ namespace fw {
 		return widget_list.duplicateWidget(this, with_children);
 	}
 
-	sf::Drawable* PolygonWidget::getDrawable() {
+	glvx::Drawable* PolygonWidget::getDrawable() {
 		return &polygon;
 	}
 
-	const sf::Drawable* PolygonWidget::getDrawable() const {
+	const glvx::Drawable* PolygonWidget::getDrawable() const {
 		return &polygon;
 	}
 
-	sf::Transformable* PolygonWidget::getTransformable() {
+	glvx::Transformable* PolygonWidget::getTransformable() {
 		return &polygon;
 	}
 
-	const sf::Transformable* PolygonWidget::getTransformable() const {
+	const glvx::Transformable* PolygonWidget::getTransformable() const {
 		return &polygon;
 	}
 
-	sf::Shape& PolygonWidget::getShape() {
+	glvx::Shape& PolygonWidget::getShape() {
 		return polygon;
 	}
 
-	const sf::Shape& PolygonWidget::getShape() const {
+	const glvx::Shape& PolygonWidget::getShape() const {
 		return polygon;
 	}
 
@@ -57,10 +61,27 @@ namespace fw {
 		// nothing
 	}
 
-	void PolygonWidget::syncVertices() {
-		polygon.setPointCount(vertices.size());
+	glvx::FloatRect PolygonWidget::getShapeLocalBounds() const {
+		glvx::FloatRect result;
+		bool first = true;
 		for (size_t i = 0; i < vertices.size(); i++) {
-			polygon.setPoint(i, vertices[i]);
+			glvx::FloatRect point_rect(glvx::Vector2f(vertices[i].x, vertices[i].y), glvx::Vector2f());
+			if (first) {
+				result = point_rect;
+				first = false;
+			} else {
+				result.extend(point_rect);
+			}
+		}
+		return result;
+	}
+
+	void PolygonWidget::syncVertices() {
+		polygon.setPrimitiveType(glvx::PrimitiveType::TriangleFan);
+		polygon.resize((unsigned int)vertices.size());
+		for (size_t i = 0; i < vertices.size(); i++) {
+			polygon[i].position = vertices[i];
+			polygon[i].color = glvx::Color::White;
 		}
 	}
 

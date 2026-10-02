@@ -11,46 +11,46 @@ WidgetTestsRender::WidgetTestsRender(const std::string& name, test::TestModule* 
 }
 
 void WidgetTestsRender::emptyTest(test::Test& test) {
-    sf::Vector2u size(3, 3);
-    sf::RenderWindow& window = getWindow();
+    glvx::Vector2u size(3, 3);
+    glvx::Window& window = getWindow();
     fw::Application application(window);
     application.init(test.name, size.x, size.y, 0, false);
     application.start(true);
     application.mouseMove(size.x / 2, size.y / 2);
     application.advance();
 
-    checkPixels(test, application, size, [&](test::Test&, const sf::Image& image, unsigned int x, unsigned int y) {
-        T_ASSERT(T_COMPARE(image.getPixel(x, y), sf::Color::Black, &WidgetTests::colorToStr));
+    checkPixels(test, application, size, [&](test::Test&, const glvx::Image& image, unsigned int x, unsigned int y) {
+        T_ASSERT(T_COMPARE(image.getPixel(x, y), glvx::Color::Black, &WidgetTests::colorToStr));
     });
 
-    sf::Color bg_color = sf::Color::Red;
+    glvx::Color bg_color = glvx::Color::Red;
     application.setBackgroundColor(bg_color);
     application.advance();
 
-    checkPixels(test, application, size, [&](test::Test&, const sf::Image& image, unsigned int x, unsigned int y) {
+    checkPixels(test, application, size, [&](test::Test&, const glvx::Image& image, unsigned int x, unsigned int y) {
         T_ASSERT(T_COMPARE(image.getPixel(x, y), bg_color, &WidgetTests::colorToStr));
     });
 }
 
 void WidgetTestsRender::rectangleTest(test::Test& test) {
-    sf::Vector2u size(4, 4);
-    sf::RenderWindow& window = getWindow();
+    glvx::Vector2u size(4, 4);
+    glvx::Window& window = getWindow();
     fw::Application application(window);
     application.init(test.name, size.x, size.y, 0, false);
     application.start(true);
     application.mouseMove(size.x / 2, size.y / 2);
     application.advance();
 
-    sf::Color rect_color = sf::Color::Red;
-    sf::Color bg_color = sf::Color::Black;
+    glvx::Color rect_color = glvx::Color::Red;
+    glvx::Color bg_color = glvx::Color::Black;
     fw::WidgetList& widgets = application.getWidgets();
     fw::RectangleWidget* rectangle_widget = widgets.createRectangleWidget(2.0f, 2.0f);
-    rectangle_widget->setPosition(sf::Vector2f(1.0f, 1.0f));
+    rectangle_widget->setPosition(glvx::Vector2f(1.0f, 1.0f));
     rectangle_widget->setFillColor(rect_color);
     application.advance();
 
-    checkPixels(test, application, size, [&](test::Test&, const sf::Image& image, unsigned int x, unsigned int y) {
-        if (x == 0 || x == image.getSize().x - 1 || y == 0 || y == image.getSize().y - 1) {
+    checkPixels(test, application, size, [&](test::Test&, const glvx::Image& image, unsigned int x, unsigned int y) {
+            if (x == 0 || x == image.getWidth() - 1 || y == 0 || y == image.getHeight() - 1) {
             T_ASSERT(T_COMPARE(image.getPixel(x, y), bg_color, &WidgetTests::colorToStr));
         } else {
             T_ASSERT(T_COMPARE(image.getPixel(x, y), rect_color, &WidgetTests::colorToStr));
@@ -59,26 +59,26 @@ void WidgetTestsRender::rectangleTest(test::Test& test) {
 }
 
 void WidgetTestsRender::visibilityTest(test::Test& test) {
-    sf::Vector2u size(4, 4);
-    sf::RenderWindow& window = getWindow();
+    glvx::Vector2u size(4, 4);
+    glvx::Window& window = getWindow();
     fw::Application application(window);
     application.init(test.name, size.x, size.y, 0, false);
     application.start(true);
     application.mouseMove(size.x / 2, size.y / 2);
     application.advance();
 
-    sf::Color rect_color = sf::Color::Red;
-    sf::Color bg_color = sf::Color::Black;
+    glvx::Color rect_color = glvx::Color::Red;
+    glvx::Color bg_color = glvx::Color::Black;
     fw::WidgetList& widgets = application.getWidgets();
     fw::RectangleWidget* rectangle_widget = widgets.createRectangleWidget(2.0f, 2.0f);
-    rectangle_widget->setPosition(sf::Vector2f(1.0f, 1.0f));
+    rectangle_widget->setPosition(glvx::Vector2f(1.0f, 1.0f));
     rectangle_widget->setFillColor(rect_color);
     application.advance();
 
     auto check_rect_visible = [&]() {
 		T_CONTAINER("check_rect_visible");
-        checkPixels(test, application, size, [&](test::Test&, const sf::Image& image, unsigned int x, unsigned int y) {
-            if (x == 0 || x == image.getSize().x - 1 || y == 0 || y == image.getSize().y - 1) {
+        checkPixels(test, application, size, [&](test::Test&, const glvx::Image& image, unsigned int x, unsigned int y) {
+        if (x == 0 || x == image.getWidth() - 1 || y == 0 || y == image.getHeight() - 1) {
                 T_ASSERT(T_COMPARE(image.getPixel(x, y), bg_color, &WidgetTests::colorToStr));
             } else {
                 T_ASSERT(T_COMPARE(image.getPixel(x, y), rect_color, &WidgetTests::colorToStr));
@@ -87,7 +87,7 @@ void WidgetTestsRender::visibilityTest(test::Test& test) {
     };
     auto check_rect_invisible = [&]() {
         T_CONTAINER("check_rect_invisible");
-        checkPixels(test, application, size, [&](test::Test&, const sf::Image& image, unsigned int x, unsigned int y) {
+        checkPixels(test, application, size, [&](test::Test&, const glvx::Image& image, unsigned int x, unsigned int y) {
             T_ASSERT(T_COMPARE(image.getPixel(x, y), bg_color, &WidgetTests::colorToStr));
         });
     };
@@ -110,8 +110,8 @@ void WidgetTestsRender::visibilityTest(test::Test& test) {
 }
 
 void WidgetTestsRender::localLayersTest(test::Test& test) {
-    sf::Vector2u size(3, 3);
-    sf::RenderWindow& window = getWindow();
+    glvx::Vector2u size(3, 3);
+    glvx::Window& window = getWindow();
     fw::Application application(window);
     application.init(test.name, size.x, size.y, 0, false);
     application.start(true);
@@ -121,23 +121,23 @@ void WidgetTestsRender::localLayersTest(test::Test& test) {
     fw::WidgetList& widgets = application.getWidgets();
     fw::RectangleWidget* rectangle_1_widget = widgets.createRectangleWidget(3.0f, 3.0f);
     fw::RectangleWidget* rectangle_2_widget = widgets.createRectangleWidget(3.0f, 3.0f);
-    rectangle_1_widget->setFillColor(sf::Color::Red);
-    rectangle_2_widget->setFillColor(sf::Color::Green);
+    rectangle_1_widget->setFillColor(glvx::Color::Red);
+    rectangle_2_widget->setFillColor(glvx::Color::Green);
     application.advance();
 
-    checkPixels(test, application, size, [&](test::Test&, const sf::Image& image, unsigned int x, unsigned int y) {
-        T_ASSERT(T_COMPARE(image.getPixel(x, y), sf::Color::Green, &WidgetTests::colorToStr));
+    checkPixels(test, application, size, [&](test::Test&, const glvx::Image& image, unsigned int x, unsigned int y) {
+        T_ASSERT(T_COMPARE(image.getPixel(x, y), glvx::Color::Green, &WidgetTests::colorToStr));
     });
     rectangle_1_widget->moveToTop();
     application.advance();
-    checkPixels(test, application, size, [&](test::Test&, const sf::Image& image, unsigned int x, unsigned int y) {
-        T_ASSERT(T_COMPARE(image.getPixel(x, y), sf::Color::Red, &WidgetTests::colorToStr));
+    checkPixels(test, application, size, [&](test::Test&, const glvx::Image& image, unsigned int x, unsigned int y) {
+        T_ASSERT(T_COMPARE(image.getPixel(x, y), glvx::Color::Red, &WidgetTests::colorToStr));
     });
 }
 
 void WidgetTestsRender::globalLayersTest(test::Test& test) {
-    sf::Vector2u size(3, 3);
-    sf::RenderWindow& window = getWindow();
+    glvx::Vector2u size(3, 3);
+    glvx::Window& window = getWindow();
     fw::Application application(window);
     application.init(test.name, size.x, size.y, 0, false);
     application.start(true);
@@ -147,17 +147,17 @@ void WidgetTestsRender::globalLayersTest(test::Test& test) {
     fw::WidgetList& widgets = application.getWidgets();
     fw::RectangleWidget* rectangle_1_widget = widgets.createRectangleWidget(3.0f, 3.0f);
     fw::RectangleWidget* rectangle_2_widget = widgets.createRectangleWidget(3.0f, 3.0f);
-    rectangle_1_widget->setFillColor(sf::Color::Red);
-    rectangle_2_widget->setFillColor(sf::Color::Green);
+    rectangle_1_widget->setFillColor(glvx::Color::Red);
+    rectangle_2_widget->setFillColor(glvx::Color::Green);
     application.advance();
 
-    checkPixels(test, application, size, [&](test::Test&, const sf::Image& image, unsigned int x, unsigned int y) {
-        T_ASSERT(T_COMPARE(image.getPixel(x, y), sf::Color::Green, &WidgetTests::colorToStr));
+    checkPixels(test, application, size, [&](test::Test&, const glvx::Image& image, unsigned int x, unsigned int y) {
+        T_ASSERT(T_COMPARE(image.getPixel(x, y), glvx::Color::Green, &WidgetTests::colorToStr));
     });
     rectangle_1_widget->setGlobalRenderLayer(fw::GlobalRenderLayer::TOP);
     application.advance();
-    checkPixels(test, application, size, [&](test::Test&, const sf::Image& image, unsigned int x, unsigned int y) {
-        T_ASSERT(T_COMPARE(image.getPixel(x, y), sf::Color::Red, &WidgetTests::colorToStr));
+    checkPixels(test, application, size, [&](test::Test&, const glvx::Image& image, unsigned int x, unsigned int y) {
+        T_ASSERT(T_COMPARE(image.getPixel(x, y), glvx::Color::Red, &WidgetTests::colorToStr));
     });
 }
 
@@ -173,13 +173,13 @@ void WidgetTestsRender::afterRunModule() {
 void WidgetTestsRender::checkPixels(
     test::Test& test,
     fw::Application& application,
-    const sf::Vector2u& size,
-    const std::function<void(test::Test&, const sf::Image&, unsigned int x, unsigned int y)> func
+    const glvx::Vector2u& size,
+    const std::function<void(test::Test&, const glvx::Image&, unsigned int x, unsigned int y)> func
 ) const {
-    const sf::Image& image = application.getRenderedImage();
-    T_ASSERT(T_VEC2_COMPARE(image.getSize(), size));
-    for (unsigned int y = 0; y < image.getSize().y; y++) {
-        for (unsigned int x = 0; x < image.getSize().x; x++) {
+    const glvx::Image& image = application.getRenderedImage();
+    T_ASSERT(T_VEC2_COMPARE(glvx::Vector2u(image.getWidth(), image.getHeight()), size));
+    for (unsigned int y = 0; y < (unsigned int)image.getHeight(); y++) {
+        for (unsigned int x = 0; x < (unsigned int)image.getWidth(); x++) {
             T_ASSERT_NO_ERRORS();
             T_CONTAINER("Pixel (" + std::to_string(x) + ", " + std::to_string(y) + ")");
             func(test, image, x, y);

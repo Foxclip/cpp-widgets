@@ -19,7 +19,7 @@ namespace fw {
 		setFocusableType(FocusableType::NORMAL);
 		setForceCustomCursor(true);
 		GetCursorType = []() {
-			return sf::Cursor::Text;
+			return CursorType::Text;
 		};
 		// text
 		text_widget = widget_list.createTextWidget();
@@ -51,41 +51,41 @@ namespace fw {
 		updateColors();
 	}
 
-	TextBoxWidget::TextBoxWidget(WidgetList& widget_list, const sf::Vector2f& size)
+	TextBoxWidget::TextBoxWidget(WidgetList& widget_list, const glvx::Vector2f& size)
 		: TextBoxWidget(widget_list, size.x, size.y) { }
 
 	TextBoxWidget::TextBoxWidget(WidgetList& widget_list)
 		: TextBoxWidget(widget_list, TEXTBOX_DEFAULT_SIZE) { }
 
-	const sf::Color& TextBoxWidget::getFillColor() const {
+	const glvx::Color& TextBoxWidget::getFillColor() const {
 		return background_color;
 	}
 
-	const sf::Color& TextBoxWidget::getHighlightColor() const {
+	const glvx::Color& TextBoxWidget::getHighlightColor() const {
 		return highlight_color;
 	}
 
-	const sf::Color& TextBoxWidget::getTextColor() const {
+	const glvx::Color& TextBoxWidget::getTextColor() const {
 		return text_color;
 	}
 
-	const sf::Color& TextBoxWidget::getEditorColor() const {
+	const glvx::Color& TextBoxWidget::getEditorColor() const {
 		return editor_color;
 	}
 
-	const sf::Color& TextBoxWidget::getEditorTextColor() const {
+	const glvx::Color& TextBoxWidget::getEditorTextColor() const {
 		return editor_text_color;
 	}
 
-	const sf::Color& TextBoxWidget::getSelectionColor() const {
+	const glvx::Color& TextBoxWidget::getSelectionColor() const {
 		return selection_color;
 	}
 
-	const sf::Color& TextBoxWidget::getFailFillColor() const {
+	const glvx::Color& TextBoxWidget::getFailFillColor() const {
 		return fail_background_color;
 	}
 
-	const sf::Color& TextBoxWidget::getEditFailFillColor() const {
+	const glvx::Color& TextBoxWidget::getEditFailFillColor() const {
 		return editor_fail_background_color;
 	}
 
@@ -101,17 +101,17 @@ namespace fw {
 		return text_widget->getCharacterSize();
 	}
 
-	const sf::String& TextBoxWidget::getValue() const {
+	const std::string& TextBoxWidget::getValue() const {
 		return text_widget->getString();
 	}
 
-	const sf::String TextBoxWidget::getSelectedText() const {
+	const std::string TextBoxWidget::getSelectedText() const {
 		if (!isSelectionActive()) {
 			return "";
 		}
 		size_t left_char = getSelectionLeft();
 		size_t count = getSelectionRight() - getSelectionLeft();
-		sf::String str = getValue().substring(left_char, count);
+		std::string str = getValue().substr(left_char, count);
 		return str;
 	}
 
@@ -154,19 +154,19 @@ namespace fw {
 		return selection_pos >= 0 && selection_pos != cursor_pos;
 	}
 
-	sf::Vector2f TextBoxWidget::getLocalCharPos(size_t index, bool top_aligned, bool with_kerning) const {
-		sf::Vector2f local_pos = text_widget->getParentLocalCharPos(index, top_aligned, with_kerning);
+	glvx::Vector2f TextBoxWidget::getLocalCharPos(size_t index, bool top_aligned, bool with_kerning) const {
+		glvx::Vector2f local_pos = text_widget->getParentLocalCharPos(index, top_aligned, with_kerning);
 		return local_pos;
 	}
 
-	sf::Vector2f TextBoxWidget::getGlobalCharPos(size_t index, bool top_aligned, bool with_kerning) const {
+	glvx::Vector2f TextBoxWidget::getGlobalCharPos(size_t index, bool top_aligned, bool with_kerning) const {
 		return text_widget->getGlobalCharPos(index, top_aligned, with_kerning);
 	}
 
-	const sf::Glyph& TextBoxWidget::getGlyph(size_t index) const {
-		sf::Uint32 code = getValue()[index];
-		const sf::Glyph& glyph = text_widget->getFont().getSfmlFont().getGlyph(code, getCharacterSize(), false);
-		return glyph;
+	const glvx::Character& TextBoxWidget::getGlyph(size_t index) const {
+		wAssert(getFont().isLoaded());
+		unsigned char code = (unsigned char)getValue()[index];
+		return text_widget->getFont().getFont(getCharacterSize()).getCharacter(getCharacterSize(), code);
 	}
 
 	ptrdiff_t TextBoxWidget::getSelectionLeft() const {
@@ -183,41 +183,41 @@ namespace fw {
 		return std::max(selection_pos, (ptrdiff_t)cursor_pos);
 	}
 
-	void TextBoxWidget::setFillColor(const sf::Color& color) {
+	void TextBoxWidget::setFillColor(const glvx::Color& color) {
 		this->background_color = color;
 		updateColors();
 	}
 
-	void TextBoxWidget::setHighlightColor(const sf::Color& color) {
+	void TextBoxWidget::setHighlightColor(const glvx::Color& color) {
 		this->highlight_color = color;
 		updateColors();
 	}
 
-	void TextBoxWidget::setTextColor(const sf::Color& color) {
+	void TextBoxWidget::setTextColor(const glvx::Color& color) {
 		this->text_color = color;
 		updateColors();
 	}
 
-	void TextBoxWidget::setEditorColor(const sf::Color& color) {
+	void TextBoxWidget::setEditorColor(const glvx::Color& color) {
 		this->editor_color = color;
 		updateColors();
 	}
 
-	void TextBoxWidget::setEditorTextColor(const sf::Color& color) {
+	void TextBoxWidget::setEditorTextColor(const glvx::Color& color) {
 		this->editor_text_color = color;
 		updateColors();
 	}
 
-	void TextBoxWidget::setSelectionColor(const sf::Color& color) {
+	void TextBoxWidget::setSelectionColor(const glvx::Color& color) {
 		this->selection_color = color;
 		updateColors();
 	}
 
-	void TextBoxWidget::setFailFillColor(const sf::Color& color) {
+	void TextBoxWidget::setFailFillColor(const glvx::Color& color) {
 		this->fail_background_color = color;
 	}
 
-	void TextBoxWidget::setEditFailFillColor(const sf::Color& color) {
+	void TextBoxWidget::setEditFailFillColor(const glvx::Color& color) {
 		this->editor_fail_background_color = color;
 	}
 
@@ -231,14 +231,14 @@ namespace fw {
 		updateCursorSize();
 	}
 
-	void TextBoxWidget::setValueSilent(const sf::String& value) {
+	void TextBoxWidget::setValueSilent(const std::string& value) {
 		text_widget->setString(value);
 		setCursorPos(cursor_pos);
 		deselectAll();
 		internalOnValueChanged(value);
 	}
 
-	void TextBoxWidget::setValue(const sf::String& value) {
+	void TextBoxWidget::setValue(const std::string& value) {
 		setValueSilent(value);
 		OnValueChanged(value);
 	}
@@ -261,21 +261,26 @@ namespace fw {
 		}
 	}
 
-	void TextBoxWidget::typeChar(sf::Uint32 code) {
+	void TextBoxWidget::typeChar(uint32_t code) {
+		// The font only covers ASCII printable characters
+		if (code < 32 || code > 126) {
+			return;
+		}
+		char c = (char)code;
 		if (textbox_type == TextBoxType::INTEGER) {
-			if (TEXTBOX_VALID_INTEGER_CHARS.find(code) == -1) {
+			if (TEXTBOX_VALID_INTEGER_CHARS.find(c) == std::string::npos) {
 				return;
 			}
 		} else if (textbox_type == TextBoxType::FLOAT) {
-			if (TEXTBOX_VALID_FLOAT_CHARS.find(code) == -1) {
+			if (TEXTBOX_VALID_FLOAT_CHARS.find(c) == std::string::npos) {
 				return;
 			}
 		}
-		insert(cursor_pos, sf::String(code));
+		insert(cursor_pos, std::string(1, c));
 		setCursorPos(cursor_pos + 1);
 	}
 
-	void TextBoxWidget::insert(size_t pos, const sf::String& str) {
+	void TextBoxWidget::insert(size_t pos, const std::string& str) {
 		insertSilent(pos, str);
 		internalOnValueChanged(getValue());
 		OnValueChanged(getValue());
@@ -303,8 +308,8 @@ namespace fw {
 	}
 
 	void TextBoxWidget::internalPreUpdate() {
-		sf::Vector2f char_pos = text_widget->getLocalCharPos(cursor_pos, true, true);
-		cursor_widget->setPosition(char_pos - sf::Vector2f(0.0f, TEXTBOX_CURSOR_MARGIN) + TEXTBOX_CURSOR_OFFSET);
+		glvx::Vector2f char_pos = text_widget->getLocalCharPos(cursor_pos, true, true);
+		cursor_widget->setPosition(char_pos - glvx::Vector2f(0.0f, TEXTBOX_CURSOR_MARGIN) + TEXTBOX_CURSOR_OFFSET);
 		if (edit_mode) {
 			if (cursor_timer.get() > TEXTBOX_CURSOR_BLINK_INTERVAL) {
 				cursor_timer.reset();
@@ -316,9 +321,9 @@ namespace fw {
 	}
 
 	void TextBoxWidget::updateColors() {
-		sf::Color rect_col;
-		sf::Color text_col;
-		sf::Color slct_col;
+		glvx::Color rect_col;
+		glvx::Color text_col;
+		glvx::Color slct_col;
 		if (edit_mode) {
 			if (fail_state) {
 				rect_col = editor_fail_background_color;
@@ -350,7 +355,7 @@ namespace fw {
 		selection_widget->setFillColor(slct_col);
 	}
 
-	void TextBoxWidget::internalOnLeftPress(const sf::Vector2f& pos, bool became_focused) {
+	void TextBoxWidget::internalOnLeftPress(const glvx::Vector2f& pos, bool became_focused) {
 		drag_start_pos = pos;
 		left_button_pressed = true;
 		if (!became_focused) {
@@ -363,7 +368,7 @@ namespace fw {
 		history.updateCurrent();
 	}
 
-	void TextBoxWidget::internalOnGlobalLeftRelease(const sf::Vector2f& pos) {
+	void TextBoxWidget::internalOnGlobalLeftRelease(const glvx::Vector2f& pos) {
 		left_button_pressed = false;
 		dragging_begun = false;
 	}
@@ -387,13 +392,13 @@ namespace fw {
 		disableEditMode(true);
 	}
 
-	void TextBoxWidget::processKeyPressedEvent(const sf::Event& event) {
+	void TextBoxWidget::processKeyPressedEvent(const glvx::Event& event) {
 		bool shift_pressed = widget_list.isLShiftPressed();
 		bool ctrl_pressed = widget_list.isLCtrlPressed();
-		if (event.key.code == sf::Keyboard::Escape) {
+		if (event.key.code == glvx::Key::Escape) {
 			disableEditMode(false);
 			removeFocus();
-		} else if (event.key.code == sf::Keyboard::Enter) {
+		} else if (event.key.code == glvx::Key::Enter) {
 			if (edit_mode) {
 				disableEditMode(true);
 			} else {
@@ -401,7 +406,7 @@ namespace fw {
 			}
 		}
 		if (edit_mode) {
-			if (event.key.code == sf::Keyboard::Left) {
+			if (event.key.code == glvx::Key::Left) {
 				if (!isSelectionActive() && !shift_pressed) {
 					if (cursor_pos > 0) {
 						doCursorAction([&]() {
@@ -428,7 +433,7 @@ namespace fw {
 						});
 					}
 				}
-			} else if (event.key.code == sf::Keyboard::Right) {
+			} else if (event.key.code == glvx::Key::Right) {
 				if (!isSelectionActive() && !shift_pressed) {
 					if (cursor_pos < getStringSize()) {
 						doCursorAction([&]() {
@@ -455,7 +460,7 @@ namespace fw {
 						});
 					}
 				}
-			} else if (event.key.code == sf::Keyboard::Home) {
+			} else if (event.key.code == glvx::Key::Home) {
 				if (!isSelectionActive() && !shift_pressed) {
 					doCursorAction([&]() {
 						setCursorPos(0);
@@ -476,7 +481,7 @@ namespace fw {
 						setCursorPos(0);
 					});
 				}
-			} else if (event.key.code == sf::Keyboard::End) {
+			} else if (event.key.code == glvx::Key::End) {
 				if (!isSelectionActive() && !shift_pressed) {
 					doCursorAction([&]() {
 						setCursorPos(getStringSize());
@@ -497,7 +502,7 @@ namespace fw {
 						setCursorPos(getStringSize());
 					});
 				}
-			} else if (event.key.code == sf::Keyboard::Delete) {
+			} else if (event.key.code == glvx::Key::Delete) {
 				if (isSelectionActive()) {
 					doGroupAction(ActionType::ACTION_DELETE, [&]() {
 						eraseSelection();
@@ -507,23 +512,23 @@ namespace fw {
 						erase(cursor_pos, 1);
 					});
 				}
-			} else if (event.key.code == sf::Keyboard::A) {
+			} else if (event.key.code == glvx::Key::A) {
 				if (ctrl_pressed) {
 					doCursorAction([&]() {
 						selectAll();
 					});
 					process_text_entered_event = false;
 				}
-			} else if (event.key.code == sf::Keyboard::C) {
+			} else if (event.key.code == glvx::Key::C) {
 				if (ctrl_pressed) {
-					if (getSelectedText().getSize() > 0) {
+					if (getSelectedText().size() > 0) {
 						if (!clip::set_text(getSelectedText())) {
 							throw std::runtime_error("Unable to copy text to clipboard");
 						}
 					}
 					process_text_entered_event = false;
 				}
-			} else if (event.key.code == sf::Keyboard::V) {
+			} else if (event.key.code == glvx::Key::V) {
 				if (ctrl_pressed) {
 					std::string pasted_text;
 					if (!clip::get_text(pasted_text)) {
@@ -537,9 +542,9 @@ namespace fw {
 					});
 					process_text_entered_event = false;
 				}
-			} else if (event.key.code == sf::Keyboard::X) {
+			} else if (event.key.code == glvx::Key::X) {
 				if (ctrl_pressed) {
-					if (getSelectedText().getSize() > 0) {
+					if (getSelectedText().size() > 0) {
 						if (!clip::set_text(getSelectedText())) {
 							throw std::runtime_error("Unable to copy text to clipboard");
 						}
@@ -549,7 +554,7 @@ namespace fw {
 					}
 					process_text_entered_event = false;
 				}
-			} else if (event.key.code == sf::Keyboard::Z) {
+			} else if (event.key.code == glvx::Key::Z) {
 				if (ctrl_pressed && !shift_pressed) {
 					history.undo();
 					process_text_entered_event = false;
@@ -561,9 +566,9 @@ namespace fw {
 		}
 	}
 
-	void TextBoxWidget::processTextEnteredEvent(const sf::Event& event) {
+	void TextBoxWidget::processTextEnteredEvent(const glvx::Event& event) {
 		if (process_text_entered_event && edit_mode) {
-			sf::Uint32 code = event.text.unicode;
+			uint32_t code = event.text.unicode;
 			if (code == '\n' || code == '\r') {
 				//skip
 			} else if (code == '\b') {
@@ -586,19 +591,19 @@ namespace fw {
 		}
 	}
 
-	void TextBoxWidget::internalProcessKeyboardEvent(const sf::Event& event) {
+	void TextBoxWidget::internalProcessKeyboardEvent(const glvx::Event& event) {
 		try {
-			if (event.type == sf::Event::KeyPressed) {
+			if (event.type == glvx::EventType::KeyPressed) {
 				processKeyPressedEvent(event);
-			} else if (event.type == sf::Event::TextEntered) {
+			} else if (event.type == glvx::EventType::TextEntered) {
 				processTextEnteredEvent(event);
 			}
 		} catch (std::exception exc) {
-			throw std::runtime_error(__FUNCTION__": " + std::string(exc.what()));
+			throw std::runtime_error(std::string(__FUNCTION__) + ": " + std::string(exc.what()));
 		}
 	}
 
-	void TextBoxWidget::internalProcessMouse(const sf::Vector2f& pos) {
+	void TextBoxWidget::internalProcessMouse(const glvx::Vector2f& pos) {
 		if (left_button_pressed) {
 			if (dragging_begun) {
 				size_t old_cursor_pos = cursor_pos;
@@ -622,25 +627,25 @@ namespace fw {
 		}
 	}
 
-	void TextBoxWidget::internalOnMouseEnter(const sf::Vector2f& pos) {
+	void TextBoxWidget::internalOnMouseEnter(const glvx::Vector2f& pos) {
 		highlighted = true;
 		if (!edit_mode) {
 			updateColors();
 		}
 	}
 
-	void TextBoxWidget::internalOnMouseExit(const sf::Vector2f& pos) {
+	void TextBoxWidget::internalOnMouseExit(const glvx::Vector2f& pos) {
 		highlighted = false;
 		if (!edit_mode) {
 			updateColors();
 		}
 	}
 
-	void TextBoxWidget::internalOnValueChanged(const sf::String& new_value) {
+	void TextBoxWidget::internalOnValueChanged(const std::string& new_value) {
 		updateValid();
 	}
 
-	void TextBoxWidget::internalOnConfirm(const sf::String& value) { }
+	void TextBoxWidget::internalOnConfirm(const std::string& value) { }
 
 	void TextBoxWidget::internalOnCancel() { }
 
@@ -692,7 +697,7 @@ namespace fw {
 		OnEditModeToggle(false);
 	}
 
-	void TextBoxWidget::insertSilent(size_t pos, const sf::String& str) {
+	void TextBoxWidget::insertSilent(size_t pos, const std::string& str) {
 		text_widget->insert(pos, str);
 	}
 
@@ -714,28 +719,28 @@ namespace fw {
 		float offset_left = cursor_visual_pos - left_bound;
 		float offset_right = cursor_visual_pos - right_bound;
 		if (offset_left < 0) {
-			sf::Vector2f anchor_offset = text_widget->getAnchorOffset() - sf::Vector2f(offset_left, 0.0f);
+			glvx::Vector2f anchor_offset = text_widget->getAnchorOffset() - glvx::Vector2f(offset_left, 0.0f);
 			text_widget->setAnchorOffset(anchor_offset);
 		} else if (offset_right > 0) {
-			sf::Vector2f anchor_offset = text_widget->getAnchorOffset() - sf::Vector2f(offset_right, 0.0f);
+			glvx::Vector2f anchor_offset = text_widget->getAnchorOffset() - glvx::Vector2f(offset_right, 0.0f);
 			text_widget->setAnchorOffset(anchor_offset);
 		}
 	}
 
 	void TextBoxWidget::updateCursorSize() {
 		float cursor_height = text_widget->getCharacterSize() + TEXTBOX_CURSOR_MARGIN * 2;
-		cursor_widget->setSize(sf::Vector2f(1.0f, cursor_height));
+		cursor_widget->setSize(glvx::Vector2f(1.0f, cursor_height));
 	}
 
 	void TextBoxWidget::updateSelection() {
 		if (selection_pos < 0 || selection_pos > (ptrdiff_t)getStringSize() || cursor_pos - selection_pos == 0) {
-			selection_widget->setSize(sf::Vector2f());
+			selection_widget->setSize(glvx::Vector2f());
 			selection_widget->setVisible(false);
 			return;
 		}
-		sf::Vector2f left_pos = text_widget->getLocalCharPos(getSelectionLeft(), true, true);
-		sf::Vector2f right_pos = text_widget->getLocalCharPos(getSelectionRight(), true, true);
-		sf::Vector2f selection_widget_pos = left_pos - sf::Vector2f(0.0f, TEXTBOX_SELECTION_MARGIN);
+		glvx::Vector2f left_pos = text_widget->getLocalCharPos(getSelectionLeft(), true, true);
+		glvx::Vector2f right_pos = text_widget->getLocalCharPos(getSelectionRight(), true, true);
+		glvx::Vector2f selection_widget_pos = left_pos - glvx::Vector2f(0.0f, TEXTBOX_SELECTION_MARGIN);
 		selection_widget->setPosition(selection_widget_pos);
 		float width = right_pos.x - left_pos.x;
 		float height = getCharacterSize() + TEXTBOX_SELECTION_MARGIN * 2;
@@ -750,18 +755,18 @@ namespace fw {
 		}
 	}
 
-	size_t TextBoxWidget::calcCursorPos(const sf::Vector2f& pos) {
-		sf::Vector2f local_pos = text_widget->toLocal(pos);
+	size_t TextBoxWidget::calcCursorPos(const glvx::Vector2f& pos) {
+		glvx::Vector2f local_pos = text_widget->toLocal(pos);
 		size_t char_left = text_widget->getCharAt(local_pos);
 		if (char_left >= getStringSize()) {
 			return getStringSize();
 		} else {
 			size_t char_right = char_left + 1;
-			sf::Vector2f pos_left = getGlobalCharPos(char_left);
-			sf::Vector2f pos_right = getGlobalCharPos(char_right);
+			glvx::Vector2f pos_left = getGlobalCharPos(char_left);
+			glvx::Vector2f pos_right = getGlobalCharPos(char_right);
 			float dist_left = abs(pos.x - pos_left.x);
 			float dist_right = abs(pos.x - pos_right.x);
-			sf::Vector2f cursor_visual_pos;
+			glvx::Vector2f cursor_visual_pos;
 			if (dist_left <= dist_right) {
 				return char_left;
 			} else {
@@ -770,7 +775,7 @@ namespace fw {
 		}
 	}
 
-	void TextBoxWidget::trySetCursor(const sf::Vector2f& pos) {
+	void TextBoxWidget::trySetCursor(const glvx::Vector2f& pos) {
 		size_t new_pos = calcCursorPos(pos);
 		setCursorPos(new_pos);
 	}

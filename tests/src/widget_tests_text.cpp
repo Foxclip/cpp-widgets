@@ -18,9 +18,9 @@ void WidgetTestsText::textWidgetTest(test::Test& test) {
     text_widget->setCharacterSize(20);
     text_widget->setFont(getFont());
     text_widget->setString("Text");
-    sf::Vector2f position(100.0f, 100.0f);
-    sf::Vector2f size(41.0f, 20.0f);
-    sf::Vector2f local_bounds_offset(0.0f, 6.0f);
+    glvx::Vector2f position(100.0f, 100.0f);
+    glvx::Vector2f size(41.0f, 20.0f);
+    glvx::Vector2f local_bounds_offset(0.0f, 6.0f);
     text_widget->setPosition(position);
 
     GenericWidgetTest gwt(application, test);
@@ -47,17 +47,17 @@ void WidgetTestsText::textWidgetTest(test::Test& test) {
     gwt.clip_children = false;
     gwt.force_custom_cursor = false;
     gwt.parent = root_widget;
-    gwt.local_bounds = sf::FloatRect(sf::Vector2f(), size);
-    gwt.global_bounds = sf::FloatRect(position, size);
+    gwt.local_bounds = glvx::FloatRect(glvx::Vector2f(), size);
+    gwt.global_bounds = glvx::FloatRect(position, size);
     gwt.parent_local_bounds = gwt.global_bounds;
-    gwt.visual_local_bounds = sf::FloatRect(local_bounds_offset, size - local_bounds_offset);
-    gwt.visual_global_bounds = sf::FloatRect(position + local_bounds_offset, size - local_bounds_offset);
+    gwt.visual_local_bounds = glvx::FloatRect(local_bounds_offset, size - local_bounds_offset);
+    gwt.visual_global_bounds = glvx::FloatRect(position + local_bounds_offset, size - local_bounds_offset);
     gwt.visual_parent_local_bounds = gwt.visual_global_bounds;
     T_WRAP_CONTAINER(WidgetTests::genericWidgetTest(gwt));
 
     T_COMPARE(text_widget->getChildren().size(), 0);
 
-    T_COMPARE(text_widget->getFillColor(), sf::Color::White, &WidgetTests::colorToStr);
+    T_COMPARE(text_widget->getFillColor(), glvx::Color::White, &WidgetTests::colorToStr);
 }
 
 void WidgetTestsText::textWidgetDefaultFontTest(test::Test& test) {
@@ -69,7 +69,7 @@ void WidgetTestsText::textWidgetDefaultFontTest(test::Test& test) {
     fw::TextWidget* text_widget = application.getWidgets().createTextWidget();
     text_widget->setCharacterSize(20);
     text_widget->setString("Text");
-    sf::Vector2f position(100.0f, 100.0f);
+    glvx::Vector2f position(100.0f, 100.0f);
     text_widget->setPosition(position);
     application.advance();
 }

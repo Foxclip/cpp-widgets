@@ -15,8 +15,8 @@ void WidgetTestsDropdown::dropdownWidgetBasicTest(test::Test& test) {
     fw::DropdownWidget* dropdown_widget = application.getWidgets().createDropdownWidget();
     fw::Widget* root_widget = application.getWidgets().getRootWidget();
     T_ASSERT(T_CHECK(dropdown_widget));
-    sf::Vector2f position(100.0f, 100.0f);
-    sf::Vector2f size(40.0f, 20.0f);
+    glvx::Vector2f position(100.0f, 100.0f);
+    glvx::Vector2f size(40.0f, 20.0f);
     dropdown_widget->setPosition(position);
     dropdown_widget->setSize(size);
 
@@ -44,8 +44,8 @@ void WidgetTestsDropdown::dropdownWidgetBasicTest(test::Test& test) {
     gwt.clip_children = false;
     gwt.force_custom_cursor = false;
     gwt.parent = root_widget;
-    gwt.local_bounds = sf::FloatRect(sf::Vector2f(), size);
-    gwt.global_bounds = sf::FloatRect(position, size);
+    gwt.local_bounds = glvx::FloatRect(glvx::Vector2f(), size);
+    gwt.global_bounds = glvx::FloatRect(position, size);
     gwt.parent_local_bounds = gwt.global_bounds;
     gwt.visual_local_bounds = gwt.local_bounds;
     gwt.visual_global_bounds = gwt.global_bounds;
@@ -59,13 +59,13 @@ void WidgetTestsDropdown::dropdownWidgetOptions1Test(test::Test& test) {
     application.start(true);
     application.advance();
     fw::DropdownWidget* dropdown_widget = application.getWidgets().createDropdownWidget();
-    sf::Vector2f position(100.0f, 100.0f);
-    sf::Vector2f size(40.0f, 20.0f);
+    glvx::Vector2f position(100.0f, 100.0f);
+    glvx::Vector2f size(40.0f, 20.0f);
     dropdown_widget->setPosition(position);
     dropdown_widget->setSize(size);
     dropdown_widget->setFont(getFont());
     dropdown_widget->setCharacterSize(15);
-    sf::Vector2f dropdown_center = dropdown_widget->getGlobalCenter();
+    glvx::Vector2f dropdown_center = dropdown_widget->getGlobalCenter();
     fw::RectangleWidget* panel_widget = dropdown_widget->getPanelWidget();
     application.advance();
 
@@ -105,13 +105,13 @@ void WidgetTestsDropdown::dropdownWidgetOptions2Test(test::Test& test) {
     application.start(true);
     application.advance();
     fw::DropdownWidget* dropdown_widget = application.getWidgets().createDropdownWidget();
-    sf::Vector2f position(100.0f, 100.0f);
-    sf::Vector2f size(40.0f, 20.0f);
+    glvx::Vector2f position(100.0f, 100.0f);
+    glvx::Vector2f size(40.0f, 20.0f);
     dropdown_widget->setPosition(position);
     dropdown_widget->setSize(size);
     dropdown_widget->setFont(getFont());
     dropdown_widget->setCharacterSize(15);
-    sf::Vector2f dropdown_center = dropdown_widget->getGlobalCenter();
+    glvx::Vector2f dropdown_center = dropdown_widget->getGlobalCenter();
     fw::RectangleWidget* panel_widget = dropdown_widget->getPanelWidget();
     application.advance();
 

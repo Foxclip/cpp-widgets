@@ -1,21 +1,21 @@
 #pragma once
 
-#include "container_widget.h"
+#include "widgets/container_widget.h"
 #include "widgets/tree_view_entry.h"
 
 namespace fw {
 
 	const float TREEVIEW_CONTAINER_PADDING = 2.0f;
-	const sf::Color TREEVIEW_BACKGROUND_COLOR = sf::Color(128, 128, 128);
-	const sf::Color TREEVIEW_TARGET_HIGHLIGHT_COLOR = sf::Color(255, 255, 0);
+	const glvx::Color TREEVIEW_BACKGROUND_COLOR = glvx::Color(128, 128, 128);
+	const glvx::Color TREEVIEW_TARGET_HIGHLIGHT_COLOR = glvx::Color(255, 255, 0);
 
 	class TreeViewEntry;
 	class TreeViewWidget;
 
 	struct TreeviewTargetHighlight {
 		bool visible = false;
-		sf::Vector2f pos = sf::Vector2f(0, 0);
-		sf::Vector2f size = sf::Vector2f(0, 0);
+		glvx::Vector2f pos = glvx::Vector2f(0, 0);
+		glvx::Vector2f size = glvx::Vector2f(0, 0);
 	};
 
 	class TreeViewWidget : public ContainerWidget {
@@ -26,7 +26,7 @@ namespace fw {
 		static TreeviewTargetHighlight target_highlight;
 
 		TreeViewWidget(WidgetList& widget_list, float width, float height);
-		TreeViewWidget(WidgetList& widget_list, const sf::Vector2f& size);
+		TreeViewWidget(WidgetList& widget_list, const glvx::Vector2f& size);
 		TreeViewWidget(const TreeViewWidget& other);
 		const CompVector<TreeViewEntry*>& getAllEntries() const;
 		const CompVector<TreeViewEntry*>& getTopEntries() const;
@@ -36,12 +36,12 @@ namespace fw {
 		TreeViewEntryWidget* getGrabbedWidget() const;
 		TreeViewEntry* getEntry(size_t index) const;
 		TreeViewEntry* getTopEntry(size_t index) const;
-		TreeViewEntry* addEntry(const sf::String& name);
+		TreeViewEntry* addEntry(const std::string& name);
 		void selectAll();
 		void deselectAll();
 		void expandAll();
 		void collapseAll();
-		TreeViewEntry* getTargetHighlightEntry(const sf::Vector2f& global_pos) const;
+		TreeViewEntry* getTargetHighlightEntry(const glvx::Vector2f& global_pos) const;
 		void putTargetHighlight();
 		void removeEntry(TreeViewEntry* entry, bool with_children);
 		void clear();

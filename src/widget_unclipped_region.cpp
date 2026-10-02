@@ -7,14 +7,14 @@ namespace fw {
 		this->widget = widget;
 	}
 
-	const sf::FloatRect& WidgetUnclippedRegion::get() const {
+	const glvx::FloatRect& WidgetUnclippedRegion::get() const {
 		if (!valid) {
 			recalc();
 		}
 		return unclippedRegion;
 	}
 
-	const sf::FloatRect& WidgetUnclippedRegion::getQuantized() const {
+	const glvx::FloatRect& WidgetUnclippedRegion::getQuantized() const {
 		if (!valid) {
 			recalc();
 		}
@@ -25,28 +25,28 @@ namespace fw {
 		if (!valid) {
 			recalc();
 		}
-		return unclippedRegion.width > 0 && unclippedRegion.height > 0;
+		return unclippedRegion.size.x > 0 && unclippedRegion.size.y > 0;
 	}
 
 	bool WidgetUnclippedRegion::isQuantizedNonZero() const {
 		if (!valid) {
 			recalc();
 		}
-		return quantizedUnclippedRegion.width > 0 && quantizedUnclippedRegion.height > 0;
+		return quantizedUnclippedRegion.size.x > 0 && quantizedUnclippedRegion.size.y > 0;
 	}
 
 	void WidgetUnclippedRegion::recalc() const {
-		sf::FloatRect result = widget->getVisualGlobalBounds();
+		glvx::FloatRect result = widget->getVisualGlobalBounds();
 		Widget* parent = widget->parent;
 		while (parent) {
 			if (parent->getClipChildren()) {
-				sf::FloatRect parent_unclipped_region = parent->getUnclippedRegion();
-				sf::FloatRect intersection;
-				bool intersects = result.intersects(parent_unclipped_region, intersection);
-				if (intersects) {
+			glvx::FloatRect parent_unclipped_region = parent->getUnclippedRegion();
+			glvx::FloatRect intersection;
+			result.intersects(parent_unclipped_region, intersection);
+			if (intersection.size.x > 0.0f && intersection.size.y > 0.0f) {
 					result = intersection;
 				} else {
-					result = sf::FloatRect(widget->getGlobalPosition(), sf::Vector2f());
+					result = glvx::FloatRect(widget->getGlobalPosition(), glvx::Vector2f());
 				}
 			}
 			parent = parent->parent;
