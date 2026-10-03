@@ -58,7 +58,8 @@ namespace fw {
 			unsigned int window_width,
 			unsigned int window_height,
 			unsigned int antialiasing,
-			bool vsync
+			bool vsync,
+			bool minimized = false
 		);
 		virtual void start(bool external_control = false);
 		void advance();

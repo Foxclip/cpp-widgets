@@ -38,13 +38,14 @@ namespace fw {
         unsigned int window_width,
         unsigned int window_height,
         unsigned int antialiasing,
-        bool vsync
+        bool vsync,
+        bool minimized
     ) {
         if (external_window) {
             window.setSize((int)window_width, (int)window_height);
             window.setTitle(window_title);
         } else {
-            window.create((int)window_width, (int)window_height, window_title.c_str(), (int)antialiasing);
+            window.create((int)window_width, (int)window_height, window_title.c_str(), (int)antialiasing, minimized);
         }
         window.setVerticalSyncEnabled(vsync);
         onInit();
