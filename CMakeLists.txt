@@ -3,6 +3,8 @@ project(widgets LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 
+option(WIDGETS_BUILD_SANDBOX "Build widgets sandbox" OFF)
+
 add_library(widgets_lib)
 
 target_sources(widgets_lib PRIVATE
@@ -117,3 +119,6 @@ elseif(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/clip/")
 endif()
 
 add_subdirectory(tests)
+if(WIDGETS_BUILD_SANDBOX)
+    add_subdirectory(widgets_sandbox)
+endif()

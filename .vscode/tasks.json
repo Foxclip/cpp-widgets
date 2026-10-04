@@ -8,7 +8,8 @@
       "args": [
         "-S", ".",
         "-B", "build",
-        "-DCMAKE_POLICY_VERSION_MINIMUM='3.5'" // clip library has 3.12
+        "-DCMAKE_POLICY_VERSION_MINIMUM='3.5'", // clip library has 3.12
+        "-DWIDGETS_BUILD_SANDBOX=ON"
       ],
       "group": {
         "kind": "none",
@@ -36,6 +37,13 @@
         "kind": "build",
         "isDefault": false
       },
+      "problemMatcher": ["$msCompile"]
+    },
+    {
+      "label": "Build Sandbox Debug",
+      "type": "shell",
+      "command": "cmake",
+      "args": ["--build", "build", "--config", "Debug", "--target", "widgets_sandbox"],
       "problemMatcher": ["$msCompile"]
     }
   ]
