@@ -62,6 +62,14 @@ namespace sandbox {
 		}
 	}
 
+	void Application::onProcessKeyboardEvent(const glvx::Event& event) {
+		if (event.type == glvx::EventType::KeyPressed) {
+			if (event.key.code == glvx::Key::D) {
+				fw::WidgetList::debug_render = !fw::WidgetList::debug_render;
+			}
+		}
+	}
+
 	bool Application::saveScreenshot(const std::string& file_path) {
 		for (int i = 0; i < SCREENSHOT_WARMUP_FRAMES; i++) {
 			advance();

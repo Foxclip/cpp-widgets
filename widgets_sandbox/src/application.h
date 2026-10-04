@@ -17,6 +17,7 @@ namespace sandbox {
 	protected:
 		void onInit() override;
 		void onProcessWindowEvent(const glvx::Event& event) override;
+		void onProcessKeyboardEvent(const glvx::Event& event) override;
 
 	private:
 		struct Section {
