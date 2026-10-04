@@ -1,5 +1,6 @@
 #define GLFW_EXPOSE_NATIVE_WIN32
 #include "widgets/application.h"
+#include <glvx/cursor.h>
 #include <GLFW/glfw3native.h>
 #include <Windows.h>
 #include <winuser.h>
@@ -7,29 +8,9 @@
 namespace fw {
 
     Application::Application() : window(internal_window) {
-        arrow_cursor.loadFromSystem(glvx::Cursor::Type::Arrow);
-        text_cursor.loadFromSystem(glvx::Cursor::Type::Text);
-        size_top_left_cursor.loadFromSystem(glvx::Cursor::Type::SizeTopLeftBottomRight);
-        size_top_cursor.loadFromSystem(glvx::Cursor::Type::SizeVertical);
-        size_top_right_cursor.loadFromSystem(glvx::Cursor::Type::SizeBottomLeftTopRight);
-        size_left_cursor.loadFromSystem(glvx::Cursor::Type::SizeHorizontal);
-        size_right_cursor.loadFromSystem(glvx::Cursor::Type::SizeHorizontal);
-        size_bottom_left_cursor.loadFromSystem(glvx::Cursor::Type::SizeBottomLeftTopRight);
-        size_bottom_cursor.loadFromSystem(glvx::Cursor::Type::SizeVertical);
-        size_bottom_right_cursor.loadFromSystem(glvx::Cursor::Type::SizeTopLeftBottomRight);
     }
 
     Application::Application(glvx::Window& window) : window(window) {
-        arrow_cursor.loadFromSystem(glvx::Cursor::Type::Arrow);
-        text_cursor.loadFromSystem(glvx::Cursor::Type::Text);
-        size_top_left_cursor.loadFromSystem(glvx::Cursor::Type::SizeTopLeftBottomRight);
-        size_top_cursor.loadFromSystem(glvx::Cursor::Type::SizeVertical);
-        size_top_right_cursor.loadFromSystem(glvx::Cursor::Type::SizeBottomLeftTopRight);
-        size_left_cursor.loadFromSystem(glvx::Cursor::Type::SizeHorizontal);
-        size_right_cursor.loadFromSystem(glvx::Cursor::Type::SizeHorizontal);
-        size_bottom_left_cursor.loadFromSystem(glvx::Cursor::Type::SizeBottomLeftTopRight);
-        size_bottom_cursor.loadFromSystem(glvx::Cursor::Type::SizeVertical);
-        size_bottom_right_cursor.loadFromSystem(glvx::Cursor::Type::SizeTopLeftBottomRight);
         external_window = true;
     }
 
@@ -96,6 +77,10 @@ namespace fw {
 
     Stage Application::getStage() const {
         return stage;
+    }
+
+    CursorType Application::getCursorType() const {
+        return current_cursor_type;
     }
 
     Widget* Application::getLeftGestureSource() const {
@@ -700,19 +685,21 @@ namespace fw {
             return;
         }
         current_cursor_type = type;
+        glvx::Cursor::Type glvx_type = glvx::Cursor::Type::Arrow;
         switch (type) {
-            case CursorType::Arrow: window.setMouseCursor(arrow_cursor); break;
-            case CursorType::Text: window.setMouseCursor(text_cursor); break;
-            case CursorType::SizeTopLeft: window.setMouseCursor(size_top_left_cursor); break;
-            case CursorType::SizeTop: window.setMouseCursor(size_top_cursor); break;
-            case CursorType::SizeTopRight: window.setMouseCursor(size_top_right_cursor); break;
-            case CursorType::SizeLeft: window.setMouseCursor(size_left_cursor); break;
-            case CursorType::SizeRight: window.setMouseCursor(size_right_cursor); break;
-            case CursorType::SizeBottomLeft: window.setMouseCursor(size_bottom_left_cursor); break;
-            case CursorType::SizeBottom: window.setMouseCursor(size_bottom_cursor); break;
-            case CursorType::SizeBottomRight: window.setMouseCursor(size_bottom_right_cursor); break;
-            default: window.setMouseCursor(arrow_cursor); break;
+            case CursorType::Arrow: glvx_type = glvx::Cursor::Type::Arrow; break;
+            case CursorType::Text: glvx_type = glvx::Cursor::Type::Text; break;
+            case CursorType::SizeTopLeft: glvx_type = glvx::Cursor::Type::SizeTopLeft; break;
+            case CursorType::SizeTop: glvx_type = glvx::Cursor::Type::SizeTop; break;
+            case CursorType::SizeTopRight: glvx_type = glvx::Cursor::Type::SizeTopRight; break;
+            case CursorType::SizeLeft: glvx_type = glvx::Cursor::Type::SizeLeft; break;
+            case CursorType::SizeRight: glvx_type = glvx::Cursor::Type::SizeRight; break;
+            case CursorType::SizeBottomLeft: glvx_type = glvx::Cursor::Type::SizeBottomLeft; break;
+            case CursorType::SizeBottom: glvx_type = glvx::Cursor::Type::SizeBottom; break;
+            case CursorType::SizeBottomRight: glvx_type = glvx::Cursor::Type::SizeBottomRight; break;
+            default: glvx_type = glvx::Cursor::Type::Arrow; break;
         }
+        window.setMouseCursor(glvx_type);
     }
 
     MouseGesture::MouseGesture() { }

@@ -11,7 +11,6 @@
 #include <glvx/shape.h>
 #include <glvx/rectangle.h>
 #include <glvx/image.h>
-#include <glvx/cursor.h>
 #include <glvx/keyboard.h>
 #include <glvx/mouse.h>
 #include "widgets/widget_list.h"
@@ -67,6 +66,7 @@ namespace fw {
 		glvx::Vector2u getWindowSize() const;
 		const fw::Font& getDefaultFont() const;
 		Stage getStage() const;
+		CursorType getCursorType() const;
 		Widget* getLeftGestureSource() const;
 		Widget* getRightGestureSource() const;
 		const glvx::RenderTexture& getRenderTexture() const;
@@ -124,16 +124,6 @@ namespace fw {
 		bool middleButtonPressed = false;
 		MouseGesture mouse_gesture_left;
 		MouseGesture mouse_gesture_right;
-		glvx::Cursor arrow_cursor;
-		glvx::Cursor text_cursor;
-		glvx::Cursor size_top_left_cursor;
-		glvx::Cursor size_top_cursor;
-		glvx::Cursor size_top_right_cursor;
-		glvx::Cursor size_left_cursor;
-		glvx::Cursor size_right_cursor;
-		glvx::Cursor size_bottom_left_cursor;
-		glvx::Cursor size_bottom_cursor;
-		glvx::Cursor size_bottom_right_cursor;
 		bool external_control = false;
 		glvx::Vector2i external_mouse_pos;
 		bool external_lctrl_pressed = false;
