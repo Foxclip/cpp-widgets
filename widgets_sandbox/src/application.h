@@ -11,7 +11,7 @@ namespace sandbox {
 		static const int WINDOW_WIDTH = 1280;
 		static const int WINDOW_HEIGHT = 1000;
 
-		explicit Application(const std::string& section, bool show_fps = true);
+		explicit Application(const std::string& section, bool show_fps = true, bool debug_render = false);
 		bool saveScreenshot(const std::string& file_path);
 
 	protected:
@@ -37,6 +37,7 @@ namespace sandbox {
 		static constexpr float FPS_LABEL_UPDATE_INTERVAL = 0.25f; // seconds between HUD updates
 
 		bool m_show_fps;
+		bool m_debug_render;
 		fw::TextWidget* m_fps_label = nullptr;
 		double m_fps_last_time = 0.0;
 		double m_fps_accumulated = 0.0;

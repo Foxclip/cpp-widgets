@@ -21,8 +21,8 @@ namespace sandbox {
 		return full;
 	}
 
-	Application::Application(const std::string& section, bool show_fps)
-		: m_section(section), m_font("fonts/verdana.ttf"), m_show_fps(show_fps) {
+	Application::Application(const std::string& section, bool show_fps, bool debug_render)
+		: m_section(section), m_font("fonts/verdana.ttf"), m_show_fps(show_fps), m_debug_render(debug_render) {
 	}
 
 	void Application::onInit() {
@@ -33,6 +33,9 @@ namespace sandbox {
 				fw::WidgetList::debug_render = !fw::WidgetList::debug_render;
 			}
 		};
+		if (m_debug_render) {
+			fw::WidgetList::debug_render = true;
+		}
 		setupTextShowcase(createSection("text", "Text", 16.0f, 56.0f));
 		setupShapesShowcase(createSection("shapes", "Shapes", 80.0f, 64.0f));
 		setupButtonShowcase(createSection("button", "Button", 152.0f, 56.0f));
