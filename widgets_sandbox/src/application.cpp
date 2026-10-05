@@ -115,6 +115,21 @@ namespace sandbox {
 		return true;
 	}
 
+	void Application::reportFps(double duration_seconds) {
+		constexpr int WARMUP_FRAMES = 30;
+		for (int i = 0; i < WARMUP_FRAMES; i++) {
+			advance();
+		}
+		auto start_time = std::chrono::steady_clock::now();
+		int frames = 0;
+		do {
+			advance();
+			frames++;
+		} while (std::chrono::duration<double>(std::chrono::steady_clock::now() - start_time).count() < duration_seconds);
+		double elapsed = std::chrono::duration<double>(std::chrono::steady_clock::now() - start_time).count();
+		std::cout << "FPS " << (frames / elapsed) << std::endl;
+	}
+
 	fw::EmptyWidget* Application::createSection(const std::string& name, const std::string& label, float y, float height) {
 		fw::EmptyWidget* section = getWidgets().createEmptyWidget();
 		section->setName(name);

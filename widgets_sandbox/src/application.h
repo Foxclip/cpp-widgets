@@ -13,6 +13,9 @@ namespace sandbox {
 
 		explicit Application(const std::string& section, bool show_fps = true, bool debug_render = false);
 		bool saveScreenshot(const std::string& file_path);
+		// Advance frames for the given duration (after a short warmup) and
+		// print the measured average FPS to stdout. For performance checks.
+		void reportFps(double duration_seconds);
 
 	protected:
 		void onInit() override;

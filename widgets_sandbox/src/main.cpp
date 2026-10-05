@@ -8,6 +8,7 @@ int main(int argc, char* argv[]) {
     bool screenshot = false;
     bool no_fps = false;
     bool debug_render = false;
+    double fps_duration = 0.0;
     std::string screenshot_path;
     std::string section;
     for (int i = 1; i < argc; i++) {
@@ -26,6 +27,14 @@ int main(int argc, char* argv[]) {
             no_fps = true;
         } else if (std::strcmp(argv[i], "--debug-render") == 0) {
             debug_render = true;
+        } else if (std::strcmp(argv[i], "--fps") == 0) {
+            if (i + 1 >= argc) {
+                std::cerr << "ERROR: --fps requires a duration (seconds) argument" << std::endl;
+                return 1;
+            }
+            fps_duration = std::atof(argv[i + 1]);
+            i++;
+            minimized = true;
         } else if (std::strcmp(argv[i], "--section") == 0) {
             if (i + 1 >= argc) {
                 std::cerr << "ERROR: --section requires a section name argument" << std::endl;
@@ -46,6 +55,9 @@ int main(int argc, char* argv[]) {
         if (!application.saveScreenshot(screenshot_path)) {
             return 1;
         }
+    } else if (fps_duration > 0.0) {
+        application.start(true);
+        application.reportFps(fps_duration);
     } else {
         application.start();
     }
