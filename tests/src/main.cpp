@@ -67,4 +67,3 @@ int main(int argc, char* argv[]) {
 }
 
 // TODO: use glvx::Angle for angles
-// TODO: investigate local VertexArray allocation in draw_texture_rect

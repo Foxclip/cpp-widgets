@@ -203,6 +203,10 @@ namespace fw {
 		return glvx::FloatRect(glvx::Vector2f(min_x, min_y), glvx::Vector2f(max_x - min_x, max_y - min_y));
 	}
 
+	namespace {
+		glvx::VertexArray texture_quad(glvx::PrimitiveType::TriangleStrip, 4);
+	}
+
 	void draw_texture_rect(
 		glvx::RenderTarget& target,
 		const glvx::AbstractTexture& texture,
@@ -213,24 +217,23 @@ namespace fw {
 		const glvx::FloatRect& uv_rect,
 		glvx::Shader* shader
 	) {
-		glvx::VertexArray quad(glvx::PrimitiveType::TriangleStrip, 4);
-		quad[0].position = pos;
-		quad[1].position = glvx::Vector2f(pos.x + size.x, pos.y);
-		quad[2].position = glvx::Vector2f(pos.x, pos.y + size.y);
-		quad[3].position = glvx::Vector2f(pos.x + size.x, pos.y + size.y);
+		texture_quad[0].position = pos;
+		texture_quad[1].position = glvx::Vector2f(pos.x + size.x, pos.y);
+		texture_quad[2].position = glvx::Vector2f(pos.x, pos.y + size.y);
+		texture_quad[3].position = glvx::Vector2f(pos.x + size.x, pos.y + size.y);
 		for (size_t i = 0; i < 4; i++) {
-			quad[i].color = color;
+			texture_quad[i].color = color;
 		}
-		quad[0].tex_coords = glvx::Vector2f(uv_rect.position.x, uv_rect.position.y + uv_rect.size.y);
-		quad[1].tex_coords = glvx::Vector2f(uv_rect.position.x + uv_rect.size.x, uv_rect.position.y + uv_rect.size.y);
-		quad[2].tex_coords = glvx::Vector2f(uv_rect.position.x, uv_rect.position.y);
-		quad[3].tex_coords = glvx::Vector2f(uv_rect.position.x + uv_rect.size.x, uv_rect.position.y);
+		texture_quad[0].tex_coords = glvx::Vector2f(uv_rect.position.x, uv_rect.position.y + uv_rect.size.y);
+		texture_quad[1].tex_coords = glvx::Vector2f(uv_rect.position.x + uv_rect.size.x, uv_rect.position.y + uv_rect.size.y);
+		texture_quad[2].tex_coords = glvx::Vector2f(uv_rect.position.x, uv_rect.position.y);
+		texture_quad[3].tex_coords = glvx::Vector2f(uv_rect.position.x + uv_rect.size.x, uv_rect.position.y);
 		glvx::RenderStates states;
 		states.transform = extra_transform;
 		states.texture = const_cast<glvx::AbstractTexture*>(&texture);
 		states.shader = shader;
 		states.blend_mode = glvx::BlendAlpha;
-		target.draw(quad, states);
+		target.draw(texture_quad, states);
 	}
 
 	glvx::FloatRect quantize_rect(const glvx::FloatRect& rect, QuantizeMode quantize_mode) {
