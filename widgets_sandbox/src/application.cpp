@@ -1,4 +1,5 @@
 #include "application.h"
+#include <cmath>
 #include <iostream>
 #include <vector>
 
@@ -125,37 +126,54 @@ namespace sandbox {
 	}
 
 	void Application::setupShapesShowcase(fw::Widget* parent) {
-		fw::RectangleWidget* rect = getWidgets().createRectangleWidget(36.0f, 36.0f);
+		// All shapes share the same vertical center, a 32px bounding box and
+		// equal spacing; labels are centered horizontally under each shape.
+		constexpr float SHAPE_SIZE = 32.0f;
+		constexpr float SHAPE_CENTER_Y = 26.0f;
+		constexpr float SHAPE_SPACING = 70.0f;
+		constexpr float LABEL_Y = 50.0f;
+		constexpr unsigned int LABEL_CHAR_SIZE = 10;
+		const float first_center_x = CONTENT_X + SHAPE_SIZE / 2.0f;
+
+		fw::RectangleWidget* rect = getWidgets().createRectangleWidget(SHAPE_SIZE, SHAPE_SIZE);
 		rect->setParent(parent);
 		rect->setFillColor(glvx::Color(200, 60, 60));
-		rect->setPosition(CONTENT_X, 8.0f);
+		rect->setPosition(first_center_x - SHAPE_SIZE / 2.0f, SHAPE_CENTER_Y - SHAPE_SIZE / 2.0f);
 
-		fw::PolygonWidget* hexagon = getWidgets().createPolygonWidget(6, 18.0f);
+		// Polygon vertices are relative to the widget position, so position = center
+		fw::PolygonWidget* hexagon = getWidgets().createPolygonWidget(6, SHAPE_SIZE / 2.0f);
 		hexagon->setParent(parent);
 		hexagon->setFillColor(glvx::Color(60, 120, 220));
-		hexagon->setPosition(CONTENT_X + 60.0f, 32.0f);
+		hexagon->setPosition(first_center_x + SHAPE_SPACING, SHAPE_CENTER_Y);
 
 		std::vector<glvx::Vector2f> triangle_vertices = {
-			glvx::Vector2f(0.0f, -16.0f),
-			glvx::Vector2f(14.0f, 12.0f),
-			glvx::Vector2f(-14.0f, 12.0f),
+			glvx::Vector2f(0.0f, -18.0f),
+			glvx::Vector2f(16.0f, 14.0f),
+			glvx::Vector2f(-16.0f, 14.0f),
 		};
 		fw::PolygonWidget* triangle = getWidgets().createPolygonWidget(triangle_vertices);
 		triangle->setParent(parent);
 		triangle->setFillColor(glvx::Color(220, 180, 40));
-		triangle->setPosition(CONTENT_X + 130.0f, 32.0f);
+		// Vertex bounding box is 32x32 centered at (0, -2) relative to the position
+		triangle->setPosition(first_center_x + 2.0f * SHAPE_SPACING, SHAPE_CENTER_Y + 2.0f);
 
-		fw::RectangleWidget* rotated = getWidgets().createRectangleWidget(28.0f, 28.0f);
+		// Rotated 45 degrees, so the side is 32/sqrt(2) to keep a 32x32 bounding box
+		fw::RectangleWidget* rotated = getWidgets().createRectangleWidget(SHAPE_SIZE / std::sqrt(2.0f), SHAPE_SIZE / std::sqrt(2.0f));
 		rotated->setParent(parent);
 		rotated->setFillColor(glvx::Color(60, 180, 120));
 		rotated->setOrigin(fw::Widget::Anchor::CENTER);
-		rotated->setPosition(CONTENT_X + 180.0f, 30.0f);
-		rotated->setRotation(fw::to_radians(45.0f));
+		rotated->setPosition(first_center_x + 3.0f * SHAPE_SPACING, SHAPE_CENTER_Y);
+		// Widget::setRotation expects degrees (see TreeViewEntryWidget::updateWidgets)
+		rotated->setRotation(45.0f);
 
-		createLabel(parent, "rectangle", CONTENT_X, 52.0f);
-		createLabel(parent, "hexagon", CONTENT_X + 66.0f, 52.0f);
-		createLabel(parent, "polygon", CONTENT_X + 120.0f, 52.0f);
-		createLabel(parent, "rotated 45", CONTENT_X + 170.0f, 52.0f);
+		auto add_label = [this, parent, first_center_x, LABEL_CHAR_SIZE, LABEL_Y](float center_x, const std::string& text) {
+			float text_width = fw::getTextVisualBounds(m_font.getFont(LABEL_CHAR_SIZE), LABEL_CHAR_SIZE, text).size.x;
+			createLabel(parent, text, center_x - text_width / 2.0f, LABEL_Y, LABEL_CHAR_SIZE);
+		};
+		add_label(first_center_x, "rectangle");
+		add_label(first_center_x + SHAPE_SPACING, "hexagon");
+		add_label(first_center_x + 2.0f * SHAPE_SPACING, "polygon");
+		add_label(first_center_x + 3.0f * SHAPE_SPACING, "rotated 45");
 	}
 
 	void Application::setupButtonShowcase(fw::Widget* parent) {
