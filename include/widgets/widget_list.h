@@ -142,6 +142,7 @@ namespace fw {
 		void processAfterInput();
 		void updateRenderQueue();
 		void updateWidgets();
+		void invalidateUpdateQueue();
 		void printUpdateQueue();
 		void render(glvx::RenderTarget& target);
 		void reset(const glvx::Vector2f& root_size, const glvx::Vector2f& mouse_pos);

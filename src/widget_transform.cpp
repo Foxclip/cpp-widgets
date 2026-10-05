@@ -68,12 +68,18 @@ namespace fw {
 	}
 
 	void WidgetTransform::setPosition(float x, float y) {
+		if (this->position.x == x && this->position.y == y) {
+			return;
+		}
 		this->position.x = x;
 		this->position.y = y;
 		invalidateTransform();
 	}
 
 	void WidgetTransform::setPosition(const glvx::Vector2f& position) {
+		if (this->position == position) {
+			return;
+		}
 		this->position = position;
 		invalidateTransform();
 	}
@@ -90,16 +96,25 @@ namespace fw {
 	}
 
 	void WidgetTransform::setRotation(float angle) {
+		if (this->rotation == angle) {
+			return;
+		}
 		this->rotation = angle;
 		invalidateTransform();
 	}
 
 	void WidgetTransform::setScale(const glvx::Vector2f& scale) {
+		if (this->scale == scale) {
+			return;
+		}
 		this->scale = scale;
 		invalidateTransform();
 	}
 
 	void WidgetTransform::setOrigin(float x, float y) {
+		if (this->origin.x == x && this->origin.y == y) {
+			return;
+		}
 		this->origin.x = x;
 		this->origin.y = y;
 		invalidateTransform();

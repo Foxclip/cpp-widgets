@@ -790,7 +790,11 @@ namespace fw {
 
 	void Widget::setParentAnchor(Anchor anchor) {
 		wAssert(!widget_list.isLocked());
+		if (this->parent_anchor == anchor) {
+			return;
+		}
 		this->parent_anchor = anchor;
+		invalidateUpdateQueue();
 		updatePositionX();
 		updatePositionY();
 	}
@@ -822,13 +826,21 @@ namespace fw {
 	void Widget::setSizeXPolicy(SizePolicy policy) {
 		wAssert(!widget_list.isLocked());
 		wAssert(this != widget_list.getRootWidget());
+		if (this->size_policy_x == policy) {
+			return;
+		}
 		this->size_policy_x = policy;
+		invalidateUpdateQueue();
 	}
 
 	void Widget::setSizeYPolicy(SizePolicy policy) {
 		wAssert(!widget_list.isLocked());
 		wAssert(this != widget_list.getRootWidget());
+		if (this->size_policy_y == policy) {
+			return;
+		}
 		this->size_policy_y = policy;
+		invalidateUpdateQueue();
 	}
 
 	void Widget::setSizePolicy(SizePolicy policy) {
@@ -922,12 +934,17 @@ namespace fw {
 
 	void Widget::setVisible(bool value) {
 		wAssert(!widget_list.isLocked());
+		if (this->visible == value) {
+			return;
+		}
 		this->visible = value;
+		invalidateUpdateQueue();
 	}
 
 	void Widget::toggleVisible() {
 		wAssert(!widget_list.isLocked());
 		this->visible = !this->visible;
+		invalidateUpdateQueue();
 	}
 
 	void Widget::setClickThrough(bool value) {
@@ -1057,6 +1074,7 @@ namespace fw {
 			target->dependent_links.add(ptr);
 		}
 		links.add(std::move(uptr));
+		invalidateUpdateQueue();
 		return ptr;
 	}
 
@@ -1079,6 +1097,7 @@ namespace fw {
 		dp::DataPointerUnique<WidgetLink> uptr = dp::make_data_pointer<WidgetLink>("WidgetLink " + name, name, targets_func, this, func);
 		WidgetLink* ptr = uptr.get();
 		links.add(std::move(uptr));
+		invalidateUpdateQueue();
 		return ptr;
 	}
 
@@ -1094,6 +1113,11 @@ namespace fw {
 			dep_link->remove();
 		}
 		links.remove(link);
+		invalidateUpdateQueue();
+	}
+
+	void Widget::invalidateUpdateQueue() {
+		widget_list.invalidateUpdateQueue();
 	}
 
 	void Widget::setForceCustomCursor(bool value) {
@@ -1193,6 +1217,7 @@ namespace fw {
 		children_names.add(child->name, child);
 		child->parent = this;
 		child->parent_chain.invalidate();
+		invalidateUpdateQueue();
 	}
 
 	void Widget::removeChild(Widget* child) {
@@ -1201,6 +1226,7 @@ namespace fw {
 		children.remove(child);
 		children_names.remove(child->name, child);
 		local_layers.erase(child);
+		invalidateUpdateQueue();
 	}
 
 	void Widget::removeSocket(WidgetUpdateSocket* socket) {

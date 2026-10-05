@@ -312,6 +312,10 @@ namespace fw {
 			const ExecuteFuncType& func
 		);
 		void removeLink(WidgetLink* link);
+		// Invalidate the cached layout toposort order; called from mutation
+		// points that change the dependency structure (tree, links, anchors,
+		// size policies, visibility).
+		void invalidateUpdateQueue();
 		void setForceCustomCursor(bool value);
 		void setName(const std::string& new_name);
 		void setClipChildren(bool value);

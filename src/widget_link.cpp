@@ -28,10 +28,16 @@ namespace fw {
 
 	void WidgetUpdateTarget::addTarget(WidgetUpdateTarget* target) {
 		targets.add(target);
+		if (widget) {
+			widget->invalidateUpdateQueue();
+		}
 	}
 
 	void WidgetUpdateTarget::removeTarget(WidgetUpdateTarget* target) {
 		targets.remove(target);
+		if (widget) {
+			widget->invalidateUpdateQueue();
+		}
 	}
 
 	WidgetUpdateSocket::WidgetUpdateSocket() { }

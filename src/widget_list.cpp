@@ -509,6 +509,10 @@ namespace fw {
 		root_widget->postUpdate();
 	}
 
+	void WidgetList::invalidateUpdateQueue() {
+		update_queue.invalidate();
+	}
+
 	void WidgetList::printUpdateQueue() {
 		print_update_queue = true;
 	}
