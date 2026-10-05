@@ -1,4 +1,5 @@
 #include "application.h"
+#include <chrono>
 #include <cmath>
 #include <iostream>
 #include <vector>
@@ -20,8 +21,8 @@ namespace sandbox {
 		return full;
 	}
 
-	Application::Application(const std::string& section)
-		: m_section(section), m_font("fonts/verdana.ttf") {
+	Application::Application(const std::string& section, bool show_fps)
+		: m_section(section), m_font("fonts/verdana.ttf"), m_show_fps(show_fps) {
 	}
 
 	void Application::onInit() {
@@ -60,6 +61,38 @@ namespace sandbox {
 				std::cerr << std::endl;
 			}
 		}
+		if (m_show_fps) {
+			m_fps_label = getWidgets().createTextWidget();
+			m_fps_label->setCharacterSize(FPS_LABEL_CHAR_SIZE);
+			m_fps_label->setFillColor(glvx::Color(170, 170, 170));
+			m_fps_label->setString("-- FPS");
+			updateFpsLabelPosition();
+		}
+	}
+
+	void Application::onFrameBegin() {
+		if (!m_fps_label) {
+			return;
+		}
+		double now = std::chrono::duration<double>(std::chrono::steady_clock::now().time_since_epoch()).count();
+		if (m_fps_last_time > 0.0) {
+			m_fps_accumulated += now - m_fps_last_time;
+			m_fps_frames++;
+			if (m_fps_accumulated >= FPS_LABEL_UPDATE_INTERVAL) {
+				int fps = (int)std::lround(m_fps_frames / m_fps_accumulated);
+				m_fps_label->setString(std::to_string(fps) + " FPS");
+				updateFpsLabelPosition();
+				m_fps_accumulated = 0.0;
+				m_fps_frames = 0;
+			}
+		}
+		m_fps_last_time = now;
+	}
+
+	void Application::updateFpsLabelPosition() {
+		float text_width = fw::getTextVisualBounds(m_font.getFont(FPS_LABEL_CHAR_SIZE), FPS_LABEL_CHAR_SIZE, m_fps_label->getString()).size.x;
+		glvx::Vector2u window_size = getWindowSize();
+		m_fps_label->setPosition((float)window_size.x - text_width - FPS_LABEL_MARGIN_X, FPS_LABEL_Y);
 	}
 
 	void Application::onProcessWindowEvent(const glvx::Event& event) {

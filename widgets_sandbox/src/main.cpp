@@ -6,6 +6,7 @@
 int main(int argc, char* argv[]) {
     bool minimized = false;
     bool screenshot = false;
+    bool no_fps = false;
     std::string screenshot_path;
     std::string section;
     for (int i = 1; i < argc; i++) {
@@ -20,6 +21,8 @@ int main(int argc, char* argv[]) {
             screenshot_path = argv[i + 1];
             i++;
             minimized = true;
+        } else if (std::strcmp(argv[i], "--no-fps") == 0) {
+            no_fps = true;
         } else if (std::strcmp(argv[i], "--section") == 0) {
             if (i + 1 >= argc) {
                 std::cerr << "ERROR: --section requires a section name argument" << std::endl;
@@ -33,7 +36,7 @@ int main(int argc, char* argv[]) {
         }
     }
 
-    sandbox::Application application(section);
+    sandbox::Application application(section, !no_fps);
     application.init("Widgets sandbox", sandbox::Application::WINDOW_WIDTH, sandbox::Application::WINDOW_HEIGHT, 0, false, minimized);
     if (screenshot) {
         application.start(true);
