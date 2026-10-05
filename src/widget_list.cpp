@@ -482,6 +482,10 @@ namespace fw {
 		render_queue.update();
 	}
 
+	void WidgetList::invalidateRenderQueue() {
+		render_queue.invalidate();
+	}
+
 	void WidgetList::updateWidgets() {
 		wAssert(!isLocked());
 		root_widget->preUpdate();
@@ -511,6 +515,9 @@ namespace fw {
 
 	void WidgetList::invalidateUpdateQueue() {
 		update_queue.invalidate();
+		// Visibility and tree structure mutations invalidate the update
+		// queue and change the render queue content as well.
+		invalidateRenderQueue();
 	}
 
 	void WidgetList::printUpdateQueue() {

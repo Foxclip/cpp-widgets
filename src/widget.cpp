@@ -1026,6 +1026,8 @@ namespace fw {
 		wAssert(!children_locked);
 		wAssert(children.contains(child));
 		wAssert(index >= 0 && index <= getChildrenCount());
+		// Reordering siblings changes the render queue order.
+		widget_list.invalidateRenderQueue();
 		Stage stage = widget_list.application.getStage();
 		wAssert(
 			stage == Stage::NONE || stage == Stage::AFTER_INPUT,
@@ -1145,18 +1147,30 @@ namespace fw {
 
 	void Widget::setGlobalRenderLayer(GlobalRenderLayer layer) {
 		wAssert(!widget_list.isLocked());
+		if (this->global_layer == layer) {
+			return;
+		}
 		this->global_layer = layer;
+		widget_list.invalidateRenderQueue();
 	}
 
 	void Widget::setLocalRenderLayer(size_t layer) {
 		wAssert(!widget_list.isLocked());
+		if (local_layers.contains(this) && local_layers.at(this) == layer) {
+			return;
+		}
 		local_layers[this] = layer;
+		widget_list.invalidateRenderQueue();
 	}
 
 	void Widget::setParentLocalRenderLayer(size_t layer) {
 		wAssert(!widget_list.isLocked());
 		wAssert(parent);
+		if (parent->local_layers.contains(this) && parent->local_layers.at(this) == layer) {
+			return;
+		}
 		parent->local_layers[this] = layer;
+		widget_list.invalidateRenderQueue();
 	}
 
 	void Widget::setQuantizeRenderedPosition(bool value) {
