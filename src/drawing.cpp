@@ -3,8 +3,49 @@
 
 namespace fw {
 
-	glvx::VertexArray line_primitive = glvx::VertexArray(glvx::PrimitiveType::Lines, 2);
-	glvx::VertexArray rect_primitive = glvx::VertexArray(glvx::PrimitiveType::TriangleStrip, 4);
+	// NOTE: These draw helpers intentionally create a fresh, function-local
+	// VertexArray on every call instead of reusing a single shared/global
+	// VertexArray. A long-lived shared vertex array (whose VAO is reused across
+	// many draw calls while its buffer is updated in place) silently fails to
+	// render on some drivers (observed with NVIDIA, especially in Debug builds):
+	// the clear/background shows but the geometry is missing. A freshly created
+	// vertex array per draw renders reliably. The small per-call VBO/VAO churn
+	// is an acceptable cost for correctness.
+
+	namespace {
+
+		void draw_line_impl(glvx::RenderTarget& target, const glvx::Vector2f& v1, const glvx::Vector2f& v2, const glvx::Color& color) {
+			glvx::VertexArray line(glvx::PrimitiveType::Lines, 2);
+			line[0].position = v1;
+			line[0].color = color;
+			line[1].position = v2;
+			line[1].color = color;
+			target.draw(line);
+		}
+
+		void draw_line_impl(CanvasWidget* canvas, const glvx::Vector2f& v1, const glvx::Vector2f& v2, const glvx::Color& color) {
+			glvx::VertexArray line(glvx::PrimitiveType::Lines, 2);
+			line[0].position = v1;
+			line[0].color = color;
+			line[1].position = v2;
+			line[1].color = color;
+			canvas->draw(line);
+		}
+
+		void draw_rect_impl(glvx::RenderTarget& target, const glvx::Vector2f& v1, const glvx::Vector2f& v2, const glvx::Vector2f& v3, const glvx::Vector2f& v4, const glvx::Color& color) {
+			glvx::VertexArray rect(glvx::PrimitiveType::TriangleStrip, 4);
+			rect[0].position = v1;
+			rect[0].color = color;
+			rect[1].position = v2;
+			rect[1].color = color;
+			rect[2].position = v3;
+			rect[2].color = color;
+			rect[3].position = v4;
+			rect[3].color = color;
+			target.draw(rect);
+		}
+
+	}
 
 	void draw_line(
 		glvx::RenderTarget& target,
@@ -12,11 +53,7 @@ namespace fw {
 		const glvx::Vector2f& v2,
 		const glvx::Color& color
 	) {
-		line_primitive[0].position = quantize_and_offset(v1);
-		line_primitive[0].color = color;
-		line_primitive[1].position = quantize_and_offset(v2);
-		line_primitive[1].color = color;
-		target.draw(line_primitive);
+		draw_line_impl(target, quantize_and_offset(v1), quantize_and_offset(v2), color);
 	}
 
 	void draw_line(
@@ -25,11 +62,7 @@ namespace fw {
 		const glvx::Vector2f& v2,
 		const glvx::Color& color
 	) {
-		line_primitive[0].position = quantize_and_offset(v1);
-		line_primitive[0].color = color;
-		line_primitive[1].position = quantize_and_offset(v2);
-		line_primitive[1].color = color;
-		canvas->draw(line_primitive);
+		draw_line_impl(canvas, quantize_and_offset(v1), quantize_and_offset(v2), color);
 	}
 
 	void draw_line(
@@ -39,11 +72,7 @@ namespace fw {
 		const glvx::Color& color,
 		const glvx::Transform& transform
 	) {
-		line_primitive[0].position = quantize_and_offset(transform.transformPoint(v1));
-		line_primitive[0].color = color;
-		line_primitive[1].position = quantize_and_offset(transform.transformPoint(v2));
-		line_primitive[1].color = color;
-		target.draw(line_primitive);
+		draw_line_impl(target, quantize_and_offset(transform.transformPoint(v1)), quantize_and_offset(transform.transformPoint(v2)), color);
 	}
 
 	void draw_line(
@@ -53,11 +82,7 @@ namespace fw {
 		const glvx::Color& color,
 		const glvx::Transform& transform
 	) {
-		line_primitive[0].position = quantize_and_offset(transform.transformPoint(v1));
-		line_primitive[0].color = color;
-		line_primitive[1].position = quantize_and_offset(transform.transformPoint(v2));
-		line_primitive[1].color = color;
-		canvas->draw(line_primitive);
+		draw_line_impl(canvas, quantize_and_offset(transform.transformPoint(v1)), quantize_and_offset(transform.transformPoint(v2)), color);
 	}
 
 	void draw_rect(
@@ -68,15 +93,7 @@ namespace fw {
 		const glvx::Vector2f& v4,
 		const glvx::Color& color
 	) {
-		rect_primitive[0].position = quantize(v1);
-		rect_primitive[0].color = color;
-		rect_primitive[1].position = quantize(v2);
-		rect_primitive[1].color = color;
-		rect_primitive[2].position = quantize(v3);
-		rect_primitive[2].color = color;
-		rect_primitive[3].position = quantize(v4);
-		rect_primitive[3].color = color;
-		target.draw(rect_primitive);
+		draw_rect_impl(target, quantize(v1), quantize(v2), quantize(v3), quantize(v4), color);
 	}
 
 	void draw_rect(glvx::RenderTarget& target,
