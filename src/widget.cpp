@@ -1487,6 +1487,30 @@ namespace fw {
 		}
 	}
 
+	void Widget::renderBounds(LineBatch& batch, const glvx::Color& color, bool include_children, bool transformed) {
+		if (!visible) {
+			return;
+		}
+		if (transformed) {
+			glvx::FloatRect quantized_local_bounds = quantize_rect(
+				getLocalBounds(),
+				QUANTIZE_MODE_FLOOR_SUBTRACT
+			);
+			batch.rect(quantized_local_bounds, color, getGlobalTransform());
+		} else {
+			glvx::FloatRect quantized_global_bounds = quantize_rect(
+				getGlobalBounds(),
+				QUANTIZE_MODE_FLOOR_SUBTRACT
+			);
+			batch.rect(quantized_global_bounds, color);
+		}
+		if (include_children) {
+			for (size_t i = 0; i < children.size(); i++) {
+				children[i]->renderBounds(batch, color, true, transformed);
+			}
+		}
+	}
+
 	void Widget::renderOrigin(glvx::RenderTarget& target, bool include_children) {
 		if (!visible) {
 			return;
@@ -1503,6 +1527,26 @@ namespace fw {
 		if (include_children) {
 			for (size_t i = 0; i < children.size(); i++) {
 				children[i]->renderOrigin(target, true);
+			}
+		}
+	}
+
+	void Widget::renderOrigin(LineBatch& batch, bool include_children) {
+		if (!visible) {
+			return;
+		}
+		float offset = DEBUG_RENDER_ORIGIN_SIZE;
+		glvx::Vector2f hoffset = glvx::Vector2f(offset, 0.0f);
+		glvx::Vector2f voffset = glvx::Vector2f(0.0f, offset);
+		glvx::Vector2f origin_pos = getGlobalOriginPosition();
+		batch.line(origin_pos - hoffset, origin_pos + hoffset, DEBUG_RENDER_TRANSFORM_POSITION_COLOR);
+		batch.line(origin_pos - voffset, origin_pos + voffset, DEBUG_RENDER_TRANSFORM_POSITION_COLOR);
+		glvx::Vector2f pos = getGlobalPosition();
+		batch.line(pos - hoffset, pos + hoffset, DEBUG_RENDER_POSITION_COLOR);
+		batch.line(pos - voffset, pos + voffset, DEBUG_RENDER_POSITION_COLOR);
+		if (include_children) {
+			for (size_t i = 0; i < children.size(); i++) {
+				children[i]->renderOrigin(batch, true);
 			}
 		}
 	}

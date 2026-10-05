@@ -27,6 +27,26 @@ namespace fw {
 		return TVec2(floor(vec.x) + 0.5f, floor(vec.y) + 0.5f);
 	}
 
+	// Batches line segments into a single vertex array and issues one draw
+	// call for the whole batch instead of one draw call per line. Used by the
+	// debug render overlay, which would otherwise issue ~12 draws per visible
+	// widget per frame.
+	class LineBatch {
+	public:
+		LineBatch() : m_vertices(glvx::PrimitiveType::Lines, 0) { }
+
+		void line(const glvx::Vector2f& v1, const glvx::Vector2f& v2, const glvx::Color& color);
+		void line(const glvx::Vector2f& v1, const glvx::Vector2f& v2, const glvx::Color& color, const glvx::Transform& transform);
+		void rect(const glvx::FloatRect& bounds, const glvx::Color& color);
+		void rect(const glvx::FloatRect& bounds, const glvx::Color& color, const glvx::Transform& transform);
+		void draw(glvx::RenderTarget& target) const;
+		void clear();
+		std::size_t getVertexCount() const { return m_vertices.getVertexCount(); }
+
+	private:
+		glvx::VertexArray m_vertices;
+	};
+
 	class CanvasWidget;
 
 	void draw_line(

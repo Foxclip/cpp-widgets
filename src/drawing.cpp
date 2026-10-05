@@ -162,4 +162,45 @@ namespace fw {
 		draw_line(canvas, bottomRight, topRight, color, transform);
 	}
 
+	void LineBatch::line(const glvx::Vector2f& v1, const glvx::Vector2f& v2, const glvx::Color& color) {
+		m_vertices.pushBack(glvx::Vertex{quantize_and_offset(v1), color, glvx::Vector2f(0.0f, 0.0f)});
+		m_vertices.pushBack(glvx::Vertex{quantize_and_offset(v2), color, glvx::Vector2f(0.0f, 0.0f)});
+	}
+
+	void LineBatch::line(const glvx::Vector2f& v1, const glvx::Vector2f& v2, const glvx::Color& color, const glvx::Transform& transform) {
+		line(transform.transformPoint(v1), transform.transformPoint(v2), color);
+	}
+
+	void LineBatch::rect(const glvx::FloatRect& bounds, const glvx::Color& color) {
+		glvx::Vector2f topRight(bounds.position.x + bounds.size.x, bounds.position.y);
+		glvx::Vector2f topLeft(bounds.position.x, bounds.position.y);
+		glvx::Vector2f bottomLeft(bounds.position.x, bounds.position.y + bounds.size.y);
+		glvx::Vector2f bottomRight(bounds.position.x + bounds.size.x, bounds.position.y + bounds.size.y);
+		line(topRight, topLeft, color);
+		line(topLeft, bottomLeft, color);
+		line(bottomLeft, bottomRight, color);
+		line(bottomRight, topRight, color);
+	}
+
+	void LineBatch::rect(const glvx::FloatRect& bounds, const glvx::Color& color, const glvx::Transform& transform) {
+		glvx::Vector2f topRight(bounds.position.x + bounds.size.x, bounds.position.y);
+		glvx::Vector2f topLeft(bounds.position.x, bounds.position.y);
+		glvx::Vector2f bottomLeft(bounds.position.x, bounds.position.y + bounds.size.y);
+		glvx::Vector2f bottomRight(bounds.position.x + bounds.size.x, bounds.position.y + bounds.size.y);
+		line(topRight, topLeft, color, transform);
+		line(topLeft, bottomLeft, color, transform);
+		line(bottomLeft, bottomRight, color, transform);
+		line(bottomRight, topRight, color, transform);
+	}
+
+	void LineBatch::draw(glvx::RenderTarget& target) const {
+		if (m_vertices.getVertexCount() > 0) {
+			target.draw(m_vertices);
+		}
+	}
+
+	void LineBatch::clear() {
+		m_vertices.clear();
+	}
+
 }

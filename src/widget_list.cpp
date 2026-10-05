@@ -533,25 +533,32 @@ namespace fw {
 			glvx::Vector2f size = TreeViewWidget::target_highlight.size;
 			draw_rect(target, pos, size, TREEVIEW_TARGET_HIGHLIGHT_COLOR);
 		}
-		if (debug_render) {
-			root_widget->renderBounds(target, DEBUG_RENDER_BOUNDS_COLOR, true, false);
-			root_widget->renderBounds(target, DEBUG_RENDER_TRANSFORMED_BOUNDS_COLOR, true, true);
-			root_widget->renderOrigin(target, true);
-		} else {
-			std::function<void(Widget*)> debug_render = [&](Widget* widget) {
-				if (widget->debug_render) {
-					widget->renderBounds(target, DEBUG_RENDER_BOUNDS_COLOR, false, false);
-					widget->renderBounds(target, DEBUG_RENDER_TRANSFORMED_BOUNDS_COLOR, false, true);
-					widget->renderOrigin(target, false);
-				}
-				for (Widget* child : widget->getChildren()) {
-					debug_render(child);
-				}
-			};
-			debug_render(root_widget);
-		}
-		if (focused_widget) {
-			focused_widget->renderBounds(target, DEBUG_RENDER_FOCUSED_WIDGET_BOUNDS_COLOR, false, true);
+		{
+			// Collect all debug overlay lines into a single vertex array and
+			// issue one draw call for the whole overlay instead of one draw
+			// call per line (~12 draws per visible widget per frame).
+			LineBatch overlay_batch;
+			if (debug_render) {
+				root_widget->renderBounds(overlay_batch, DEBUG_RENDER_BOUNDS_COLOR, true, false);
+				root_widget->renderBounds(overlay_batch, DEBUG_RENDER_TRANSFORMED_BOUNDS_COLOR, true, true);
+				root_widget->renderOrigin(overlay_batch, true);
+			} else {
+				std::function<void(Widget*)> debug_render = [&](Widget* widget) {
+					if (widget->debug_render) {
+						widget->renderBounds(overlay_batch, DEBUG_RENDER_BOUNDS_COLOR, false, false);
+						widget->renderBounds(overlay_batch, DEBUG_RENDER_TRANSFORMED_BOUNDS_COLOR, false, true);
+						widget->renderOrigin(overlay_batch, false);
+					}
+					for (Widget* child : widget->getChildren()) {
+						debug_render(child);
+					}
+				};
+				debug_render(root_widget);
+			}
+			if (focused_widget) {
+				focused_widget->renderBounds(overlay_batch, DEBUG_RENDER_FOCUSED_WIDGET_BOUNDS_COLOR, false, true);
+			}
+			overlay_batch.draw(target);
 		}
 		if (debug_mouse) {
 			if (mouse_debug_trace.getVertexCount() < DEBUG_RENDER_MOUSE_TRACE_MAX_LENGTH) {
