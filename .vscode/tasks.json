@@ -45,6 +45,13 @@
       "command": "cmake",
       "args": ["--build", "build", "--config", "Debug", "--target", "widgets_sandbox"],
       "problemMatcher": ["$msCompile"]
+    },
+    {
+      "label": "Build Sandbox Release",
+      "type": "shell",
+      "command": "cmake",
+      "args": ["--build", "build", "--config", "Release", "--target", "widgets_sandbox"],
+      "problemMatcher": ["$msCompile"]
     }
   ]
 }
