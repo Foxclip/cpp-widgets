@@ -1,4 +1,5 @@
 #include "application.h"
+#include <glvx/glvx_common.h>
 #include <cstring>
 #include <iostream>
 #include <string>
@@ -30,6 +31,7 @@ int main(int argc, char* argv[]) {
     bool unattended = false;
     bool no_fps = false;
     bool debug_render = false;
+    bool gl_check_per_call = false;
     double fps_duration = 0.0;
     std::string screenshot_path;
     std::string section;
@@ -51,6 +53,8 @@ int main(int argc, char* argv[]) {
             no_fps = true;
         } else if (std::strcmp(argv[i], "--debug-render") == 0) {
             debug_render = true;
+        } else if (std::strcmp(argv[i], "--gl-check-per-call") == 0) {
+            gl_check_per_call = true;
         } else if (std::strcmp(argv[i], "--fps") == 0) {
             if (i + 1 >= argc) {
                 std::cerr << "ERROR: --fps requires a duration (seconds) argument" << std::endl;
@@ -72,6 +76,9 @@ int main(int argc, char* argv[]) {
         }
     }
 
+    if (gl_check_per_call) {
+        glvx::set_gl_error_checking(glvx::GlErrorChecking::PerCall);
+    }
     if (unattended) {
         enable_no_crt_dialogs();
     }
