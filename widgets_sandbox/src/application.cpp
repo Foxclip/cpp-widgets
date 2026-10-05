@@ -26,6 +26,11 @@ namespace sandbox {
 	void Application::onInit() {
 		setBackgroundColor(glvx::Color(35, 38, 44));
 		setDefaultFont(m_font);
+		getWidgets().OnKeyPressed += [](const glvx::Key& key) {
+			if (key == glvx::Key::D) {
+				fw::WidgetList::debug_render = !fw::WidgetList::debug_render;
+			}
+		};
 		setupTextShowcase(createSection("text", "Text", 16.0f, 56.0f));
 		setupShapesShowcase(createSection("shapes", "Shapes", 80.0f, 64.0f));
 		setupButtonShowcase(createSection("button", "Button", 152.0f, 56.0f));
@@ -59,14 +64,6 @@ namespace sandbox {
 	void Application::onProcessWindowEvent(const glvx::Event& event) {
 		if (event.type == glvx::EventType::Closed) {
 			close();
-		}
-	}
-
-	void Application::onProcessKeyboardEvent(const glvx::Event& event) {
-		if (event.type == glvx::EventType::KeyPressed) {
-			if (event.key.code == glvx::Key::D) {
-				fw::WidgetList::debug_render = !fw::WidgetList::debug_render;
-			}
 		}
 	}
 
