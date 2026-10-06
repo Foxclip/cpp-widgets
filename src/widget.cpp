@@ -79,7 +79,6 @@ namespace fw {
 		this->alpha_multiplier = other.alpha_multiplier;
 		//this->visibility
 		//this->render_textures
-		this->render_iterations = other.render_iterations;
 		//this->render_view
 	}
 
@@ -1219,11 +1218,6 @@ namespace fw {
 		setSizeInternal(size.x, size.y);
 	}
 
-	void Widget::setRenderIterations(size_t iterations) {
-		wAssert(!widget_list.isLocked());
-		this->render_iterations = iterations;
-	}
-
 	void Widget::addChild(Widget* child) {
 		wAssert(!widget_list.isLocked());
 		wAssert(!children_locked);
@@ -1460,9 +1454,7 @@ namespace fw {
 		glvx::RenderStates states;
 		states.transform = combined;
 		states.blend_mode = glvx::BlendAlpha;
-		for (size_t i = 0; i < render_iterations; i++) {
-			texture.draw(*drawable, states);
-		}
+		texture.draw(*drawable, states);
 		OnAfterRender(texture);
 		texture.display();
 	}

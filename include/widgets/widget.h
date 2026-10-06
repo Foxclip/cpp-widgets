@@ -396,7 +396,6 @@ namespace fw {
 		void setOriginInternal(float x, float y);
 		void setOriginInternal(const glvx::Vector2f& origin);
 		void setSizeInternal(const glvx::Vector2f& size);
-		void setRenderIterations(size_t iterations);
 		virtual Widget* clone(bool with_children = true) = 0;
 		virtual void addChild(Widget* child);
 		virtual void removeChild(Widget* child);
@@ -436,7 +435,6 @@ namespace fw {
 	private:
 		WidgetVisibility visibility;
 		RenderTexture render_textures;
-		size_t render_iterations = 1;
 		glvx::View render_view;
 
 		std::string calcFullName() const;
