@@ -3,6 +3,7 @@
 #include <vector>
 #include <functional>
 #include <cassert>
+#include <unordered_set>
 #include "common/data_pointer_shared.h"
 
 template<typename ...TArgs>
@@ -45,7 +46,12 @@ private:
 template<typename ...TArgs>
 class Event : public EventTarget<TArgs...> {
 public:
+	Event();
+	Event(const Event<TArgs...>& event);
+	Event<TArgs...>& operator=(const Event<TArgs...>& event);
+	~Event();
 	const std::vector<dp::DataPointerShared<EventTarget<TArgs...>>>& getTargets() const;
+	static bool isLive(const Event<TArgs...>* event);
 	void operator+=(const std::function<void(TArgs...)>& func);
 	void operator+=(const Event<TArgs...>& event);
 	void operator+=(const EventHandlerFunc<TArgs...>& handler);
@@ -55,12 +61,48 @@ public:
 
 private:
 	std::vector<dp::DataPointerShared<EventTarget<TArgs...>>> targets;
+	// All live Event objects of this type. EventHandlerEvent uses it to detect
+	// that the event it forwards to has been destroyed, so that its raw event
+	// pointer is never dereferenced.
+	inline static std::unordered_set<const Event<TArgs...>*> live_events;
 
 };
 
 template<typename ...TArgs>
+inline Event<TArgs...>::Event() : EventTarget<TArgs...>() {
+	live_events.insert(this);
+}
+
+template<typename ...TArgs>
+inline Event<TArgs...>::Event(const Event<TArgs...>& event) : EventTarget<TArgs...>(), targets(event.targets) {
+	// The implicit copy constructor would skip this one, so this object has
+	// to register itself explicitly.
+	live_events.insert(this);
+}
+
+template<typename ...TArgs>
+inline Event<TArgs...>& Event<TArgs...>::operator=(const Event<TArgs...>& event) {
+	// No re-registration needed: this object was already registered when it
+	// was constructed.
+	if (this != &event) {
+		this->targets = event.targets;
+	}
+	return *this;
+}
+
+template<typename ...TArgs>
+inline Event<TArgs...>::~Event() {
+	live_events.erase(this);
+}
+
+template<typename ...TArgs>
 inline const std::vector<dp::DataPointerShared<EventTarget<TArgs...>>>& Event<TArgs...>::getTargets() const {
 	return targets;
+}
+
+template<typename ...TArgs>
+inline bool Event<TArgs...>::isLive(const Event<TArgs...>* event) {
+	return live_events.find(event) != live_events.end();
 }
 
 template<typename ...TArgs>
@@ -129,11 +171,20 @@ inline EventHandlerEvent<TArgs...>::EventHandlerEvent(const Event<TArgs...>& eve
 
 template<typename ...TArgs>
 inline ptrdiff_t EventHandlerEvent<TArgs...>::getId() const {
-	return event->getId();
+	// Never dereference the event pointer if the event has been destroyed;
+	// fall back to this handler's own id.
+	if (!Event<TArgs...>::isLive(this->event)) {
+		return EventTarget<TArgs...>::getId();
+	}
+	return this->event->getId();
 }
 
 template<typename ...TArgs>
 inline void EventHandlerEvent<TArgs...>::operator()(TArgs...args) {
-	Event<TArgs...>* ptr = this->event;
-	(*ptr)(args...);
+	// The event this handler forwards to may have been destroyed after the
+	// handler was created. Checking the live-events registry is safe, while
+	// dereferencing the (possibly dangling) event pointer directly is not.
+	if (Event<TArgs...>::isLive(this->event)) {
+		(*this->event)(args...);
+	}
 }
