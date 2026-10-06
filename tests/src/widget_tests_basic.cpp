@@ -12,6 +12,8 @@ WidgetTestsBasic::WidgetTestsBasic(const std::string& name, test::TestModule* pa
     test::Test* duplicate_polygon_test = addTest("duplicate_polygon", { polygon_widget_basic_test }, [&](test::Test& test) { duplicatePolygonTest(test); });
     test::Test* duplicate_children_test = addTest("duplicate_children", { set_parent_test }, [&](test::Test& test) { duplicateChildrenTest(test); });
     test::Test* duplicate_without_children_test = addTest("duplicate_without_children", { set_parent_test }, [&](test::Test& test) { duplicateWithoutChildrenTest(test); });
+    test::Test* duplicate_events_test = addTest("duplicate_events", { duplicate_without_children_test }, [&](test::Test& test) { duplicateEventsTest(test); });
+    test::Test* duplicate_events_after_test = addTest("duplicate_events_after", { duplicate_without_children_test }, [&](test::Test& test) { duplicateEventsAfterTest(test); });
     test::Test* widget_mouse_events_1_test = addTest("mouse_events_1", { root_widget_test }, [&](test::Test& test) { widgetMouseEvents1(test); });
     test::Test* widget_mouse_events_2_test = addTest("mouse_events_2", { root_widget_test }, [&](test::Test& test) { widgetMouseEvents2(test); });
     test::Test* drag_gesture_event_test = addTest("drag_gesture_event", { root_widget_test }, [&](test::Test& test) { dragGestureEventTest(test); });
@@ -449,6 +451,74 @@ void WidgetTestsBasic::duplicateWithoutChildrenTest(test::Test& test) {
 
     T_VEC2_COMPARE(widget->getGlobalPosition(), pos);
     T_VEC2_COMPARE(copy->getGlobalPosition(), pos2);
+}
+
+void WidgetTestsBasic::duplicateEventsTest(test::Test& test) {
+    fw::Application application(getWindow());
+    application.init(test.name, 800, 600, 0, false);
+    application.start(true);
+    application.mouseMove(400, 300);
+    application.advance();
+
+    fw::WidgetList& widgets = application.getWidgets();
+    fw::RectangleWidget* widget = widgets.createRectangleWidget(100.0f, 100.0f);
+    widget->setPosition(100.0f, 100.0f);
+    bool original_clicked = false;
+    widget->OnLeftClick += [&](const glvx::Vector2f&) {
+        original_clicked = true;
+    };
+    application.advance();
+
+    // duplicateWidget must not carry over the original's event handlers
+    fw::RectangleWidget* copy = widgets.duplicateWidget(widget);
+    copy->setPosition(300.0f, 100.0f);
+    application.advance();
+    T_CHECK(copy->OnLeftClick.getTargets().empty());
+
+    // clicking the duplicate must not fire the original's handlers
+    CLICK_MOUSE(glvx::Vector2f(350.0f, 150.0f));
+    T_CHECK(!original_clicked);
+
+    // clicking the original still fires its own handlers
+    CLICK_MOUSE(glvx::Vector2f(150.0f, 150.0f));
+    T_CHECK(original_clicked);
+
+    T_ASSERT_NO_ERRORS();
+}
+
+void WidgetTestsBasic::duplicateEventsAfterTest(test::Test& test) {
+    fw::Application application(getWindow());
+    application.init(test.name, 800, 600, 0, false);
+    application.start(true);
+    application.mouseMove(400, 300);
+    application.advance();
+
+    fw::WidgetList& widgets = application.getWidgets();
+    fw::RectangleWidget* widget = widgets.createRectangleWidget(100.0f, 100.0f);
+    widget->setPosition(100.0f, 100.0f);
+    fw::RectangleWidget* copy = widgets.duplicateWidget(widget);
+    copy->setPosition(300.0f, 100.0f);
+    application.advance();
+
+    int original_clicks = 0;
+    int copy_clicks = 0;
+    widget->OnLeftClick += [&](const glvx::Vector2f&) {
+        original_clicks++;
+    };
+    copy->OnLeftClick += [&](const glvx::Vector2f&) {
+        copy_clicks++;
+    };
+    application.advance();
+
+    // handlers attached after the duplicate must only fire on their own widget
+    CLICK_MOUSE(glvx::Vector2f(350.0f, 150.0f));
+    T_COMPARE(copy_clicks, 1);
+    T_COMPARE(original_clicks, 0);
+    CLICK_MOUSE(glvx::Vector2f(150.0f, 150.0f));
+    T_COMPARE(copy_clicks, 1);
+    T_COMPARE(original_clicks, 1);
+
+    T_ASSERT_NO_ERRORS();
 }
 
 void WidgetTestsBasic::widgetMouseEvents1(test::Test& test) {

@@ -99,7 +99,6 @@ namespace fw {
 		bool expanded = false;
 		bool selected = false;
 		bool grabbed = false;
-		bool grab_begin = true;
 		glvx::Vector2f grab_offset;
 		TreeViewEntryWidget* entry_widget = nullptr;
 

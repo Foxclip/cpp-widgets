@@ -13,6 +13,17 @@ namespace fw {
 	ButtonWidget::ButtonWidget(WidgetList& widget_list, const glvx::Vector2f& size)
 		: RectangleWidget(widget_list, size.x, size.y) { }
 
+	ButtonWidget::ButtonWidget(const ButtonWidget& other)
+		: RectangleWidget(other),
+		// OnPress/OnRelease are intentionally not copied: a duplicate starts with its
+		// own empty handler lists (same policy as the base Widget copy ctor).
+		OnPress(),
+		OnRelease(),
+		normal_color(other.normal_color),
+		// pressed is transient UI state and is not copied either.
+		pressed_color(other.pressed_color),
+		pressed(false) { }
+
 	bool ButtonWidget::isPressed() const {
 		return pressed;
 	}

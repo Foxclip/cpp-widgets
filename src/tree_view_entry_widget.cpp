@@ -13,15 +13,9 @@ namespace fw {
 		setFillColor(glvx::Color::Transparent);
 		setSizeXPolicy(Widget::SizePolicy::PARENT);
 		setParent(&entry.treeview);
-		OnMouseMoved += [&](const glvx::Vector2f& pos) {
-			entry.processMouseMove(pos);
-		};
-		OnProcessMouse += [&](const glvx::Vector2f& pos) {
-			entry.processMouse(pos);
-		};
-		OnGlobalLeftRelease += [&](const glvx::Vector2f& pos) {
-			entry.processLeftRelease(pos);
-		};
+		// The entry's self-handlers are implemented as internalOn* virtual overrides
+		// (below) rather than attached handlers, so that duplicateWidget() copies
+		// inherit the same behaviour without copying event handlers.
 		// rectangle
 		rectangle_widget = entry.treeview.widget_list.createRectangleWidget(20.0f, TREEVIEW_ENTRY_HEIGHT);
 		rectangle_widget->setFillColor(TREEVIEW_ENTRY_BACKGROUND_COLOR);
@@ -131,6 +125,18 @@ namespace fw {
 		copy->children_spacing_widget = children_spacing_widget;
 		copy->children_widget = children_widget;
 		return copy;
+	}
+
+	void TreeViewEntryWidget::internalOnMouseMoved(const glvx::Vector2f& pos) {
+		entry.processMouseMove(pos);
+	}
+
+	void TreeViewEntryWidget::internalProcessMouse(const glvx::Vector2f& pos) {
+		entry.processMouse(pos);
+	}
+
+	void TreeViewEntryWidget::internalOnGlobalLeftRelease(const glvx::Vector2f& pos) {
+		entry.processLeftRelease(pos);
 	}
 
 }
