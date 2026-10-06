@@ -18,6 +18,9 @@ namespace fw {
 	WidgetRenderQueue::WidgetRenderQueue(WidgetList& widget_list) : widget_list(widget_list) { }
 
 	void WidgetRenderQueue::update() {
+		if (valid) {
+			return;
+		}
 		layers.clear();
 		CompVector<Widget*> root_render_queue = widget_list.getRootWidget()->getRenderQueue();
 		for (Widget* widget : root_render_queue) {
@@ -36,6 +39,7 @@ namespace fw {
 				layers.push_back(layer);
 			}
 		}
+		valid = true;
 	}
 
 	const std::vector<RenderQueueLayer>& WidgetRenderQueue::get() const {
@@ -48,6 +52,10 @@ namespace fw {
 				break;
 			}
 		}
+	}
+
+	void WidgetRenderQueue::invalidate() {
+		valid = false;
 	}
 
 }

@@ -66,7 +66,4 @@ int main(int argc, char* argv[]) {
     return 0;
 }
 
-// TODO: fix upside-down rendering
-// TODO: use project-root relative paths in includes
-// TODO: Application: add screenshots
-// TODO: Sandbox
+// TODO: use glvx::Angle for angles

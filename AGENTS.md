@@ -7,3 +7,9 @@
 - When running tests executable, launch it in foreground unless absolutely necessary by the nature of the task, or explicitly requested by the user
 - Use `--no-crt-dialog` argument to run test executable so that Windows CRT dialogs will not be shown
 - If you want to take a screenshot of a test, you can use glvx::Window::saveScreenshot() method by injecting it into test
+
+# Sandbox
+
+- When running sandbox executable, launch it minimized with `--minimized` and `--no-crt-dialog` flags
+- When running sandbox executable, launch it in foreground unless absolutely necessary by the nature of the task, or explicitly requested by the user
+- If you want to take a screenshot, use `--screenshot` flag

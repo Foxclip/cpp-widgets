@@ -41,10 +41,16 @@ namespace fw {
 		void update();
 		const std::vector<RenderQueueLayer>& get() const;
 		void remove(Widget* widget);
+		// The queue content depends only on tree structure, widget
+		// visibility and render layers, so it is rebuilt lazily:
+		// mutation points call invalidate(), update() rebuilds only
+		// when dirty.
+		void invalidate();
 
 	private:
 		WidgetList& widget_list;
 		std::vector<RenderQueueLayer> layers;
+		bool valid = false;
 
 	};
 

@@ -8,6 +8,9 @@ namespace fw {
 	WidgetUpdateQueue::WidgetUpdateQueue(WidgetList& widget_list) : widget_list(widget_list) { }
 
 	void WidgetUpdateQueue::update() {
+		if (toposort_valid) {
+			return;
+		}
 		std::vector<WidgetUpdateTarget*> entries;
 		std::function<void(Widget*)> add_widget = [&](Widget* widget) {
 			if (!widget->isVisible()) {
@@ -45,10 +48,15 @@ namespace fw {
 			}
 			throw std::runtime_error(msg);
 		}
+		toposort_valid = true;
 	}
 
 	const std::vector<std::vector<WidgetUpdateTarget*>>& WidgetUpdateQueue::get() const {
 		return queue;
+	}
+
+	void WidgetUpdateQueue::invalidate() {
+		toposort_valid = false;
 	}
 
 	std::vector<WidgetUpdateTarget*> WidgetUpdateQueue::getParents(const WidgetUpdateTarget* target) {

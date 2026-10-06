@@ -24,6 +24,28 @@
       "environment": [],
       "console": "externalTerminal",
       "preLaunchTask": "CMake Build Release"
+    },
+    {
+      "name": "Sandbox Debug",
+      "type": "cppvsdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/build/widgets_sandbox/Debug/widgets_sandbox.exe",
+      "args": [],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}",
+      "environment": [],
+      "preLaunchTask": "Build Sandbox Debug"
+    },
+    {
+      "name": "Sandbox Release",
+      "type": "cppvsdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/build/widgets_sandbox/Release/widgets_sandbox.exe",
+      "args": [],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}",
+      "environment": [],
+      "preLaunchTask": "Build Sandbox Release"
     }
   ]
 }

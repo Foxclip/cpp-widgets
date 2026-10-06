@@ -312,6 +312,10 @@ namespace fw {
 			const ExecuteFuncType& func
 		);
 		void removeLink(WidgetLink* link);
+		// Invalidate the cached layout toposort order; called from mutation
+		// points that change the dependency structure (tree, links, anchors,
+		// size policies, visibility).
+		void invalidateUpdateQueue();
 		void setForceCustomCursor(bool value);
 		void setName(const std::string& new_name);
 		void setClipChildren(bool value);
@@ -325,7 +329,9 @@ namespace fw {
 		void processKeyboardEvent(const glvx::Event& event);
 		void render(glvx::RenderTarget& target);
 		void renderBounds(glvx::RenderTarget& target, const glvx::Color& color, bool include_children, bool transformed);
+		void renderBounds(LineBatch& batch, const glvx::Color& color, bool include_children, bool transformed);
 		void renderOrigin(glvx::RenderTarget& target, bool include_children);
+		void renderOrigin(LineBatch& batch, bool include_children);
 		void setDebugRender(bool value);
 		void remove(bool with_clildren = true);
 

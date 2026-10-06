@@ -790,7 +790,11 @@ namespace fw {
 
 	void Widget::setParentAnchor(Anchor anchor) {
 		wAssert(!widget_list.isLocked());
+		if (this->parent_anchor == anchor) {
+			return;
+		}
 		this->parent_anchor = anchor;
+		invalidateUpdateQueue();
 		updatePositionX();
 		updatePositionY();
 	}
@@ -822,13 +826,21 @@ namespace fw {
 	void Widget::setSizeXPolicy(SizePolicy policy) {
 		wAssert(!widget_list.isLocked());
 		wAssert(this != widget_list.getRootWidget());
+		if (this->size_policy_x == policy) {
+			return;
+		}
 		this->size_policy_x = policy;
+		invalidateUpdateQueue();
 	}
 
 	void Widget::setSizeYPolicy(SizePolicy policy) {
 		wAssert(!widget_list.isLocked());
 		wAssert(this != widget_list.getRootWidget());
+		if (this->size_policy_y == policy) {
+			return;
+		}
 		this->size_policy_y = policy;
+		invalidateUpdateQueue();
 	}
 
 	void Widget::setSizePolicy(SizePolicy policy) {
@@ -922,12 +934,17 @@ namespace fw {
 
 	void Widget::setVisible(bool value) {
 		wAssert(!widget_list.isLocked());
+		if (this->visible == value) {
+			return;
+		}
 		this->visible = value;
+		invalidateUpdateQueue();
 	}
 
 	void Widget::toggleVisible() {
 		wAssert(!widget_list.isLocked());
 		this->visible = !this->visible;
+		invalidateUpdateQueue();
 	}
 
 	void Widget::setClickThrough(bool value) {
@@ -1009,6 +1026,8 @@ namespace fw {
 		wAssert(!children_locked);
 		wAssert(children.contains(child));
 		wAssert(index >= 0 && index <= getChildrenCount());
+		// Reordering siblings changes the render queue order.
+		widget_list.invalidateRenderQueue();
 		Stage stage = widget_list.application.getStage();
 		wAssert(
 			stage == Stage::NONE || stage == Stage::AFTER_INPUT,
@@ -1057,6 +1076,7 @@ namespace fw {
 			target->dependent_links.add(ptr);
 		}
 		links.add(std::move(uptr));
+		invalidateUpdateQueue();
 		return ptr;
 	}
 
@@ -1079,6 +1099,7 @@ namespace fw {
 		dp::DataPointerUnique<WidgetLink> uptr = dp::make_data_pointer<WidgetLink>("WidgetLink " + name, name, targets_func, this, func);
 		WidgetLink* ptr = uptr.get();
 		links.add(std::move(uptr));
+		invalidateUpdateQueue();
 		return ptr;
 	}
 
@@ -1094,6 +1115,11 @@ namespace fw {
 			dep_link->remove();
 		}
 		links.remove(link);
+		invalidateUpdateQueue();
+	}
+
+	void Widget::invalidateUpdateQueue() {
+		widget_list.invalidateUpdateQueue();
 	}
 
 	void Widget::setForceCustomCursor(bool value) {
@@ -1121,18 +1147,30 @@ namespace fw {
 
 	void Widget::setGlobalRenderLayer(GlobalRenderLayer layer) {
 		wAssert(!widget_list.isLocked());
+		if (this->global_layer == layer) {
+			return;
+		}
 		this->global_layer = layer;
+		widget_list.invalidateRenderQueue();
 	}
 
 	void Widget::setLocalRenderLayer(size_t layer) {
 		wAssert(!widget_list.isLocked());
+		if (local_layers.contains(this) && local_layers.at(this) == layer) {
+			return;
+		}
 		local_layers[this] = layer;
+		widget_list.invalidateRenderQueue();
 	}
 
 	void Widget::setParentLocalRenderLayer(size_t layer) {
 		wAssert(!widget_list.isLocked());
 		wAssert(parent);
+		if (parent->local_layers.contains(this) && parent->local_layers.at(this) == layer) {
+			return;
+		}
 		parent->local_layers[this] = layer;
+		widget_list.invalidateRenderQueue();
 	}
 
 	void Widget::setQuantizeRenderedPosition(bool value) {
@@ -1193,6 +1231,7 @@ namespace fw {
 		children_names.add(child->name, child);
 		child->parent = this;
 		child->parent_chain.invalidate();
+		invalidateUpdateQueue();
 	}
 
 	void Widget::removeChild(Widget* child) {
@@ -1201,6 +1240,7 @@ namespace fw {
 		children.remove(child);
 		children_names.remove(child->name, child);
 		local_layers.erase(child);
+		invalidateUpdateQueue();
 	}
 
 	void Widget::removeSocket(WidgetUpdateSocket* socket) {
@@ -1487,6 +1527,30 @@ namespace fw {
 		}
 	}
 
+	void Widget::renderBounds(LineBatch& batch, const glvx::Color& color, bool include_children, bool transformed) {
+		if (!visible) {
+			return;
+		}
+		if (transformed) {
+			glvx::FloatRect quantized_local_bounds = quantize_rect(
+				getLocalBounds(),
+				QUANTIZE_MODE_FLOOR_SUBTRACT
+			);
+			batch.rect(quantized_local_bounds, color, getGlobalTransform());
+		} else {
+			glvx::FloatRect quantized_global_bounds = quantize_rect(
+				getGlobalBounds(),
+				QUANTIZE_MODE_FLOOR_SUBTRACT
+			);
+			batch.rect(quantized_global_bounds, color);
+		}
+		if (include_children) {
+			for (size_t i = 0; i < children.size(); i++) {
+				children[i]->renderBounds(batch, color, true, transformed);
+			}
+		}
+	}
+
 	void Widget::renderOrigin(glvx::RenderTarget& target, bool include_children) {
 		if (!visible) {
 			return;
@@ -1503,6 +1567,26 @@ namespace fw {
 		if (include_children) {
 			for (size_t i = 0; i < children.size(); i++) {
 				children[i]->renderOrigin(target, true);
+			}
+		}
+	}
+
+	void Widget::renderOrigin(LineBatch& batch, bool include_children) {
+		if (!visible) {
+			return;
+		}
+		float offset = DEBUG_RENDER_ORIGIN_SIZE;
+		glvx::Vector2f hoffset = glvx::Vector2f(offset, 0.0f);
+		glvx::Vector2f voffset = glvx::Vector2f(0.0f, offset);
+		glvx::Vector2f origin_pos = getGlobalOriginPosition();
+		batch.line(origin_pos - hoffset, origin_pos + hoffset, DEBUG_RENDER_TRANSFORM_POSITION_COLOR);
+		batch.line(origin_pos - voffset, origin_pos + voffset, DEBUG_RENDER_TRANSFORM_POSITION_COLOR);
+		glvx::Vector2f pos = getGlobalPosition();
+		batch.line(pos - hoffset, pos + hoffset, DEBUG_RENDER_POSITION_COLOR);
+		batch.line(pos - voffset, pos + voffset, DEBUG_RENDER_POSITION_COLOR);
+		if (include_children) {
+			for (size_t i = 0; i < children.size(); i++) {
+				children[i]->renderOrigin(batch, true);
 			}
 		}
 	}
