@@ -10,7 +10,7 @@ namespace fw {
 		shader = nullptr;
 	}
 
-	Widget::Widget(const Widget& other) : widget_list(other.widget_list), render_textures(RenderTexture()) {
+	Widget::Widget(const Widget& other) : widget_list(other.widget_list) {
 		this->OnLeftPress = other.OnLeftPress;
 		this->OnRightPress = other.OnRightPress;
 		this->OnGlobalLeftRelease = other.OnGlobalLeftRelease;
@@ -46,7 +46,7 @@ namespace fw {
 		//this->children_names
 		this->shader = other.shader;
 		this->global_layer = other.global_layer;
-		this->local_layers = other.local_layers;
+		//this->local_layers
 		this->origin_anchor = other.origin_anchor;
 		this->parent_anchor = other.parent_anchor;
 		this->anchor_offset = other.anchor_offset;
@@ -71,9 +71,9 @@ namespace fw {
 		this->focusable_type = other.focusable_type;
 		this->click_through = other.click_through;
 		this->clip_children = other.clip_children;
-		this->mouseIn = other.mouseIn; // ?
-		this->is_left_pressed = other.is_left_pressed; // ?
-		this->is_right_pressed = other.is_right_pressed; // ?
+		//this->mouseIn
+		//this->is_left_pressed
+		//this->is_right_pressed
 		this->force_custom_cursor = other.force_custom_cursor;
 		this->debug_render = other.debug_render;
 		this->alpha_multiplier = other.alpha_multiplier;
