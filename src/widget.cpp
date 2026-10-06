@@ -11,31 +11,9 @@ namespace fw {
 	}
 
 	Widget::Widget(const Widget& other) : widget_list(other.widget_list) {
-		this->OnLeftPress = other.OnLeftPress;
-		this->OnRightPress = other.OnRightPress;
-		this->OnGlobalLeftRelease = other.OnGlobalLeftRelease;
-		this->OnBlockableLeftRelease = other.OnBlockableLeftRelease;
-		this->OnGlobalRightRelease = other.OnGlobalRightRelease;
-		this->OnBlockableRightRelease = other.OnBlockableRightRelease;
-		this->OnLeftClick = other.OnLeftClick;
-		this->OnRightClick = other.OnRightClick;
-		this->OnScrollX = other.OnScrollX;
-		this->OnScrollY = other.OnScrollY;
-		this->OnMouseMoved = other.OnMouseMoved;
-		this->OnMouseEnter = other.OnMouseEnter;
-		this->OnMouseExit = other.OnMouseExit;
-		this->OnProcessMouse = other.OnProcessMouse;
-		this->OnProcessDragGesture = other.OnProcessDragGesture;
-		this->OnFocused = other.OnFocused;
-		this->OnFocusLost = other.OnFocusLost;
-		this->OnPreUpdate = other.OnPreUpdate;
-		this->OnPostUpdate = other.OnPostUpdate;
-		this->OnBeforeGlobalRender = other.OnBeforeGlobalRender;
-		this->OnBeforeRender = other.OnBeforeRender;
-		this->OnAfterRender = other.OnAfterRender;
-		this->OnAfterGlobalRender = other.OnAfterGlobalRender;
-		this->OnWindowResized = other.OnWindowResized;
-		this->GetCursorType = other.GetCursorType;
+		// Event handlers (and GetCursorType) are intentionally not copied: a duplicate
+		// starts with its own empty handler lists. Copying them would make the duplicate
+		// fire the original's handlers, with lambdas still capturing the original's context.
 		this->type = other.type;
 		this->name = other.name;
 		this->full_name = other.full_name;

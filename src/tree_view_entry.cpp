@@ -113,11 +113,8 @@ namespace fw {
 		if (grabbed) {
 			glvx::Vector2f new_pos = pos - grab_offset;
 			treeview.grabbed_widget->setGlobalPosition(new_pos);
-			if (!grab_begin) {
-				treeview.putTargetHighlight();
-			}
+			treeview.putTargetHighlight();
 		}
-		grab_begin = false;
 	}
 
 	void TreeViewEntry::processLeftPress(const glvx::Vector2f& pos) {
@@ -278,7 +275,6 @@ namespace fw {
 	void TreeViewEntry::take() {
 		treeview.widget_list.addPostAction([this](WidgetList& widget_list) {
 			grabbed = true;
-			grab_begin = true;
 			treeview.grabbed_entry = this;
 			TreeViewEntryWidget* widget_copy = entry_widget->clone();
 			widget_copy->setParentAnchor(Widget::Anchor::CUSTOM);
@@ -311,7 +307,6 @@ namespace fw {
 			return;
 		}
 		grabbed = false;
-		grab_begin = false;
 		pressed = false;
 		treeview.grabbed_entry = nullptr;
 		treeview.widget_list.addPostAction([this](WidgetList& widget_list) {

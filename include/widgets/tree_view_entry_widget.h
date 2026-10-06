@@ -16,6 +16,11 @@ namespace fw {
 		void setGrabbedVisualMode();
 		TreeViewEntryWidget* clone(bool with_children = true);
 
+	protected:
+		void internalOnMouseMoved(const glvx::Vector2f& pos) override;
+		void internalProcessMouse(const glvx::Vector2f& pos) override;
+		void internalOnGlobalLeftRelease(const glvx::Vector2f& pos) override;
+
 	private:
 		friend class TreeViewEntry;
 		TreeViewEntry& entry;
