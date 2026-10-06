@@ -94,8 +94,8 @@ namespace fw {
 		bool isLAltPressed() const;
 		bool isLShiftPressed() const;
 		Widget* find(const std::string& name) const;
-		const fw::Font& getDefaultFont() const;
-		void setDefaultFont(const fw::Font& font);
+		glvx::Font* getDefaultFont() const;
+		void setDefaultFont(glvx::Font* font);
 		template<typename T, typename... Args>
 		requires std::derived_from<T, Widget>
 		T* createWidget(Args&&... args);
@@ -160,8 +160,7 @@ namespace fw {
 		bool locked = false;
 		bool click_blocked = false;
 		bool release_blocked = false;
-		fw::Font default_font;
-		bool default_font_set = false;
+		glvx::Font* default_font = nullptr;
 		CompVectorUptr<Widget> widgets;
 		EmptyWidget* root_widget = nullptr;
 		Widget* focused_widget = nullptr;

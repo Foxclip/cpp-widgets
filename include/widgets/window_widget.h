@@ -26,7 +26,7 @@ namespace fw {
 		void getHeaderColor() const;
 		const std::string& getHeaderText() const;
 		const glvx::Color& getHeaderTextColor() const;
-		const fw::Font& getHeaderFont() const;
+		glvx::Font* getHeaderFont() const;
 		unsigned int getHeaderTextCharacterSize() const;
 		const glvx::Color& getOutlineColor() const;
 		const CompVector<Widget*>& getWindowChildren() const;
@@ -38,7 +38,7 @@ namespace fw {
 		void setHeaderColor(const glvx::Color& color);
 		void setHeaderText(const std::string& text);
 		void setHeaderTextColor(const glvx::Color& color);
-		void setHeaderFont(const fw::Font& font);
+		void setHeaderFont(glvx::Font* font);
 		void setHeaderTextCharacterSize(unsigned int size);
 		void setSize(float width, float height) override;
 		void setOutlineColor(const glvx::Color& color);

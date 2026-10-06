@@ -14,12 +14,18 @@
 #include <glvx/cursor.h>
 #include <glvx/keyboard.h>
 #include <glvx/mouse.h>
+#include <algorithm>
 #include <cassert>
+#include <concepts>
+#include <functional>
+#include <map>
+#include <set>
+#include <stdexcept>
 #include <string>
 #include <iostream>
 #include <numbers>
+#include <vector>
 #include "logger/logger.h"
-#include "widgets/font.h"
 
 namespace fw {
 

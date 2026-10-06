@@ -16,7 +16,6 @@ target_sources(widgets_lib PRIVATE
     "${CMAKE_CURRENT_SOURCE_DIR}/include/widgets/drawing.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/widgets/dropdown_widget.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/widgets/empty_widget.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/include/widgets/font.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/widgets/polygon_widget.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/widgets/rectangle_widget.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/widgets/render_texture.h"
@@ -48,7 +47,6 @@ target_sources(widgets_lib PRIVATE
     src/drawing.cpp
     src/dropdown_widget.cpp
     src/empty_widget.cpp
-    src/font.cpp
     src/polygon_widget.cpp
     src/rectangle_widget.cpp
     src/render_texture.cpp

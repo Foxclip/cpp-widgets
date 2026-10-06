@@ -26,7 +26,7 @@ void WidgetTestsWindow::windowWidgetBasicTest(test::Test& test) {
     fw::Widget* root_widget = application.getWidgets().getRootWidget();
     T_ASSERT(T_CHECK(window_widget));
     window_widget->setPosition(position);
-    window_widget->setHeaderFont(getFont());
+    window_widget->setHeaderFont(&getFont());
     application.advance();
     glvx::Vector2f header_size = glvx::Vector2f(size.x, fw::WINDOW_HEADER_HEIGHT);
 
@@ -171,7 +171,7 @@ void WidgetTestsWindow::windowWidgetDragTest(test::Test& test) {
     glvx::Vector2f size(100.0f, 100.0f);
     fw::WindowWidget* window_widget = application.getWidgets().createWindowWidget(size);
     window_widget->setPosition(position);
-    window_widget->setHeaderFont(getFont());
+    window_widget->setHeaderFont(&getFont());
     glvx::Vector2f header_center = window_widget->getHeaderWidget()->getGlobalCenter();
     glvx::Vector2f offset = glvx::Vector2f(50.0f, 30.0f);
     glvx::Vector2f new_position = position + offset;
@@ -189,7 +189,7 @@ void WidgetTestsWindow::windowWidgetChildrenTest(test::Test& test) {
     glvx::Vector2f size(100.0f, 100.0f);
     fw::WindowWidget* window_widget = application.getWidgets().createWindowWidget(size);
     window_widget->setPosition(position);
-    window_widget->setHeaderFont(getFont());
+    window_widget->setHeaderFont(&getFont());
     fw::RectangleWidget* rect_widget = application.getWidgets().createRectangleWidget(30.0f, 30.0f);
     rect_widget->setFillColor(glvx::Color::Green);
     rect_widget->setPosition(10.0f, 10.0f);
@@ -211,7 +211,7 @@ void WidgetTestsWindow::windowWidgetResizeTest(test::Test& test) {
     fw::WindowWidget* window_widget = application.getWidgets().createWindowWidget(size);
     window_widget->setPosition(position);
     window_widget->setOrigin(fw::Widget::Anchor::CENTER);
-    window_widget->setHeaderFont(getFont());
+    window_widget->setHeaderFont(&getFont());
     application.advance();
     T_WRAP_CONTAINER(resizeWindowTest(application, test, window_widget));
 }
@@ -226,7 +226,7 @@ void WidgetTestsWindow::windowWidgetChainTest(test::Test& test) {
     fw::WindowWidget* parent_window = application.getWidgets().createWindowWidget(300.0f, 250.0f);
     parent_window->setName("parent window");
     parent_window->setPosition(150.0f, 100.0f);
-    parent_window->setHeaderFont(getFont());
+    parent_window->setHeaderFont(&getFont());
     parent_window->setHeaderText("Parent window");
     parent_window->setHeaderTextCharacterSize(15);
     fw::RectangleWidget* red_rect = application.getWidgets().createRectangleWidget(30.0f, 30.0f);
@@ -239,7 +239,7 @@ void WidgetTestsWindow::windowWidgetChainTest(test::Test& test) {
     fw::WindowWidget* child_window = application.getWidgets().createWindowWidget(200.0f, 170.0f);
     child_window->setName("child window");
     child_window->setPosition(20.0f, 20.0f);
-    child_window->setHeaderFont(getFont());
+    child_window->setHeaderFont(&getFont());
     child_window->setHeaderText("Child window");
     child_window->setHeaderTextCharacterSize(15);
     child_window->setParent(parent_window);
@@ -253,7 +253,7 @@ void WidgetTestsWindow::windowWidgetChainTest(test::Test& test) {
     fw::WindowWidget* another_child_window = application.getWidgets().createWindowWidget(80.0f, 60.0f);
     another_child_window->setName("another child window");
     another_child_window->setPosition(20.0f, 20.0f);
-    another_child_window->setHeaderFont(getFont());
+    another_child_window->setHeaderFont(&getFont());
     another_child_window->setHeaderText("Another child window");
     another_child_window->setHeaderTextCharacterSize(15);
     another_child_window->setParent(child_window);
@@ -278,13 +278,13 @@ void WidgetTestsWindow::windowWidgetDragLimitsTest(test::Test& test) {
     fw::WindowWidget* parent_window = application.getWidgets().createWindowWidget(300.0f, 250.0f);
     parent_window->setName("parent window");
     parent_window->setPosition(150.0f, 100.0f);
-    parent_window->setHeaderFont(getFont());
+    parent_window->setHeaderFont(&getFont());
     parent_window->setHeaderText("Parent window");
     parent_window->setHeaderTextCharacterSize(15);
     fw::WindowWidget* child_window = application.getWidgets().createWindowWidget(100.0f, 100.0f);
     child_window->setName("child window");
     child_window->setPosition(20.0f, 20.0f);
-    child_window->setHeaderFont(getFont());
+    child_window->setHeaderFont(&getFont());
     child_window->setHeaderText("Child window");
     child_window->setHeaderTextCharacterSize(15);
     child_window->setParent(parent_window);
@@ -331,13 +331,13 @@ void WidgetTestsWindow::windowWidgetResizeLimitsTest(test::Test& test) {
     fw::WindowWidget* parent_window = application.getWidgets().createWindowWidget(300.0f, 250.0f);
     parent_window->setName("parent window");
     parent_window->setPosition(150.0f, 100.0f);
-    parent_window->setHeaderFont(getFont());
+    parent_window->setHeaderFont(&getFont());
     parent_window->setHeaderText("Parent window");
     parent_window->setHeaderTextCharacterSize(15);
     fw::WindowWidget* child_window = application.getWidgets().createWindowWidget(100.0f, 100.0f);
     child_window->setName("child window");
     child_window->setPosition(20.0f, 20.0f);
-    child_window->setHeaderFont(getFont());
+    child_window->setHeaderFont(&getFont());
     child_window->setHeaderText("Child window");
     child_window->setHeaderTextCharacterSize(15);
     child_window->setParent(parent_window);
@@ -467,7 +467,7 @@ void WidgetTestsWindow::windowWidgetResizeLimitsTest(test::Test& test) {
 void WidgetTestsWindow::windowWidgetMoveToTopDragTest(test::Test& test) {
     fw::Application application(getWindow());
     application.init(test.name, 800, 600, 0, false);
-    application.setDefaultFont(getFont());
+    application.setDefaultFont(&getFont());
     application.start(true);
     application.mouseMove(400, 300);
     application.advance();
@@ -493,7 +493,7 @@ void WidgetTestsWindow::windowWidgetMoveToTopDragTest(test::Test& test) {
 void WidgetTestsWindow::windowWidgetMoveToTopResizeTest(test::Test& test) {
     fw::Application application(getWindow());
     application.init(test.name, 800, 600, 0, false);
-    application.setDefaultFont(getFont());
+    application.setDefaultFont(&getFont());
     application.start(true);
     application.mouseMove(400, 300);
     application.advance();

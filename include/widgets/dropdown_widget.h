@@ -47,7 +47,7 @@ namespace fw {
 		void setPanelBackgroundColor(const glvx::Color& color);
 		void setMainTextColor(const glvx::Color& color);
 		void setPanelTextColor(const glvx::Color& color);
-		void setFont(const fw::Font& font);
+		void setFont(glvx::Font* font);
 		void setCharacterSize(unsigned int size);
 		void setTextAnchor(Anchor anchor);
 		void setTextOriginAnchor(Anchor anchor);

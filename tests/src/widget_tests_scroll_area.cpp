@@ -57,7 +57,7 @@ void WidgetTestsScrollArea::scrollAreaWidgetScrollTest(test::Test& test) {
     fw::Application application(getWindow());
     application.init(test.name, 800, 600, 0, false);
     application.start(true);
-    application.setDefaultFont(getFont());
+    application.setDefaultFont(&getFont());
     glvx::Vector2f scroll_area_size(300.0f, 200.0f);
     glvx::Vector2f container_size(100.0f, 100.0f);
     glvx::Vector2f child_size(350.0f, 100.0f);
@@ -171,7 +171,7 @@ void WidgetTestsScrollArea::scrollAreaWidgetScrollbarVisibilityTest(test::Test& 
     fw::Application application(getWindow());
     application.init(test.name, 800, 600, 0, false);
     application.start(true);
-    application.setDefaultFont(getFont());
+    application.setDefaultFont(&getFont());
     glvx::Vector2f scroll_area_size(300.0f, 200.0f);
     glvx::Vector2f container_size(100.0f, 100.0f);
     glvx::Vector2f child_size(350.0f, 100.0f);
@@ -256,7 +256,7 @@ void WidgetTestsScrollArea::scrollAreaWidgetScrollbarContainerTest(test::Test& t
     fw::Application application(getWindow());
     application.init(test.name, 800, 600, 0, false);
     application.start(true);
-    application.setDefaultFont(getFont());
+    application.setDefaultFont(&getFont());
     glvx::Vector2f scroll_area_size(300.0f, 200.0f);
     glvx::Vector2f container_size(100.0f, 100.0f);
     glvx::Vector2f child_size(100.0f, 200.0f);

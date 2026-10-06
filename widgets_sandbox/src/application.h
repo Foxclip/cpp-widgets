@@ -47,7 +47,7 @@ namespace sandbox {
 		int m_fps_frames = 0;
 
 		std::string m_section;
-		fw::Font m_font;
+		glvx::Font m_font;
 		std::vector<Section> m_sections;
 
 		// Live labels updated by widget callbacks

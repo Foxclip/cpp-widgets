@@ -64,7 +64,7 @@ namespace fw {
 		void advance();
 		void maximizeWindow() const;
 		glvx::Vector2u getWindowSize() const;
-		const fw::Font& getDefaultFont() const;
+		glvx::Font* getDefaultFont() const;
 		Stage getStage() const;
 		CursorType getCursorType() const;
 		Widget* getLeftGestureSource() const;
@@ -104,7 +104,7 @@ namespace fw {
 		glvx::Vector2f getWindowCenter() const;
 		WidgetList& getWidgets();
 		void setBackgroundColor(const glvx::Color& color);
-		void setDefaultFont(const fw::Font& font);
+		void setDefaultFont(glvx::Font* font);
 		void setVerticalSyncEnabled(bool value);
 		void close();
 

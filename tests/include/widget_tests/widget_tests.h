@@ -8,7 +8,7 @@ struct GenericWidgetTest;
 class WidgetTests : public test::TestModule {
 public:
 	glvx::Window window;
-	fw::Font textbox_font;
+	glvx::Font textbox_font;
 
 	WidgetTests(const std::string& name, test::TestModule* manager, const std::vector<TestNode*>& required_nodes = { });
 	static std::string sfVec2fToStr(const glvx::Vector2f& vec);

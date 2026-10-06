@@ -739,7 +739,7 @@ fw::TextBoxWidget* WidgetTestsTextbox::initTextBox(fw::Application& application,
     application.advance();
     fw::TextBoxWidget* textbox_widget = application.getWidgets().createTextBoxWidget();
     textbox_widget->setCharacterSize(20);
-    textbox_widget->setFont(getFont());
+    textbox_widget->setFont(&getFont());
     glvx::Vector2f position(100.0f, 100.0f);
     glvx::Vector2f size(width, height);
     std::string value = "Text";

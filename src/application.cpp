@@ -71,7 +71,7 @@ namespace fw {
         return glvx::Vector2u(window.getSize());
     }
 
-    const fw::Font& Application::getDefaultFont() const {
+    glvx::Font* Application::getDefaultFont() const {
         return widgets.getDefaultFont();
     }
 
@@ -342,7 +342,7 @@ namespace fw {
         background_color = color;
     }
 
-    void Application::setDefaultFont(const fw::Font& font) {
+    void Application::setDefaultFont(glvx::Font* font) {
         widgets.setDefaultFont(font);
     }
 

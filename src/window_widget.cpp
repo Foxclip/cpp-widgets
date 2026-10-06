@@ -227,7 +227,7 @@ namespace fw {
 		return header_text_widget->getFillColor();
 	}
 
-	const fw::Font& WindowWidget::getHeaderFont() const {
+	glvx::Font* WindowWidget::getHeaderFont() const {
 		return header_text_widget->getFont();
 	}
 
@@ -282,7 +282,7 @@ namespace fw {
 		header_text_widget->setFillColor(color);
 	}
 
-	void WindowWidget::setHeaderFont(const fw::Font& font) {
+	void WindowWidget::setHeaderFont(glvx::Font* font) {
 		header_text_widget->setFont(font);
 	}
 

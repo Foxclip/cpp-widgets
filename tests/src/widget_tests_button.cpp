@@ -59,7 +59,7 @@ void WidgetTestsButton::basicTest(test::Test& test) {
 void WidgetTestsButton::pressTest(test::Test& test) {
     fw::Application application(getWindow());
     application.init(test.name, 800, 600, 0, false);
-    application.setDefaultFont(getFont());
+    application.setDefaultFont(&getFont());
     application.start(true);
     application.advance();
 

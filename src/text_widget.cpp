@@ -6,7 +6,7 @@ namespace fw {
 	TextWidget::TextWidget(WidgetList& widget_list) : Widget(widget_list) {
 		type = WidgetType::Text;
 		setName("text");
-		if (widget_list.getDefaultFont().isLoaded()) {
+		if (widget_list.getDefaultFont() != nullptr) {
 			setFont(widget_list.getDefaultFont());
 		}
 	}
@@ -45,13 +45,13 @@ namespace fw {
 	}
 
 	glvx::FloatRect TextWidget::getGlvxTextBounds() const {
-		if (!font.isLoaded()) {
+		if (!font) {
 			return glvx::FloatRect();
 		}
-		return getTextVisualBounds(font.getFont(character_size), character_size, getString());
+		return getTextVisualBounds(*font, character_size, getString());
 	}
 
-	const fw::Font& TextWidget::getFont() const {
+	glvx::Font* TextWidget::getFont() const {
 		return font;
 	}
 
@@ -75,17 +75,17 @@ namespace fw {
 		if (index == 0 || index > getStringSize()) {
 			return 0.0f;
 		}
-		wAssert(font.isLoaded());
+		wAssert(font);
 		unsigned char left_char = (unsigned char)getString()[index - 1];
 		unsigned char right_char = (unsigned char)getString()[index];
-		return (float)font.getFont(character_size).getKerning(character_size, left_char, right_char);
+		return (float)font->getKerning(character_size, left_char, right_char);
 	}
 
 	glvx::Vector2f TextWidget::getLocalCharPos(size_t index, bool top_aligned, bool with_kerning) const {
-		wAssert(getFont().isLoaded());
+		wAssert(getFont());
 		// The position is computed widget-side to replicate SFML's
 		// findCharacterPos semantics; it is returned in local coordinates
-		glvx::Vector2f local_char_pos = findTextCharacterPos(font.getFont(character_size), character_size, getString(), index);
+		glvx::Vector2f local_char_pos = findTextCharacterPos(*font, character_size, getString(), index);
 		if (with_kerning) {
 			local_char_pos.x += getKerning(index);
 		}
@@ -119,19 +119,17 @@ namespace fw {
 		return result;
 	}
 
-	void TextWidget::setFont(const fw::Font& font) {
+	void TextWidget::setFont(glvx::Font* font) {
 		this->font = font;
-		setRenderIterations(font.isDoubleRendered() ? 2 : 1);
-		glvx::Font* glvx_font = font.isLoaded() ? &font.getFont(character_size) : nullptr;
-		text.setFont(glvx_font);
+		text.setFont(font);
 		text.setCharacterSize(character_size);
 	}
 
 	void TextWidget::setCharacterSize(unsigned int size) {
 		character_size = size;
 		text.setCharacterSize(character_size);
-		if (font.isLoaded()) {
-			text.setFont(&font.getFont(character_size));
+		if (font) {
+			text.setFont(font);
 		}
 	}
 
@@ -191,7 +189,7 @@ namespace fw {
 	}
 
 	void TextWidget::internalPreUpdate() {
-		wAssert(getFont().isLoaded(),
+		wAssert(getFont(),
 			"Font is not set for " + full_name +
 			", consider setting default font in WidgetList"
 		);

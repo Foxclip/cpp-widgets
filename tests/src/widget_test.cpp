@@ -9,6 +9,6 @@ glvx::Window& WidgetTest::getWindow() {
 	return dynamic_cast<WidgetTests*>(parent)->window;
 }
 
-fw::Font& WidgetTest::getFont() {
+glvx::Font& WidgetTest::getFont() {
 	return dynamic_cast<WidgetTests*>(parent)->textbox_font;
 }

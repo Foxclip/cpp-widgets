@@ -16,7 +16,7 @@ void WidgetTestsText::textWidgetTest(test::Test& test) {
     fw::Widget* root_widget = application.getWidgets().getRootWidget();
     T_ASSERT(T_CHECK(text_widget));
     text_widget->setCharacterSize(20);
-    text_widget->setFont(getFont());
+    text_widget->setFont(&getFont());
     text_widget->setString("Text");
     glvx::Vector2f position(100.0f, 100.0f);
     glvx::Vector2f size(41.0f, 20.0f);
@@ -63,7 +63,7 @@ void WidgetTestsText::textWidgetTest(test::Test& test) {
 void WidgetTestsText::textWidgetDefaultFontTest(test::Test& test) {
     fw::Application application(getWindow());
     application.init(test.name, 800, 600, 0, false);
-    application.setDefaultFont(getFont());
+    application.setDefaultFont(&getFont());
     application.start(true);
     application.advance();
     fw::TextWidget* text_widget = application.getWidgets().createTextWidget();

@@ -13,7 +13,7 @@ namespace fw {
 		glvx::FloatRect getLocalBounds() const override;
 		glvx::FloatRect getVisualLocalBounds() const override;
 		glvx::Vector2f getRenderPositionOffset() const override;
-		const fw::Font& getFont() const;
+		glvx::Font* getFont() const;
 		size_t getStringSize() const;
 		unsigned int getCharacterSize() const;
 		const glvx::Color& getFillColor() const override;
@@ -23,7 +23,7 @@ namespace fw {
 		glvx::Vector2f getParentLocalCharPos(size_t index, bool top_aligned = true, bool with_kerning = true) const;
 		glvx::Vector2f getGlobalCharPos(size_t index, bool top_aligned = true, bool with_kerning = true) const;
 		size_t getCharAt(const glvx::Vector2f& pos) const;
-		void setFont(const fw::Font& font);
+		void setFont(glvx::Font* font);
 		void setCharacterSize(unsigned int size);
 		void setFillColor(const glvx::Color& color) override;
 		void setAdjustLocalBounds(bool value);
@@ -44,7 +44,7 @@ namespace fw {
 
 	private:
 		glvx::Text text{nullptr, ""};
-		fw::Font font;
+		glvx::Font* font = nullptr;
 		unsigned int character_size = glvx::FONT_DEFAULT_SIZE;
 		glvx::Color fill_color = glvx::Color::White;
 		glvx::FloatRect getGlvxTextBounds() const;

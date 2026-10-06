@@ -63,7 +63,7 @@ void WidgetTestsDropdown::dropdownWidgetOptions1Test(test::Test& test) {
     glvx::Vector2f size(40.0f, 20.0f);
     dropdown_widget->setPosition(position);
     dropdown_widget->setSize(size);
-    dropdown_widget->setFont(getFont());
+    dropdown_widget->setFont(&getFont());
     dropdown_widget->setCharacterSize(15);
     glvx::Vector2f dropdown_center = dropdown_widget->getGlobalCenter();
     fw::RectangleWidget* panel_widget = dropdown_widget->getPanelWidget();
@@ -109,7 +109,7 @@ void WidgetTestsDropdown::dropdownWidgetOptions2Test(test::Test& test) {
     glvx::Vector2f size(40.0f, 20.0f);
     dropdown_widget->setPosition(position);
     dropdown_widget->setSize(size);
-    dropdown_widget->setFont(getFont());
+    dropdown_widget->setFont(&getFont());
     dropdown_widget->setCharacterSize(15);
     glvx::Vector2f dropdown_center = dropdown_widget->getGlobalCenter();
     fw::RectangleWidget* panel_widget = dropdown_widget->getPanelWidget();

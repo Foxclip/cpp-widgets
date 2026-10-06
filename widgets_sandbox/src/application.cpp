@@ -27,7 +27,7 @@ namespace sandbox {
 
 	void Application::onInit() {
 		setBackgroundColor(glvx::Color(35, 38, 44));
-		setDefaultFont(m_font);
+		setDefaultFont(&m_font);
 		getWidgets().OnKeyPressed += [](const glvx::Key& key) {
 			if (key == glvx::Key::D) {
 				fw::WidgetList::debug_render = !fw::WidgetList::debug_render;
@@ -93,7 +93,7 @@ namespace sandbox {
 	}
 
 	void Application::updateFpsLabelPosition() {
-		float text_width = fw::getTextVisualBounds(m_font.getFont(FPS_LABEL_CHAR_SIZE), FPS_LABEL_CHAR_SIZE, m_fps_label->getString()).size.x;
+		float text_width = fw::getTextVisualBounds(m_font, FPS_LABEL_CHAR_SIZE, m_fps_label->getString()).size.x;
 		glvx::Vector2u window_size = getWindowSize();
 		m_fps_label->setPosition((float)window_size.x - text_width - FPS_LABEL_MARGIN_X, FPS_LABEL_Y);
 	}
@@ -218,7 +218,7 @@ namespace sandbox {
 		rotated->setRotation(45.0f);
 
 		auto add_label = [this, parent, first_center_x, LABEL_CHAR_SIZE, LABEL_Y](float center_x, const std::string& text) {
-			float text_width = fw::getTextVisualBounds(m_font.getFont(LABEL_CHAR_SIZE), LABEL_CHAR_SIZE, text).size.x;
+			float text_width = fw::getTextVisualBounds(m_font, LABEL_CHAR_SIZE, text).size.x;
 			createLabel(parent, text, center_x - text_width / 2.0f, LABEL_Y, LABEL_CHAR_SIZE);
 		};
 		add_label(first_center_x, "rectangle");

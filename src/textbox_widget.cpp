@@ -93,7 +93,7 @@ namespace fw {
 		return text_widget;
 	}
 
-	const fw::Font& TextBoxWidget::getFont() const {
+	glvx::Font* TextBoxWidget::getFont() const {
 		return text_widget->getFont();
 	}
 
@@ -164,9 +164,9 @@ namespace fw {
 	}
 
 	const glvx::Character& TextBoxWidget::getGlyph(size_t index) const {
-		wAssert(getFont().isLoaded());
+		wAssert(getFont());
 		unsigned char code = (unsigned char)getValue()[index];
-		return text_widget->getFont().getFont(getCharacterSize()).getCharacter(getCharacterSize(), code);
+		return text_widget->getFont()->getCharacter(getCharacterSize(), code);
 	}
 
 	ptrdiff_t TextBoxWidget::getSelectionLeft() const {
@@ -221,7 +221,7 @@ namespace fw {
 		this->editor_fail_background_color = color;
 	}
 
-	void TextBoxWidget::setFont(const fw::Font& font) {
+	void TextBoxWidget::setFont(glvx::Font* font) {
 		this->font = font;
 		text_widget->setFont(font);
 	}
@@ -706,7 +706,7 @@ namespace fw {
 	}
 
 	void TextBoxWidget::updateTextScroll() {
-		if (!getFont().isLoaded()) {
+		if (!getFont()) {
 			return;
 		}
 		float char_pos = getLocalCharPos(cursor_pos, true, true).x;

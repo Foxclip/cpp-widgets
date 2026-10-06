@@ -53,7 +53,7 @@ namespace fw {
 		const glvx::Color& getFailFillColor() const;
 		const glvx::Color& getEditFailFillColor() const;
 		const TextWidget* getTextWidget() const;
-		const fw::Font& getFont() const;
+		glvx::Font* getFont() const;
 		unsigned int getCharacterSize() const;
 		const std::string& getValue() const;
 		const std::string getSelectedText() const;
@@ -76,7 +76,7 @@ namespace fw {
 		void setSelectionColor(const glvx::Color& color);
 		void setFailFillColor(const glvx::Color& color);
 		void setEditFailFillColor(const glvx::Color& color);
-		void setFont(const fw::Font& font);
+		void setFont(glvx::Font* font);
 		void setCharacterSize(unsigned int size);
 		void setValueSilent(const std::string& value);
 		void setValue(const std::string& value);
@@ -136,7 +136,7 @@ namespace fw {
 		RectangleWidget* cursor_widget = nullptr;
 		RectangleWidget* selection_widget = nullptr;
 		TextBoxType textbox_type = TextBoxType::TEXT;
-		fw::Font font;
+		glvx::Font* font = nullptr;
 		struct TextBoxHistoryEntry {
 			std::string str;
 			size_t cursor_pos = 0;

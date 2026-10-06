@@ -182,11 +182,11 @@ namespace fw {
 		return root_widget->tryFind(name);
 	}
 
-	const fw::Font& WidgetList::getDefaultFont() const {
+	glvx::Font* WidgetList::getDefaultFont() const {
 		return default_font;
 	}
 
-	void WidgetList::setDefaultFont(const fw::Font& font) {
+	void WidgetList::setDefaultFont(glvx::Font* font) {
 		default_font = font;
 	}
 

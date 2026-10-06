@@ -14,7 +14,6 @@
 #include <glvx/cursor.h>
 #include <glvx/keyboard.h>
 #include <glvx/mouse.h>
-#include "widgets/font.h"
 #include "test_lib/test.h"
 
 // set by the --minimized command-line parameter;
@@ -27,6 +26,6 @@ public:
 
 protected:
 	glvx::Window& getWindow();
-	fw::Font& getFont();
+	glvx::Font& getFont();
 
 };

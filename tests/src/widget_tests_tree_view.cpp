@@ -69,7 +69,7 @@ void WidgetTestsTreeView::treeviewWidgetBasicTest(test::Test& test) {
 void WidgetTestsTreeView::treeviewWidgetEntriesTest(test::Test& test) {
     fw::Application application(getWindow());
     application.init(test.name, 800, 600, 0, false);
-    application.setDefaultFont(getFont());
+    application.setDefaultFont(&getFont());
     application.start(true);
     application.advance();
     glvx::Vector2f size(100.0f, 100.0f);
@@ -91,7 +91,7 @@ void WidgetTestsTreeView::treeviewWidgetEntriesTest(test::Test& test) {
 void WidgetTestsTreeView::treeviewWidgetParent1Test(test::Test& test) {
     fw::Application application(getWindow());
     application.init(test.name, 800, 600, 0, false);
-    application.setDefaultFont(getFont());
+    application.setDefaultFont(&getFont());
     application.start(true);
     application.advance();
     glvx::Vector2f size(100.0f, 100.0f);
@@ -120,7 +120,7 @@ void WidgetTestsTreeView::treeviewWidgetParent1Test(test::Test& test) {
 void WidgetTestsTreeView::treeviewWidgetParent2Test(test::Test& test) {
     fw::Application application(getWindow());
     application.init(test.name, 800, 600, 0, false);
-    application.setDefaultFont(getFont());
+    application.setDefaultFont(&getFont());
     application.start(true);
     application.advance();
     glvx::Vector2f size(100.0f, 100.0f);
@@ -145,7 +145,7 @@ void WidgetTestsTreeView::treeviewWidgetParent2Test(test::Test& test) {
 void WidgetTestsTreeView::treeviewWidgetSelectTest(test::Test& test) {
     fw::Application application(getWindow());
     application.init(test.name, 800, 600, 0, false);
-    application.setDefaultFont(getFont());
+    application.setDefaultFont(&getFont());
     application.start(true);
     application.advance();
     glvx::Vector2f size(100.0f, 100.0f);
@@ -360,7 +360,7 @@ void WidgetTestsTreeView::treeviewWidgetSelectTest(test::Test& test) {
 void WidgetTestsTreeView::treeviewWidgetReorderTest(test::Test& test) {
     fw::Application application(getWindow());
     application.init(test.name, 800, 600, 0, false);
-    application.setDefaultFont(getFont());
+    application.setDefaultFont(&getFont());
     application.start(true);
     application.advance();
     glvx::Vector2f size(200.0f, 100.0f);
@@ -427,7 +427,7 @@ void WidgetTestsTreeView::treeviewWidgetReorderTest(test::Test& test) {
 void WidgetTestsTreeView::treeviewWidgetRemoveTest(test::Test& test) {
     fw::Application application(getWindow());
     application.init(test.name, 800, 600, 0, false);
-    application.setDefaultFont(getFont());
+    application.setDefaultFont(&getFont());
     application.start(true);
     application.advance();
     glvx::Vector2f size(200.0f, 100.0f);
@@ -562,7 +562,7 @@ void WidgetTestsTreeView::treeviewWidgetRemoveTest(test::Test& test) {
 void WidgetTestsTreeView::treeviewWidgetClearTest(test::Test& test) {
     fw::Application application(getWindow());
     application.init(test.name, 800, 600, 0, false);
-    application.setDefaultFont(getFont());
+    application.setDefaultFont(&getFont());
     application.start(true);
     application.advance();
     glvx::Vector2f size(200.0f, 100.0f);
@@ -611,7 +611,7 @@ void WidgetTestsTreeView::treeviewWidgetClearTest(test::Test& test) {
 void WidgetTestsTreeView::treeviewWidgetDrag1Test(test::Test& test) {
     fw::Application application(getWindow());
     application.init(test.name, 800, 600, 0, false);
-    application.setDefaultFont(getFont());
+    application.setDefaultFont(&getFont());
     application.start(true);
     application.advance();
     glvx::Vector2f size(200.0f, 100.0f);
@@ -701,7 +701,7 @@ void WidgetTestsTreeView::treeviewWidgetDrag1Test(test::Test& test) {
 void WidgetTestsTreeView::treeviewWidgetDrag2Test(test::Test& test) {
     fw::Application application(getWindow());
     application.init(test.name, 800, 600, 0, false);
-    application.setDefaultFont(getFont());
+    application.setDefaultFont(&getFont());
     application.start(true);
     application.advance();
     glvx::Vector2f size(200.0f, 100.0f);
@@ -838,7 +838,7 @@ void WidgetTestsTreeView::treeviewWidgetDrag2Test(test::Test& test) {
 void WidgetTestsTreeView::treeviewWidgetDrag3Test(test::Test& test) {
     fw::Application application(getWindow());
     application.init(test.name, 800, 600, 0, false);
-    application.setDefaultFont(getFont());
+    application.setDefaultFont(&getFont());
     application.start(true);
     application.advance();
     glvx::Vector2f size(200.0f, 100.0f);
@@ -904,7 +904,7 @@ void WidgetTestsTreeView::treeviewWidgetDrag3Test(test::Test& test) {
 void WidgetTestsTreeView::treeviewWidgetDrag4Test(test::Test& test) {
     fw::Application application(getWindow());
     application.init(test.name, 800, 600, 0, false);
-    application.setDefaultFont(getFont());
+    application.setDefaultFont(&getFont());
     application.start(true);
     application.advance();
     glvx::Vector2f size(200.0f, 200.0f);
@@ -973,7 +973,7 @@ void WidgetTestsTreeView::treeviewWidgetDrag4Test(test::Test& test) {
 void WidgetTestsTreeView::treeviewWidgetDrag5Test(test::Test& test) {
     fw::Application application(getWindow());
     application.init(test.name, 800, 600, 0, false);
-    application.setDefaultFont(getFont());
+    application.setDefaultFont(&getFont());
     application.start(true);
     application.advance();
     glvx::Vector2f size(200.0f, 100.0f);
@@ -1022,7 +1022,7 @@ void WidgetTestsTreeView::treeviewWidgetDrag5Test(test::Test& test) {
 void WidgetTestsTreeView::treeviewWidgetDragSelfTest(test::Test& test) {
     fw::Application application(getWindow());
     application.init(test.name, 800, 600, 0, false);
-    application.setDefaultFont(getFont());
+    application.setDefaultFont(&getFont());
     application.start(true);
     application.advance();
     glvx::Vector2f size(200.0f, 100.0f);
@@ -1068,7 +1068,7 @@ void WidgetTestsTreeView::treeviewWidgetDragSelfTest(test::Test& test) {
 void WidgetTestsTreeView::treeviewWidgetDragCancelTest(test::Test& test) {
     fw::Application application(getWindow());
     application.init(test.name, 800, 600, 0, false);
-    application.setDefaultFont(getFont());
+    application.setDefaultFont(&getFont());
     application.start(true);
     application.advance();
     glvx::Vector2f size(200.0f, 200.0f);
