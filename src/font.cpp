@@ -29,7 +29,7 @@ namespace fw {
 		if (it != fonts.end()) {
 			return *it->second;
 		}
-		auto font_ptr = std::make_shared<glvx::Font>(filename, false);
+		auto font_ptr = dp::make_shared_data_pointer<glvx::Font>("Font " + filename + " size " + std::to_string(size), filename, false);
 		glvx::Font& font_ref = *font_ptr;
 		fonts.emplace(size, std::move(font_ptr));
 		return font_ref;

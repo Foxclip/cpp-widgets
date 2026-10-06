@@ -14,8 +14,9 @@
 #include <glvx/cursor.h>
 #include <glvx/keyboard.h>
 #include <glvx/mouse.h>
+#include "common/data_pointer_shared.h"
+
 #include <map>
-#include <memory>
 #include <string>
 
 namespace fw {
@@ -39,7 +40,7 @@ namespace fw {
 		bool smooth = false;
 		// Copies share the underlying glvx::Font instances (they are
 		// immutable after construction).
-		mutable std::map<unsigned int, std::shared_ptr<glvx::Font>> fonts;
+		mutable std::map<unsigned int, dp::DataPointerShared<glvx::Font>> fonts;
 	};
 
 }
