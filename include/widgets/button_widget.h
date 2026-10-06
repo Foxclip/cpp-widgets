@@ -16,6 +16,7 @@ namespace fw {
 
 		ButtonWidget(WidgetList& widget_list, float width, float height);
 		ButtonWidget(WidgetList& widget_list, const glvx::Vector2f& size);
+		ButtonWidget(const ButtonWidget& other);
 		bool isPressed() const;
 		ButtonWidget* clone(bool with_children = true) override;
 		void setNormalColor(const glvx::Color& color);

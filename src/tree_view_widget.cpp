@@ -31,7 +31,12 @@ namespace fw {
 		: TreeViewWidget(widget_list, size.x, size.y) { }
 
 	TreeViewWidget::TreeViewWidget(const TreeViewWidget& other)
-		: ContainerWidget(other) {
+		: ContainerWidget(other),
+		// OnEntry* events are intentionally not copied: a duplicate starts with its
+		// own empty handler lists (same policy as the base Widget copy ctor).
+		OnEntryClicked(),
+		OnEntrySelected(),
+		OnEntryDeselected() {
 		std::function<void(TreeViewEntry*)> addEntryWithChildren = [&](TreeViewEntry* entry) {
 			addEntry(entry->name);
 			for (TreeViewEntry* child : entry->getChildren()) {
