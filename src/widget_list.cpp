@@ -210,7 +210,7 @@ namespace fw {
 		return polygon_widget;
 	}
 
-	PolygonWidget* WidgetList::createPolygonWidget(size_t vertex_count, float radius, float angle_offset) {
+	PolygonWidget* WidgetList::createPolygonWidget(size_t vertex_count, float radius, glvx::Angle angle_offset) {
 		PolygonWidget* polygon_widget = createWidget<PolygonWidget>(vertex_count, radius, angle_offset);
 		return polygon_widget;
 	}

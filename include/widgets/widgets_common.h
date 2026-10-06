@@ -10,6 +10,7 @@
 #include <glvx/render_states.h>
 #include <glvx/shape.h>
 #include <glvx/rectangle.h>
+#include <glvx/angle.h>
 #include <glvx/image.h>
 #include <glvx/cursor.h>
 #include <glvx/keyboard.h>
@@ -52,8 +53,6 @@ namespace fw {
 #endif // !NDEBUG
 
 	Logger& operator<<(Logger& lg, const glvx::Vector2f& value);
-	float to_degrees(float angle);
-	float to_radians(float angle);
 	glvx::Vector2i to2i(const glvx::Vector2f& vec);
 	glvx::Vector2i to2i(const glvx::Vector2u& vec);
 	glvx::Vector2f to2f(const glvx::Vector2i& vec);
@@ -185,15 +184,15 @@ namespace fw {
 	}
 
 	template <typename TVec2>
-	TVec2 get_circle_vertex(ptrdiff_t index, size_t point_count, float radius, float angle_offset = 0.0f) {
-		float angle = (float)((float)index / point_count * 2 * std::numbers::pi + angle_offset);
-		float x = std::cos(angle) * radius;
-		float y = std::sin(angle) * radius;
+	TVec2 get_circle_vertex(ptrdiff_t index, size_t point_count, float radius, glvx::Angle angle_offset = glvx::Angle()) {
+		glvx::Angle angle = glvx::Angle::fromRadians((float)index / (float)point_count * 2.0f * std::numbers::pi + angle_offset.asRadians());
+		float x = std::cos(angle.asRadians()) * radius;
+		float y = std::sin(angle.asRadians()) * radius;
 		return TVec2(x, y);
 	}
 
 	template <typename TVec2>
-	std::vector<TVec2> get_regular_polygon(size_t point_count, float radius, float angle_offset = 0.0f) {
+	std::vector<TVec2> get_regular_polygon(size_t point_count, float radius, glvx::Angle angle_offset = glvx::Angle()) {
 		std::vector<TVec2> vertices;
 		for (size_t i = 0; i < point_count; i++) {
 			TVec2 vertex = get_circle_vertex<TVec2>(i, point_count, radius, angle_offset);

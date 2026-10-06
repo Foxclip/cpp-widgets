@@ -10,6 +10,7 @@
 #include <glvx/render_states.h>
 #include <glvx/shape.h>
 #include <glvx/rectangle.h>
+#include <glvx/angle.h>
 #include <glvx/image.h>
 #include <glvx/cursor.h>
 #include <glvx/keyboard.h>
@@ -27,7 +28,7 @@ namespace fw {
 		const glvx::Transform& getGlobalTransform() const;
 		const glvx::Transform& getInverseGlobalTransform() const;
 		const glvx::Vector2f& getPosition() const;
-		float getRotation() const;
+		glvx::Angle getRotation() const;
 		const glvx::Vector2f& getScale() const;
 		const glvx::Vector2f& getOrigin() const;
 		void invalidateTransform();
@@ -36,7 +37,7 @@ namespace fw {
 		void setPosition(const glvx::Vector2f& position);
 		void setGlobalPosition(float x, float y);
 		void setGlobalPosition(const glvx::Vector2f& position);
-		void setRotation(float angle);
+		void setRotation(glvx::Angle angle);
 		void setScale(const glvx::Vector2f& scale);
 		void setOrigin(float x, float y);
 		void setOrigin(const glvx::Vector2f origin);
@@ -45,7 +46,7 @@ namespace fw {
 	private:
 		Widget* widget = nullptr;
 		glvx::Vector2f position;
-		float rotation = 0.0f;
+		glvx::Angle rotation;
 		glvx::Vector2f scale = glvx::Vector2f(1.0f, 1.0f);
 		glvx::Vector2f origin;
 		mutable glvx::Transform transform;

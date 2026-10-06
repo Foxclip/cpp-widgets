@@ -667,7 +667,7 @@ namespace fw {
 		return glvx::Vector2f(bounds.position.x + bounds.size.x, bounds.position.y + bounds.size.y);
 	}
 
-	float Widget::getRotation() const {
+	glvx::Angle Widget::getRotation() const {
 		return transforms.getRotation();
 	}
 
@@ -899,7 +899,7 @@ namespace fw {
 		transforms.setGlobalPosition(getGlobalPosition().x, y);
 	}
 
-	void Widget::setRotation(float angle) {
+	void Widget::setRotation(glvx::Angle angle) {
 		wAssert(!widget_list.isLocked());
 		transforms.setRotation(angle);
 	}

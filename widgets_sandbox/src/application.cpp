@@ -214,8 +214,7 @@ namespace sandbox {
 		rotated->setFillColor(glvx::Color(60, 180, 120));
 		rotated->setOrigin(fw::Widget::Anchor::CENTER);
 		rotated->setPosition(first_center_x + 3.0f * SHAPE_SPACING, SHAPE_CENTER_Y);
-		// Widget::setRotation expects degrees (see TreeViewEntryWidget::updateWidgets)
-		rotated->setRotation(45.0f);
+		rotated->setRotation(glvx::Angle::fromDegrees(45.0f));
 
 		auto add_label = [this, parent, first_center_x, LABEL_CHAR_SIZE, LABEL_Y](float center_x, const std::string& text) {
 			float text_width = fw::getTextVisualBounds(m_font, LABEL_CHAR_SIZE, text).size.x;
@@ -382,13 +381,13 @@ namespace sandbox {
 		corner_rotated->setParent(parent);
 		corner_rotated->setFillColor(glvx::Color(200, 100, 200));
 		corner_rotated->setPosition(CONTENT_X + 760.0f, 18.0f);
-		corner_rotated->setRotation(fw::to_radians(30.0f));
+		corner_rotated->setRotation(glvx::Angle::fromDegrees(30.0f));
 		fw::RectangleWidget* center_rotated = getWidgets().createRectangleWidget(32.0f, 20.0f);
 		center_rotated->setParent(parent);
 		center_rotated->setFillColor(glvx::Color(200, 100, 200));
 		center_rotated->setOrigin(fw::Widget::Anchor::CENTER);
 		center_rotated->setPosition(CONTENT_X + 840.0f, 28.0f);
-		center_rotated->setRotation(fw::to_radians(30.0f));
+		center_rotated->setRotation(glvx::Angle::fromDegrees(30.0f));
 		createLabel(parent, "corner origin", CONTENT_X + 745.0f, 92.0f);
 		createLabel(parent, "center origin", CONTENT_X + 835.0f, 92.0f);
 	}

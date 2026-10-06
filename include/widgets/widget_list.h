@@ -103,7 +103,7 @@ namespace fw {
 		RectangleWidget* createRectangleWidget(const glvx::Vector2f& size);
 		TextWidget* createTextWidget();
 		PolygonWidget* createPolygonWidget(const std::vector<glvx::Vector2f>& vertices);
-		PolygonWidget* createPolygonWidget(size_t vertex_count, float radius = 10.0f, float angle_offset = 0.0f);
+		PolygonWidget* createPolygonWidget(size_t vertex_count, float radius = 10.0f, glvx::Angle angle_offset = glvx::Angle());
 		ContainerWidget* createContainerWidget(float width, float height);
 		ContainerWidget* createContainerWidget(const glvx::Vector2f& size);
 		EmptyWidget* createEmptyWidget();

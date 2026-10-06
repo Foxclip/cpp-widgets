@@ -312,7 +312,7 @@ void WidgetTestsBasic::duplicatePolygonTest(test::Test& test) {
     fw::PolygonWidget* copy = widgets.duplicateWidget(widget);
     copy->setFillColor(glvx::Color::Green);
     copy->setPosition(copy->getPosition() + offset);
-    copy->setRotation(fw::to_radians(180.0f));
+    copy->setRotation(glvx::Angle::fromDegrees(180.0f));
     application.advance();
     if (T_COMPARE(widgets.getAllWidgets().size(), 3)) {
         T_CHECK(widgets.getAllWidgets()[0] == widgets.getRootWidget());
@@ -320,7 +320,7 @@ void WidgetTestsBasic::duplicatePolygonTest(test::Test& test) {
         T_CHECK(widgets.getAllWidgets()[2] == copy);
     }
     T_VEC2_COMPARE(copy->getGlobalPosition(), widget->getGlobalPosition() + offset);
-    T_COMPARE(copy->getRotation(), fw::to_radians(180.0f));
+    T_COMPARE(copy->getRotation().asDegrees(), 180.0f);
     T_CHECK(copy->getParent() == widget->getParent());
     T_CHECK(copy->getVertices() == widget->getVertices());
 }

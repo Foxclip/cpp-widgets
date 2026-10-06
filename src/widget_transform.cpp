@@ -40,7 +40,7 @@ namespace fw {
 		return position;
 	}
 
-	float WidgetTransform::getRotation() const {
+	glvx::Angle WidgetTransform::getRotation() const {
 		return rotation;
 	}
 
@@ -95,8 +95,8 @@ namespace fw {
 		setGlobalPosition(position.x, position.y);
 	}
 
-	void WidgetTransform::setRotation(float angle) {
-		if (this->rotation == angle) {
+	void WidgetTransform::setRotation(glvx::Angle angle) {
+		if (this->rotation.asRadians() == angle.asRadians()) {
 			return;
 		}
 		this->rotation = angle;
@@ -134,7 +134,7 @@ namespace fw {
 	void WidgetTransform::recalcTransform() const {
 		glvx::Transform t = glvx::Transform();
 		t.translate(position);
-		t.rotate(glvx::Angle::fromDegrees(rotation), glvx::Vector2f());
+		t.rotate(rotation, glvx::Vector2f());
 		t.scale(scale.x, scale.y);
 		t.translate(-origin);
 		transform = t;

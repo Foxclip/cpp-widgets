@@ -92,10 +92,10 @@ namespace fw {
 		} else {
 			arrow_area_widget->setVisible(true);
 			if (entry.expanded) {
-				arrow_widget->setRotation(90.0f);
+				arrow_widget->setRotation(glvx::Angle::fromDegrees(90.0f));
 				children_box_widget->setVisible(true);
 			} else {
-				arrow_widget->setRotation(0.0f);
+				arrow_widget->setRotation(glvx::Angle());
 				children_box_widget->setVisible(false);
 			}
 		}

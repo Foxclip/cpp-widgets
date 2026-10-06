@@ -45,7 +45,7 @@ namespace fw {
 		square_widget->setSizeYPolicy(SizePolicy::PARENT);
 		square_widget->setParent(main_widget);
 		// main triangle
-		std::vector<glvx::Vector2f> vertices = get_regular_polygon<glvx::Vector2f>(3, 5.0f, to_radians(90.0f));
+		std::vector<glvx::Vector2f> vertices = get_regular_polygon<glvx::Vector2f>(3, 5.0f, glvx::Angle::fromDegrees(90.0f));
 		triangle_widget = widget_list.createPolygonWidget(vertices);
 		triangle_widget->setName("triangle");
 		triangle_widget->setFillColor(DROPDOWN_DEFAULT_TRIANGLE_COLOR);

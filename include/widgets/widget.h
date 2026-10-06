@@ -10,6 +10,7 @@
 #include <glvx/render_states.h>
 #include <glvx/shape.h>
 #include <glvx/rectangle.h>
+#include <glvx/angle.h>
 #include <glvx/image.h>
 #include <glvx/cursor.h>
 #include <glvx/keyboard.h>
@@ -244,7 +245,7 @@ namespace fw {
 		glvx::Vector2f getVisualGlobalTopRight() const;
 		glvx::Vector2f getVisualGlobalBottomLeft() const;
 		glvx::Vector2f getVisualGlobalBottomRight() const;
-		float getRotation() const;
+		glvx::Angle getRotation() const;
 		virtual const glvx::Color& getFillColor() const = 0;
 		float getAlphaMultiplier() const;
 		virtual void setSize(float width, float height);
@@ -282,7 +283,7 @@ namespace fw {
 		void setGlobalPosition(const glvx::Vector2f& position);
 		void setGlobalPositionX(float x);
 		void setGlobalPositionY(float y);
-		void setRotation(float angle);
+		void setRotation(glvx::Angle angle);
 		virtual void setRenderable(bool value);
 		void setVisible(bool value);
 		void toggleVisible();

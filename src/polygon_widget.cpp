@@ -9,7 +9,7 @@ namespace fw {
 		setVertices(vertices);
 	}
 
-	PolygonWidget::PolygonWidget(WidgetList& widget_list, size_t vertex_count, float radius, float angle_offset) : ShapeWidget(widget_list) {
+	PolygonWidget::PolygonWidget(WidgetList& widget_list, size_t vertex_count, float radius, glvx::Angle angle_offset) : ShapeWidget(widget_list) {
 		type = WidgetType::Polygon;
 		setName("polygon");
 		std::vector<glvx::Vector2f> vertices = get_regular_polygon<glvx::Vector2f>(vertex_count, radius, angle_offset);
