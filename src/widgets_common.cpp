@@ -99,7 +99,11 @@ namespace fw {
 	}
 
 	void quantize_position(glvx::Transform& transform) {
-		const float* matrix_data = transform.toMatrix4().getData();
+		// keep the Matrix4 alive: getData() points into its internal array, and the
+		// temporary returned by toMatrix4() would be destroyed at the end of the
+		// full-expression, leaving matrix_data dangling (stack-use-after-scope UB)
+		const glvx::Matrix4 matrix = transform.toMatrix4();
+		const float* matrix_data = matrix.getData();
 		float x_pos = matrix_data[12];
 		float y_pos = matrix_data[13];
 		float x_offset = x_pos - floor(x_pos);
