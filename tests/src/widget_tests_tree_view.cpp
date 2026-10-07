@@ -19,6 +19,7 @@ WidgetTestsTreeView::WidgetTestsTreeView(const std::string& name, test::TestModu
     test::Test* tree_view_widget_drag_5_test = addTest("drag_5", { tree_view_widget_drag_2_test }, [&](test::Test& test) { treeviewWidgetDrag5Test(test); });
     test::Test* tree_view_widget_drag_self_test = addTest("drag_self", { tree_view_widget_drag_2_test }, [&](test::Test& test) { treeviewWidgetDragSelfTest(test); });
     test::Test* tree_view_widget_drag_cancel_test = addTest("drag_cancel", { tree_view_widget_drag_4_test }, [&](test::Test& test) { treeviewWidgetDragCancelTest(test); });
+    test::Test* tree_view_widget_drag_6_test = addTest("drag_6", { tree_view_widget_drag_5_test }, [&](test::Test& test) { treeviewWidgetDrag6Test(test); });
 }
 
 void WidgetTestsTreeView::treeviewWidgetBasicTest(test::Test& test) {
@@ -1205,4 +1206,69 @@ void WidgetTestsTreeView::dragEntry(fw::Application& application, fw::TreeViewEn
         application.mouseLeftRelease();
         application.advance();
     }
+}
+
+void WidgetTestsTreeView::treeviewWidgetDrag6Test(test::Test& test) {
+    fw::Application application(getWindow());
+    application.init(test.name, 800, 600, 0, false);
+    application.setDefaultFont(&getFont());
+    application.start(true);
+    application.advance();
+    glvx::Vector2f size(200.0f, 100.0f);
+    fw::TreeViewWidget* tree_view_widget = application.getWidgets().createTreeViewWidget(size);
+    glvx::Vector2f position(100.0f, 100.0f);
+    tree_view_widget->setPosition(position);
+
+    fw::TreeViewEntry* entry_1 = tree_view_widget->addEntry("Entry 1");
+    fw::TreeViewEntry* entry_2 = tree_view_widget->addEntry("Entry 2");
+    fw::TreeViewEntry* entry_3 = tree_view_widget->addEntry("Entry 3");
+    application.advance();
+    const size_t base_widget_count = application.getWidgets().getSize();
+
+    auto check_top_entries = [&](const std::initializer_list<fw::TreeViewEntry*>& entries) {
+        checkTopEntries(test, tree_view_widget, entries);
+    };
+
+    // several MouseMoved events in one frame (fast drag): take() must schedule
+    // the DUPLICATE/REMOVE post actions only once, not once per mouse move
+    glvx::Vector2f entry_1_center = entry_1->getWidget()->getGlobalCenter();
+    application.mouseMove(entry_1_center);
+    application.advance();
+    application.mouseLeftPress();
+    application.advance();
+    application.mouseMove(entry_1_center + glvx::Vector2f(fw::TREEVIEW_ENTRY_DRAG_DISTANCE + 1.0f, 0.0f));
+    application.mouseMove(entry_1_center + glvx::Vector2f(fw::TREEVIEW_ENTRY_DRAG_DISTANCE + 5.0f, 0.0f));
+    application.mouseMove(entry_1_center + glvx::Vector2f(fw::TREEVIEW_ENTRY_DRAG_DISTANCE + 9.0f, 0.0f));
+    application.advance();
+    T_CHECK(entry_1->isGrabbed());
+    T_CHECK(tree_view_widget->getGrabbedWidget());
+    // exactly one clone (its 8 widgets minus the removed children box subtree of 3)
+    T_COMPARE(application.getWidgets().getSize(), base_widget_count + 5);
+    T_VEC2_COMPARE(tree_view_widget->getGrabbedWidget()->getGlobalPosition(), entry_1->getWidget()->getGlobalPosition());
+
+    // drop to the bottom
+    glvx::Vector2f drop_pos = tree_view_widget->getBottom() + glvx::Vector2f(0.0f, 50.0f);
+    application.mouseMove(drop_pos);
+    application.advance();
+    application.mouseLeftRelease();
+    application.advance();
+    T_CHECK(!entry_1->isGrabbed());
+    T_CHECK(!tree_view_widget->getGrabbedWidget());
+    T_COMPARE(application.getWidgets().getSize(), base_widget_count);
+    T_WRAP_CONTAINER(check_top_entries({ entry_2, entry_3, entry_1 }));
+
+    // take and release in the same frame: no orphaned clone, no stuck grab;
+    // the entry drops at the last target highlight position
+    glvx::Vector2f entry_2_center = entry_2->getWidget()->getGlobalCenter();
+    application.mouseMove(entry_2_center);
+    application.advance();
+    application.mouseLeftPress();
+    application.advance();
+    application.mouseMove(entry_2_center + glvx::Vector2f(fw::TREEVIEW_ENTRY_DRAG_DISTANCE + 1.0f, 0.0f));
+    application.mouseLeftRelease();
+    application.advance();
+    T_CHECK(!entry_2->isGrabbed());
+    T_CHECK(!tree_view_widget->getGrabbedWidget());
+    T_COMPARE(application.getWidgets().getSize(), base_widget_count);
+    T_WRAP_CONTAINER(check_top_entries({ entry_3, entry_1, entry_2 }));
 }

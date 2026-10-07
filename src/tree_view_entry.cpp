@@ -110,7 +110,7 @@ namespace fw {
 	}
 
 	void TreeViewEntry::processMouse(const glvx::Vector2f& pos) {
-		if (grabbed) {
+		if (grabbed && treeview.grabbed_widget) {
 			glvx::Vector2f new_pos = pos - grab_offset;
 			treeview.grabbed_widget->setGlobalPosition(new_pos);
 			treeview.putTargetHighlight();
@@ -273,9 +273,16 @@ namespace fw {
 	}
 
 	void TreeViewEntry::take() {
+		if (grabbed) {
+			return;
+		}
+		grabbed = true;
+		treeview.grabbed_entry = this;
 		treeview.widget_list.addPostAction([this](WidgetList& widget_list) {
-			grabbed = true;
-			treeview.grabbed_entry = this;
+			if (!grabbed) {
+				// the grab was released in the same frame, before this action ran
+				return;
+			}
 			TreeViewEntryWidget* widget_copy = entry_widget->clone();
 			widget_copy->setParentAnchor(Widget::Anchor::CUSTOM);
 			widget_copy->setSizeXPolicy(Widget::SizePolicy::NONE);
@@ -286,7 +293,9 @@ namespace fw {
 			treeview.grabbed_widget = widget_copy;
 		}, PostActionStage::DUPLICATE);
 		treeview.widget_list.addPostAction([this](WidgetList& widget_list) {
-			treeview.grabbed_widget->children_box_widget->remove();
+			if (grabbed && treeview.grabbed_widget) {
+				treeview.grabbed_widget->children_box_widget->remove();
+			}
 		}, PostActionStage::REMOVE);
 	}
 
@@ -309,9 +318,14 @@ namespace fw {
 		grabbed = false;
 		pressed = false;
 		treeview.grabbed_entry = nullptr;
-		treeview.widget_list.addPostAction([this](WidgetList& widget_list) {
-			treeview.grabbed_widget->remove();
-			treeview.grabbed_widget = nullptr;
+		TreeViewEntryWidget* released_widget = treeview.grabbed_widget;
+		treeview.widget_list.addPostAction([this, released_widget](WidgetList& widget_list) {
+			if (released_widget) {
+				released_widget->remove();
+			}
+			if (treeview.grabbed_widget == released_widget) {
+				treeview.grabbed_widget = nullptr;
+			}
 		}, PostActionStage::REMOVE);
 		TreeViewWidget::target_highlight.visible = false;
 	}

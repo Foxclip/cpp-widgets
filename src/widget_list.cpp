@@ -467,8 +467,12 @@ namespace fw {
 
 	void WidgetList::processAfterInput() {
 		for (size_t i = 0; i < STAGE_COUNT; i++) {
-			for (const PostAction& action : post_actions[i]) {
-				action.execute();
+			// snapshot the count: an action may schedule another action in the same
+			// stage, which would reallocate the vector mid-iteration (UB); the new
+			// action simply waits for the next frame
+			const size_t action_count = post_actions[i].size();
+			for (size_t j = 0; j < action_count; j++) {
+				post_actions[i][j].execute();
 			}
 		}
 		for (size_t i = 0; i < STAGE_COUNT; i++) {

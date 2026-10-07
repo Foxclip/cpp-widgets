@@ -22,6 +22,7 @@ public:
 	void treeviewWidgetDrag5Test(test::Test& test);
 	void treeviewWidgetDragSelfTest(test::Test& test);
 	void treeviewWidgetDragCancelTest(test::Test& test);
+	void treeviewWidgetDrag6Test(test::Test& test);
 
 private:
 	static float calcTreeViewEntryHeight(fw::TreeViewEntry* entry);
