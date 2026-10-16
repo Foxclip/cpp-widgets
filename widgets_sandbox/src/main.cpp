@@ -1,3 +1,14 @@
+// The Windows SDK spells APIENTRY as WINAPI (itself __stdcall), while glad.h
+// spells it as __stdcall — different token lists, so whichever of the two
+// headers is included second triggers C4005 under /WX. Pre-define it with
+// the SDK's spelling before any include: glad.h then skips its own definition
+// and the SDK's later redefinition is token-identical. Must stay above all
+// glvx/widgets includes, and <windows.h> must stay below them (nb30.h defines
+// DUPLICATE, which would corrupt widgets/widget_list.h's PostActionStage enum).
+#if defined(_WIN32) && !defined(APIENTRY)
+#define WINAPI __stdcall
+#define APIENTRY WINAPI
+#endif
 #include "application.h"
 #include <glvx/glvx_common.h>
 #include <cstring>
