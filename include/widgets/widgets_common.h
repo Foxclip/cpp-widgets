@@ -185,7 +185,7 @@ namespace fw {
 
 	template <typename TVec2>
 	TVec2 get_circle_vertex(ptrdiff_t index, size_t point_count, float radius, glvx::Angle angle_offset = glvx::Angle()) {
-		glvx::Angle angle = glvx::Angle::fromRadians((float)index / (float)point_count * 2.0f * std::numbers::pi + angle_offset.asRadians());
+		glvx::Angle angle = glvx::Angle::fromRadians((float)index / (float)point_count * 2.0f * std::numbers::pi_v<float> + angle_offset.asRadians());
 		float x = std::cos(angle.asRadians()) * radius;
 		float y = std::sin(angle.asRadians()) * radius;
 		return TVec2(x, y);
