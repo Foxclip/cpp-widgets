@@ -65,5 +65,3 @@ int main(int argc, char* argv[]) {
     }
     return 0;
 }
-
-// TODO: TreeView: fix invisible text on the TreeViewEntry drag ghost
