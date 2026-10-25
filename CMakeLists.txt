@@ -116,7 +116,7 @@ elseif(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/clip/")
     target_include_directories(widgets_lib PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/clip/")
 endif()
 
-add_subdirectory(tests)
+add_subdirectory(widget_tests)
 if(WIDGETS_BUILD_SANDBOX)
     add_subdirectory(widgets_sandbox)
 endif()

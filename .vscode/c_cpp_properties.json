@@ -5,7 +5,7 @@
             "includePath": [
                 "${workspaceFolder}/**",
                 "${workspaceFolder}/include",
-                "${workspaceFolder}/tests/include",
+                "${workspaceFolder}/widget_tests/include",
                 "${workspaceFolder}/GLVX/include",
                 "${workspaceFolder}/GLVX/glfw/include",
                 "${workspaceFolder}/GLVX/glm",
@@ -13,7 +13,7 @@
                 "${workspaceFolder}/GLVX/glad/include",
                 "${workspaceFolder}/logger/include",
                 "${workspaceFolder}/clip",
-                "${workspaceFolder}/tests/test_lib/include",
+                "${workspaceFolder}/widget_tests/test_lib/include",
                 "${vcpkgRoot}/x64-windows/include"
             ],
             "defines": [
