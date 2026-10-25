@@ -43,14 +43,14 @@
       "label": "Build Sandbox Debug",
       "type": "shell",
       "command": "cmake",
-      "args": ["--build", "build", "--config", "Debug", "--target", "widgets_sandbox"],
+      "args": ["--build", "build", "--config", "Debug", "--target", "widget_sandbox"],
       "problemMatcher": ["$msCompile"]
     },
     {
       "label": "Build Sandbox Release",
       "type": "shell",
       "command": "cmake",
-      "args": ["--build", "build", "--config", "Release", "--target", "widgets_sandbox"],
+      "args": ["--build", "build", "--config", "Release", "--target", "widget_sandbox"],
       "problemMatcher": ["$msCompile"]
     }
   ]

@@ -75,6 +75,10 @@ target_include_directories(widgets_lib PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/inclu
 # Reset BUILD_SHARED_LIBS so our libraries are built as static libraries
 set(BUILD_SHARED_LIBS OFF)
 
+# clip still declares cmake_minimum_required(VERSION 3.1.2); CMake >= 4.0 removed
+# compatibility below 3.5, so allow it for fresh configures (no-op on older CMake)
+set(CMAKE_POLICY_VERSION_MINIMUM 3.5)
+
 # Handle dependencies: check if targets already exist (parent project) or fetch local submodules
 if(NOT TARGET glvx)
     if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/GLVX/CMakeLists.txt")
@@ -118,5 +122,5 @@ endif()
 
 add_subdirectory(widget_tests)
 if(WIDGETS_BUILD_SANDBOX)
-    add_subdirectory(widgets_sandbox)
+    add_subdirectory(widget_sandbox)
 endif()
