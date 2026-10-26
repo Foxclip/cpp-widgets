@@ -28,13 +28,24 @@ private:
 	// Fixed seed: every call produces the same permutation, independent of any
 	// shared RNG state, so each test's input (and its exact-order loop
 	// expectations) is stable no matter how the test set grows or reorders.
+	//
+	// Deliberately NOT std::shuffle: the standard only requires its result to
+	// be uniformly distributed, not the algorithm itself. MSVC shuffles with
+	// plain modulo while libstdc++ uses rejection sampling, so the same seeded
+	// mt19937 stream is consumed differently and the two STLs produce different
+	// permutations. The explicit Fisher-Yates below is pinned to this exact
+	// seed and arithmetic, so it yields the identical permutation on every
+	// platform.
 	static constexpr unsigned int shuffle_seed = 0x435EE8Bu;
 	bool layer_contains(const std::vector<Node*>& layer, const std::string& name);
 	template <typename TVec>
 	TVec get_shuffled(const TVec& vec) {
 		TVec copy(vec);
 		std::mt19937 rng(shuffle_seed);
-		std::shuffle(copy.begin(), copy.end(), rng);
+		for (size_t i = copy.size(); i > 1; --i) {
+			const size_t j = rng() % i;
+			std::swap(copy[i - 1], copy[j]);
+		}
 		return copy;
 	}
 
