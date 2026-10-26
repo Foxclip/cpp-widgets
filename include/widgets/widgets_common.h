@@ -42,8 +42,17 @@ namespace fw {
 	void _print_msg(bool value);
 	void _print_msg(bool value, const std::string& message);
 
+// Optional trailing variadic message: MSVC has no __VA_OPT__, but supports the
+// comma-paste fallback. (Previously `wAssert(value, __VA_ARGS__)` compiled on
+// MSVC only via its empty-argument extension; on GCC/Clang it is a hard error.)
+#if defined(_MSC_VER)
+#define W_VA_OPT(...) , ##__VA_ARGS__
+#else
+#define W_VA_OPT(...) __VA_OPT__(, __VA_ARGS__)
+#endif
+
 #define wAssert(value, ...) \
-	fw::_print_msg(value, __VA_ARGS__); \
+	fw::_print_msg(value W_VA_OPT(__VA_ARGS__)); \
 	assert(value);
 
 #else

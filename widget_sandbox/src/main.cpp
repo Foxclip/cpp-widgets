@@ -20,8 +20,10 @@
 #endif
 
 void enable_no_crt_dialogs() {
+#ifdef _MSC_VER
     _set_error_mode(_OUT_TO_STDERR);
     _set_abort_behavior(0, _WRITE_ABORT_MSG | _CALL_REPORTFAULT);
+#endif
 #ifdef _WIN32
     ::SetErrorMode(::GetErrorMode() | SEM_NOGPFAULTERRORBOX | SEM_FAILCRITICALERRORS);
 #endif

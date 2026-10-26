@@ -262,9 +262,12 @@ void WidgetTestsToposort::toposortLoopEventTest(test::Test& test) {
     );
     T_CHECK(sorted.empty());
     if (T_COMPARE(loop.size(), 3)) {
-        T_CHECK(loop[0] == nodeB);
-        T_CHECK(loop[1] == nodeC);
-        T_CHECK(loop[2] == nodeA);
+        // Loop is reported in traversal order starting at the first shuffled node of
+        // the cycle. The shared default-seeded mt19937 + std::shuffle make this
+        // deterministic on every platform (input order here is [A, B, C]).
+        T_CHECK(loop[0] == nodeA);
+        T_CHECK(loop[1] == nodeB);
+        T_CHECK(loop[2] == nodeC);
     }
 }
 
@@ -291,15 +294,16 @@ void WidgetTestsToposort::toposortTwoLoopsTest(test::Test& test) {
     );
     T_CHECK(sorted.empty());
     if (T_COMPARE(loops.size(), 2)) {
+        // deterministic traversal order (see toposortLoopEventTest)
         if (T_COMPARE(loops[0].size(), 3)) {
-            T_CHECK(loops[0][0] == nodeF);
-            T_CHECK(loops[0][1] == nodeD);
-            T_CHECK(loops[0][2] == nodeE);
+            T_CHECK(loops[0][0] == nodeA);
+            T_CHECK(loops[0][1] == nodeB);
+            T_CHECK(loops[0][2] == nodeC);
         }
         if (T_COMPARE(loops[1].size(), 3)) {
-            T_CHECK(loops[1][0] == nodeB);
-            T_CHECK(loops[1][1] == nodeC);
-            T_CHECK(loops[1][2] == nodeA);
+            T_CHECK(loops[1][0] == nodeD);
+            T_CHECK(loops[1][1] == nodeE);
+            T_CHECK(loops[1][2] == nodeF);
         }
     }
 }
@@ -328,16 +332,17 @@ void WidgetTestsToposort::toposortForkingLoopTest(test::Test& test) {
     );
     T_CHECK(sorted.empty());
     if (T_COMPARE(loops.size(), 2)) {
+        // deterministic traversal order (see toposortLoopEventTest)
         if (T_COMPARE(loops[0].size(), 3)) {
-            T_CHECK(loops[0][0] == nodeB);
-            T_CHECK(loops[0][1] == nodeL1);
-            T_CHECK(loops[0][2] == nodeL2);
+            T_CHECK(loops[0][0] == nodeL1);
+            T_CHECK(loops[0][1] == nodeL2);
+            T_CHECK(loops[0][2] == nodeB);
         }
         if (T_COMPARE(loops[1].size(), 4)) {
-            T_CHECK(loops[1][0] == nodeR2);
-            T_CHECK(loops[1][1] == nodeA);
-            T_CHECK(loops[1][2] == nodeB);
-            T_CHECK(loops[1][3] == nodeR1);
+            T_CHECK(loops[1][0] == nodeB);
+            T_CHECK(loops[1][1] == nodeR1);
+            T_CHECK(loops[1][2] == nodeR2);
+            T_CHECK(loops[1][3] == nodeA);
         }
     }
 }
@@ -368,33 +373,34 @@ void WidgetTestsToposort::toposortTrianglesLoopTest(test::Test& test) {
     );
     T_CHECK(sorted.empty());
     if (T_COMPARE(loops.size(), 5)) {
+        // deterministic traversal order (see toposortLoopEventTest)
         if (T_COMPARE(loops[0].size(), 3)) {
-            T_CHECK(loops[0][0] == nodeB);
-            T_CHECK(loops[0][1] == nodeA);
-            T_CHECK(loops[0][2] == nodeC);
+            T_CHECK(loops[0][0] == nodeA);
+            T_CHECK(loops[0][1] == nodeC);
+            T_CHECK(loops[0][2] == nodeB);
         }
-        if (T_COMPARE(loops[1].size(), 6)) {
-            T_CHECK(loops[1][0] == nodeE);
-            T_CHECK(loops[1][1] == nodeD);
-            T_CHECK(loops[1][2] == nodeB);
-            T_CHECK(loops[1][3] == nodeA);
-            T_CHECK(loops[1][4] == nodeC);
-            T_CHECK(loops[1][5] == nodeF);
+        if (T_COMPARE(loops[1].size(), 3)) {
+            T_CHECK(loops[1][0] == nodeB);
+            T_CHECK(loops[1][1] == nodeE);
+            T_CHECK(loops[1][2] == nodeD);
         }
         if (T_COMPARE(loops[2].size(), 3)) {
-            T_CHECK(loops[2][0] == nodeE);
-            T_CHECK(loops[2][1] == nodeD);
-            T_CHECK(loops[2][2] == nodeB);
+            T_CHECK(loops[2][0] == nodeC);
+            T_CHECK(loops[2][1] == nodeB);
+            T_CHECK(loops[2][2] == nodeE);
         }
-        if (T_COMPARE(loops[3].size(), 3)) {
-            T_CHECK(loops[3][0] == nodeE);
+        if (T_COMPARE(loops[3].size(), 6)) {
+            T_CHECK(loops[3][0] == nodeA);
             T_CHECK(loops[3][1] == nodeC);
-            T_CHECK(loops[3][2] == nodeB);
+            T_CHECK(loops[3][2] == nodeF);
+            T_CHECK(loops[3][3] == nodeE);
+            T_CHECK(loops[3][4] == nodeD);
+            T_CHECK(loops[3][5] == nodeB);
         }
         if (T_COMPARE(loops[4].size(), 3)) {
-            T_CHECK(loops[4][0] == nodeE);
-            T_CHECK(loops[4][1] == nodeC);
-            T_CHECK(loops[4][2] == nodeF);
+            T_CHECK(loops[4][0] == nodeC);
+            T_CHECK(loops[4][1] == nodeF);
+            T_CHECK(loops[4][2] == nodeE);
         }
     }
 }

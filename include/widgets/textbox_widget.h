@@ -24,7 +24,9 @@ namespace fw {
 		void reset();
 		double get() const;
 	private:
-		std::chrono::steady_clock::time_point begin;
+		// high_resolution_clock (== steady_clock on MSVC, == system_clock on libstdc++);
+		// must match the clock used in Timer::reset()/Timer::get()
+		std::chrono::high_resolution_clock::time_point begin;
 	};
 
 	class WidgetList;

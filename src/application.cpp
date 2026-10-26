@@ -1,9 +1,12 @@
-#define GLFW_EXPOSE_NATIVE_WIN32
 #include "widgets/application.h"
 #include <glvx/cursor.h>
+#include <GLFW/glfw3.h>
+#ifdef _WIN32
+#define GLFW_EXPOSE_NATIVE_WIN32
 #include <GLFW/glfw3native.h>
 #include <Windows.h>
 #include <winuser.h>
+#endif
 
 namespace fw {
 
@@ -63,8 +66,24 @@ namespace fw {
     }
 
     void Application::maximizeWindow() const {
+#ifdef _WIN32
         HWND windowHandle = glfwGetWin32Window(window.getWindowHandle());
         ShowWindow(windowHandle, SW_MAXIMIZE);
+#else
+        // Cross-platform maximize: move the windowed window to cover the monitor it is
+        // on (falling back to the primary monitor) at the monitor's full resolution.
+        GLFWwindow* glfw_window = window.getWindowHandle();
+        GLFWmonitor* monitor = glfwGetWindowMonitor(glfw_window);
+        if (!monitor) {
+            monitor = glfwGetPrimaryMonitor();
+        }
+        if (monitor) {
+            const GLFWvidmode* mode = glfwGetVideoMode(monitor);
+            if (mode) {
+                glfwSetWindowMonitor(glfw_window, monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
+            }
+        }
+#endif
     }
 
     glvx::Vector2u Application::getWindowSize() const {

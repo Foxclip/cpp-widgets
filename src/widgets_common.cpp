@@ -1,6 +1,8 @@
 #include "widgets/widgets_common.h"
 #include <fstream>
 #include <algorithm>
+#include <format>
+#include <limits.h>
 
 namespace fw {
 
