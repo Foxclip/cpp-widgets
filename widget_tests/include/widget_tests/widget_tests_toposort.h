@@ -25,11 +25,15 @@ public:
 	void toposortTrianglesLoopTest(test::Test& test);
 
 private:
-	std::mt19937 rng;
+	// Fixed seed: every call produces the same permutation, independent of any
+	// shared RNG state, so each test's input (and its exact-order loop
+	// expectations) is stable no matter how the test set grows or reorders.
+	static constexpr unsigned int shuffle_seed = 0x435EE8Bu;
 	bool layer_contains(const std::vector<Node*>& layer, const std::string& name);
 	template <typename TVec>
 	TVec get_shuffled(const TVec& vec) {
 		TVec copy(vec);
+		std::mt19937 rng(shuffle_seed);
 		std::shuffle(copy.begin(), copy.end(), rng);
 		return copy;
 	}
