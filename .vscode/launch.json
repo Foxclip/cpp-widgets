@@ -46,6 +46,45 @@
       "cwd": "${workspaceFolder}",
       "environment": [],
       "preLaunchTask": "Build Sandbox Release"
+    },
+    {
+      "name": "Tests (Linux)",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/build/widget_tests/widget_tests",
+      "args": [],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}",
+      "environment": [],
+      "MIMode": "gdb",
+      "setupCommands": [
+        {
+          "description": "Enable pretty-printing for gdb",
+          "text": "set print pretty on",
+          "ignoreFailures": true
+        }
+      ],
+      "preLaunchTask": "CMake Build Debug",
+      "externalConsole": true
+    },
+    {
+      "name": "Sandbox (Linux)",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/build/widget_sandbox/widget_sandbox",
+      "args": [],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}",
+      "environment": [],
+      "MIMode": "gdb",
+      "setupCommands": [
+        {
+          "description": "Enable pretty-printing for gdb",
+          "text": "set print pretty on",
+          "ignoreFailures": true
+        }
+      ],
+      "preLaunchTask": "Build Sandbox Debug"
     }
   ]
 }
